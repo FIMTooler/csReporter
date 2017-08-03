@@ -1,0 +1,13 @@
+C:\Users\admdcassady\Documents\Visual Studio 2012\Projects\csReporter\bin\Debug\csReporter.exe
+C:\Users\admdcassady\Documents\Visual Studio 2012\Projects\csReporter\bin\Debug\csReporter.pdb
+C:\Users\admdcassady\Documents\Visual Studio 2012\Projects\csReporter\obj\Debug\csReporter.frmCSExamples.resources
+C:\Users\admdcassady\Documents\Visual Studio 2012\Projects\csReporter\obj\Debug\csReporter.frmError.resources
+C:\Users\admdcassady\Documents\Visual Studio 2012\Projects\csReporter\obj\Debug\csReporter.frmFilter.resources
+C:\Users\admdcassady\Documents\Visual Studio 2012\Projects\csReporter\obj\Debug\csReporter.FrmFilterDate.resources
+C:\Users\admdcassady\Documents\Visual Studio 2012\Projects\csReporter\obj\Debug\csReporter.frmProgressBar.resources
+C:\Users\admdcassady\Documents\Visual Studio 2012\Projects\csReporter\obj\Debug\csReporter.frmGetData.resources
+C:\Users\admdcassady\Documents\Visual Studio 2012\Projects\csReporter\obj\Debug\csReporter.frmReport.resources
+C:\Users\admdcassady\Documents\Visual Studio 2012\Projects\csReporter\obj\Debug\csReporter.Properties.Resources.resources
+C:\Users\admdcassady\Documents\Visual Studio 2012\Projects\csReporter\obj\Debug\csReporter.csproj.GenerateResource.Cache
+C:\Users\admdcassady\Documents\Visual Studio 2012\Projects\csReporter\obj\Debug\csReporter.exe
+C:\Users\admdcassady\Documents\Visual Studio 2012\Projects\csReporter\obj\Debug\csReporter.pdb

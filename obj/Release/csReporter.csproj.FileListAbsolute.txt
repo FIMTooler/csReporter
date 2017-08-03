@@ -1,0 +1,15 @@
+C:\Users\admdcassady\Documents\Visual Studio 2012\Projects\csReporter\bin\Release\csReporter.exe
+C:\Users\admdcassady\Documents\Visual Studio 2012\Projects\csReporter\bin\Release\csReporter.pdb
+C:\Users\admdcassady\Documents\Visual Studio 2012\Projects\csReporter\obj\Release\csReporter.frmCSExamples.resources
+C:\Users\admdcassady\Documents\Visual Studio 2012\Projects\csReporter\obj\Release\csReporter.frmError.resources
+C:\Users\admdcassady\Documents\Visual Studio 2012\Projects\csReporter\obj\Release\csReporter.frmFilter.resources
+C:\Users\admdcassady\Documents\Visual Studio 2012\Projects\csReporter\obj\Release\csReporter.FrmFilterDate.resources
+C:\Users\admdcassady\Documents\Visual Studio 2012\Projects\csReporter\obj\Release\csReporter.frmProgressBar.resources
+C:\Users\admdcassady\Documents\Visual Studio 2012\Projects\csReporter\obj\Release\csReporter.frmGetData.resources
+C:\Users\admdcassady\Documents\Visual Studio 2012\Projects\csReporter\obj\Release\csReporter.frmReport.resources
+C:\Users\admdcassady\Documents\Visual Studio 2012\Projects\csReporter\obj\Release\csReporter.Properties.Resources.resources
+C:\Users\admdcassady\Documents\Visual Studio 2012\Projects\csReporter\obj\Release\csReporter.csproj.GenerateResource.Cache
+C:\Users\admdcassady\Documents\Visual Studio 2012\Projects\csReporter\obj\Release\csReporter.exe
+C:\Users\admdcassady\Documents\Visual Studio 2012\Projects\csReporter\obj\Release\csReporter.pdb
+C:\Users\admdcassady\Documents\Visual Studio 2012\Projects\Source\Repos\csReporter\obj\Release\csReporter.exe
+C:\Users\admdcassady\Documents\Visual Studio 2012\Projects\Source\Repos\csReporter\obj\Release\csReporter.pdb
