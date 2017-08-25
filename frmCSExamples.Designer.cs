@@ -39,7 +39,7 @@
             this.lblExportInfo.Font = new System.Drawing.Font("Lucida Console", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblExportInfo.Location = new System.Drawing.Point(12, 60);
             this.lblExportInfo.Name = "lblExportInfo";
-            this.lblExportInfo.Size = new System.Drawing.Size(615, 247);
+            this.lblExportInfo.Size = new System.Drawing.Size(647, 286);
             this.lblExportInfo.TabIndex = 2;
             this.lblExportInfo.Text = resources.GetString("lblExportInfo.Text");
             // 
@@ -57,7 +57,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(641, 322);
+            this.ClientSize = new System.Drawing.Size(671, 361);
             this.Controls.Add(this.lblExampleHeader);
             this.Controls.Add(this.lblExportInfo);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;

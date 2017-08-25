@@ -136,7 +136,10 @@ csexport.exe ma_name file_name /f:e    Objects with export errors
 
 
 NOTE: Using /o will exclude system attributes such as Connect Time,
-      Connector Operation, Disconnect Time, Connector State</value>
+      Connector Operation, Disconnect Time, Connector State
+
+
+https://msdn.microsoft.com/en-us/library/windows/desktop/ms695412(v=vs.100).aspx</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
