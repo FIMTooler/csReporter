@@ -31,6 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmCSExamples));
             this.lblExportInfo = new System.Windows.Forms.Label();
             this.lblExampleHeader = new System.Windows.Forms.Label();
+            this.rtbDocumentation = new System.Windows.Forms.RichTextBox();
             this.SuspendLayout();
             // 
             // lblExportInfo
@@ -39,7 +40,7 @@
             this.lblExportInfo.Font = new System.Drawing.Font("Lucida Console", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblExportInfo.Location = new System.Drawing.Point(12, 60);
             this.lblExportInfo.Name = "lblExportInfo";
-            this.lblExportInfo.Size = new System.Drawing.Size(647, 286);
+            this.lblExportInfo.Size = new System.Drawing.Size(615, 247);
             this.lblExportInfo.TabIndex = 2;
             this.lblExportInfo.Text = resources.GetString("lblExportInfo.Text");
             // 
@@ -53,11 +54,26 @@
             this.lblExampleHeader.TabIndex = 3;
             this.lblExampleHeader.Text = "csexport examples";
             // 
+            // rtbDocumentation
+            // 
+            this.rtbDocumentation.BackColor = System.Drawing.SystemColors.Control;
+            this.rtbDocumentation.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.rtbDocumentation.Font = new System.Drawing.Font("Lucida Console", 9.75F);
+            this.rtbDocumentation.Location = new System.Drawing.Point(15, 325);
+            this.rtbDocumentation.Multiline = false;
+            this.rtbDocumentation.Name = "rtbDocumentation";
+            this.rtbDocumentation.ReadOnly = true;
+            this.rtbDocumentation.Size = new System.Drawing.Size(644, 24);
+            this.rtbDocumentation.TabIndex = 4;
+            this.rtbDocumentation.Text = "https://msdn.microsoft.com/en-us/library/windows/desktop/ms695412(v=vs.100).aspx";
+            this.rtbDocumentation.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.rtbDocumentation_LinkClicked);
+            // 
             // frmCSExamples
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(671, 361);
+            this.Controls.Add(this.rtbDocumentation);
             this.Controls.Add(this.lblExampleHeader);
             this.Controls.Add(this.lblExportInfo);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -75,5 +91,6 @@
 
         private System.Windows.Forms.Label lblExportInfo;
         private System.Windows.Forms.Label lblExampleHeader;
+        private System.Windows.Forms.RichTextBox rtbDocumentation;
     }
 }
