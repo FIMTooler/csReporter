@@ -2110,7 +2110,7 @@ namespace csReporter
 
                 //add logo to report
                 System.Reflection.Assembly myAssembly = System.Reflection.Assembly.GetExecutingAssembly();
-                Stream myStream = myAssembly.GetManifestResourceStream("csReporter.Logo.png");
+                Stream myStream = myAssembly.GetManifestResourceStream("csReporter.csrLogo.png");
                 Bitmap logo = new Bitmap(myStream);
                 string strLogo = "";
                 using (MemoryStream ms = new MemoryStream())
@@ -2120,7 +2120,7 @@ namespace csReporter
 
                     strLogo = Convert.ToBase64String(imageBytes);
                 }
-                writer.Write("<img src=\"data:image/png;base64," + strLogo + "\" alt=\"FNSLogo.png\" /><br><br><br><br><br>\r\n");
+                writer.Write("<img src=\"data:image/png;base64," + strLogo + "\" alt=\"CSRLogo.png\" /><br><br><br><br><br>\r\n");
                 writer.Write("<Table cellpadding=\"10\">\r\n");
                 writer.Write("<TR><TH>Criteria</TH><TR>\r\n");
                 writer.Write("<TR><TD style=\"border-style: none;\" /><TD>Data Type:</TD><TD>" + filter.FilterState + "</TD></TR>\r\n");

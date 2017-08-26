@@ -174,7 +174,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="csr.ico" />
+    <EmbeddedResource Include="csr.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="csrLogo.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
