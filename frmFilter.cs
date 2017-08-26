@@ -67,7 +67,7 @@ namespace csReporter
             bool escrowedExportHologramExist;
             bool unconfirmedExportHologramExist;
             bool generateCSVReport;
-            bool lowMem;
+            bool lowMemProcessing;
             bool makeReport;
             List<string> sysAttribs = new List<string>();
             List<string> changingAttribs = new List<string>();
@@ -126,7 +126,7 @@ namespace csReporter
             {
                 if (rbPendingImport.Checked)
                 {
-                    if (!lowMem && csObjects.Count < 1)
+                    if (!lowMemProcessing && csObjects.Count < 1)
                     {
                         MessageBox.Show("You must first select a file");
                         rbPendingImport.Checked = false;
@@ -142,7 +142,7 @@ namespace csReporter
             {
                 if (rbUnappliedExport.Checked)
                 {
-                    if (!lowMem && csObjects.Count < 1)
+                    if (!lowMemProcessing && csObjects.Count < 1)
                     {
                         MessageBox.Show("You must first select a file");
                         rbUnappliedExport.Checked = false;
@@ -158,7 +158,7 @@ namespace csReporter
             {
                 if (rbSynchronized.Checked)
                 {
-                    if (!lowMem && csObjects.Count < 1)
+                    if (!lowMemProcessing && csObjects.Count < 1)
                     {
                         MessageBox.Show("You must first select a file");
                         rbSynchronized.Checked = false;
@@ -174,7 +174,7 @@ namespace csReporter
             {
                 if (rbEscrowedExport.Checked)
                 {
-                    if (!lowMem && csObjects.Count < 1)
+                    if (!lowMemProcessing && csObjects.Count < 1)
                     {
                         MessageBox.Show("You must first select a file");
                         rbEscrowedExport.Checked = false;
@@ -191,7 +191,7 @@ namespace csReporter
             {
                 if (rbUnconfirmedExport.Checked)
                 {
-                    if (!lowMem && csObjects.Count < 1)
+                    if (!lowMemProcessing && csObjects.Count < 1)
                     {
                         MessageBox.Show("You must first select a file");
                         rbUnconfirmedExport.Checked = false;
@@ -344,7 +344,7 @@ namespace csReporter
             }
             private void btnCreateReport_Click(object sender, EventArgs e)
             {
-                if (lowMem || matchingCSobjects.Count > 0)
+                if (lowMemProcessing || matchingCSobjects.Count > 0)
                 {
                     try
                     {
@@ -373,7 +373,7 @@ namespace csReporter
                         }
                         outputFileName = sfdReport.FileName;
                         makeReport = true;
-                        if (lowMem)
+                        if (lowMemProcessing)
                         {
                             processFile();
                         }
@@ -593,7 +593,7 @@ namespace csReporter
                     filter.Operations.Clear();
                     filter.AttributeFilters.Clear();
 
-                    if (lowMem)
+                    if (lowMemProcessing)
                     {
                         processFile();
                     }
@@ -639,7 +639,7 @@ namespace csReporter
                     filter.Operations.Clear();
                     filter.AttributeFilters.Clear();
 
-                    if (lowMem)
+                    if (lowMemProcessing)
                     {
                         processFile();
                     }
@@ -690,7 +690,7 @@ namespace csReporter
                     filter.Operations = op;
                     filter.AttributeFilters.Clear();
 
-                    if (lowMem)
+                    if (lowMemProcessing)
                     {
                         processFile();
                     }
@@ -733,7 +733,7 @@ namespace csReporter
                     filter.Operations = op;
                     filter.AttributeFilters = attribFilters;
 
-                    if (lowMem)
+                    if (lowMemProcessing)
                     {
                         processFile();
                     }
@@ -782,7 +782,7 @@ namespace csReporter
                     filter.Operations.Clear();
                     filter.AttributeFilters = attribFilters;
 
-                    if (lowMem)
+                    if (lowMemProcessing)
                     {
                         processFile();
                     }
@@ -1880,7 +1880,7 @@ namespace csReporter
                         }
                         break;
                 }
-                if (!lowMem)
+                if (!lowMemProcessing)
                 {
                     lblCount.Text = "Matching Count: " + matchingCSobjects.Count;
                     UpdateAttributeLists();
@@ -3245,14 +3245,9 @@ namespace csReporter
                     long fileLength = file.Length;
                     int fileLengthMB = (int)(fileLength / 1048572);
                     //if file larger than 150MB use low memory option with progress bar
-                    //if (fileLengthMB > 150)
-                    //{
-                        //Stopwatch sw = new Stopwatch();
-                        //sw.Start();
-                        //parseFileLowMem(new object[] { frmProgress, fileLength, filter });
-                        //sw.Stop();
-                        //MessageBox.Show(sw.ElapsedMilliseconds.ToString());
-                        lowMem = true;
+                    if (fileLengthMB > 150)
+                    {
+                        lowMemProcessing = true;
                         frmProgressBar frmProgress = new frmProgressBar();
                         Thread worker = new Thread(delegate() { parseFileLowMem(new object[] { frmProgress, fileLength, filter, ADdata }); });
                         worker.Start();
@@ -3269,33 +3264,27 @@ namespace csReporter
                             return;
                         }
                         frmProgress.Dispose();
-                    //}
-                    ////if file larger than 5MB use progress bar
-                    //else if ((fileLength / 1048576) > 10)
-                    //{
-                    //    frmProgressBar frmProgress = new frmProgressBar();
-                    //    Thread worker = new Thread(delegate() { parseFileToMem(new object[] { frmProgress, fileLength }); });
-                    //    worker.Start();
-                    //    DialogResult result = frmProgress.ShowDialog();
-                    //    if (result != DialogResult.OK)
-                    //    {
-                    //        MessageBox.Show("Progress window closed before processing was completed.\r\n\r\nNo data was processed", "Processing Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    //        frmProgress.Dispose();
-                    //        ShowGetDataForm();
-                    //        return;
-                    //    }
-                    //    frmProgress.Dispose();
-                    //}
-                    //else
-                    //{
-                    //    //Stopwatch sw = new Stopwatch();
-                    //    //sw.Start();
-                    //    parseFileToMem();
-                    //    //sw.Stop();
-                    //    //MessageBox.Show(sw.ElapsedMilliseconds.ToString());
-                    //    //Thread worker = new Thread(parseFileToMem);
-                    //    //worker.Start();
-                    //}
+                    }
+                    //if file larger than 10MB use progress bar
+                    else if (fileLengthMB > 10)
+                    {
+                        frmProgressBar frmProgress = new frmProgressBar();
+                        Thread worker = new Thread(delegate() { parseFileToMem(new object[] { frmProgress, fileLength }); });
+                        worker.Start();
+                        DialogResult result = frmProgress.ShowDialog();
+                        if (result != DialogResult.OK)
+                        {
+                            MessageBox.Show("Progress window closed before processing was completed.\r\n\r\nNo data was processed", "Processing Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            frmProgress.Dispose();
+                            ShowGetDataForm();
+                            return;
+                        }
+                        frmProgress.Dispose();
+                    }
+                    else
+                    {
+                        parseFileToMem();
+                    }
                     if (filter == null)
                     {
                         filter = new FilterObject();
@@ -3508,7 +3497,7 @@ namespace csReporter
                                                     switch (generateCSVReport)
                                                     {
                                                         case true:
-                                                            //making a report, only write headers if objReadCount == 0
+                                                            //making a report, only write headers if counterMatchObjects == 0
                                                             if (counterMatchObjects == 0)
                                                             {
                                                                 WriteCSVReportHeaders(outFile);
@@ -3516,7 +3505,7 @@ namespace csReporter
                                                             WriteCSVObjectReport(outFile, tmpCSO);
                                                             break;
                                                         default:
-                                                            //making a report, only write headers if objReadCount == 0
+                                                            //making a report, only write headers if counterMatchObjects == 0
                                                             if (counterMatchObjects == 0)
                                                             {
                                                                 WriteHTMLReportHeaders(outFile);
