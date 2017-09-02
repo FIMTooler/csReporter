@@ -108,6 +108,9 @@
     <Compile Include="frmReport.Designer.cs">
       <DependentUpon>frmReport.cs</DependentUpon>
     </Compile>
+    <Compile Include="HelperClasses2.cs" />
+    <Compile Include="HelperClasses3.cs" />
+    <Compile Include="HelperClasses4.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="frmCSExamples.resx">
