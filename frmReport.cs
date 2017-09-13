@@ -46,7 +46,7 @@ namespace csReporter
         {
             try
             {
-                if (!rbCSV.Checked && !rbHTML.Checked)
+                if (!rbCSV.Checked && !rbHTML.Checked && !rbExcel.Checked)
                 {
                     MessageBox.Show("You must choose a report format.", "Report format", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     return;
@@ -60,14 +60,17 @@ namespace csReporter
                 {
                     parent.SetReportAttributes(lbAttribute.SelectedItems.Cast<string>().ToList());
                 }
-                switch (rbCSV.Checked)
+                if (rbCSV.Checked)
                 {
-                    case true:
-                        parent.SetReportType(true);
-                        break;
-                    default:
-                        parent.SetReportType(false);
-                        break;
+                    parent.SetReportType(reportType.CSV);
+                }
+                else if (rbHTML.Checked)
+                {
+                    parent.SetReportType(reportType.HTML);
+                }
+                else
+                {
+                    parent.SetReportType(reportType.Excel);
                 }
                 this.DialogResult = System.Windows.Forms.DialogResult.OK;
             }

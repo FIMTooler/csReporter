@@ -66,9 +66,10 @@ namespace csReporter
             bool unappliedExportHologramExist;
             bool escrowedExportHologramExist;
             bool unconfirmedExportHologramExist;
-            bool generateCSVReport;
+            //bool generateCSVReport;
             bool lowMemProcessing;
             bool makeReport;
+            reportType report;
             List<string> sysAttribs = new List<string>();
             List<string> changingAttribs = new List<string>();
             List<string> nonChangingAttribs = new List<string>();
@@ -357,10 +358,13 @@ namespace csReporter
                             return;
                         }
                         frmRep.Dispose();
-                        switch (generateCSVReport)
+                        switch (report)
                         {
-                            case true:
+                            case reportType.CSV:
                                 sfdReport.Filter = "csv files (*.csv)|*.csv";
+                                break;
+                            case reportType.Excel:
+                                sfdReport.Filter = "excel files (*.xlsx)|*.xlsx";
                                 break;
                             default:
                                 sfdReport.Filter = "html files (*.html)|*.html";
@@ -381,10 +385,22 @@ namespace csReporter
                         {
                             frmProgressBar frmProgress = new frmProgressBar();
                             Thread worker;
-                            switch (generateCSVReport)
+                            switch (report)
                             {
-                                case true:
+                                case reportType.CSV:
                                     worker = new Thread(BuildCSVReport);
+                                    break;
+                                case reportType.Excel:
+                                    Assembly executingAssembly = Assembly.GetExecutingAssembly();
+                                    using (Stream stream = executingAssembly.GetManifestResourceStream("csReporter.DocumentFormat.OpenXml.dll"))
+                                    {
+                                        if (stream == null)
+                                            throw new ArgumentException("Embedded assembly not found: DocumentFormat.OpenXml.dll");
+                                        byte[] assemblyRawBytes = new byte[stream.Length];
+                                        stream.Read(assemblyRawBytes, 0, assemblyRawBytes.Length);
+                                        Assembly.Load(assemblyRawBytes);
+                                    }
+                                    worker = new Thread(BuildExcelReport);
                                     break;
                                 default:
                                     worker = new Thread(BuildHTMLReport);
@@ -403,7 +419,10 @@ namespace csReporter
                             }
                             frmProgress.Dispose();
                         }
-                        System.Diagnostics.Process.Start(outputFileName);
+                        if (File.Exists(outputFileName))
+                        {
+                            System.Diagnostics.Process.Start(outputFileName);
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -1947,11 +1966,15 @@ namespace csReporter
             private void BuildCSVReport(object objForm)
             {
                 frmProgressBar frmProgress = (frmProgressBar)objForm;
-                try
+                while (!frmProgress.Visible)
                 {
-                    this.methSetText(frmProgress, "Generating CSV report");
-                    this.methUpdateBar(frmProgress, 0);
-                    using (StreamWriter outFile = new StreamWriter(outputFileName, false, Encoding.Unicode))
+                    Thread.SpinWait(200);
+                }
+                this.methSetText(frmProgress, "Generating CSV report");
+                this.methUpdateBar(frmProgress, 0);
+                using (StreamWriter outFile = new StreamWriter(outputFileName, false, Encoding.UTF8))
+                {
+                    try
                     {
                         WriteCSVReportHeaders(outFile);
                         //CS-DN     Object Type     Operation       Current Attribute       New Attribute
@@ -1967,6 +1990,52 @@ namespace csReporter
                             counter++;
                         }
                     }
+                    catch (IOException ex)
+                    {
+                        if (ex.Message.Contains("it is being used by another process"))
+                        {
+                            //show clean messagebox to notify user
+                            MessageBox.Show("The selected report file is in use by another process.  Please close the file and try again.");
+                        }
+                        else
+                        {
+                            //show regular exception box
+                            ExceptionHandler.handleException(ex, "Error occurred while creating to CSV file");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ExceptionHandler.handleException(ex, "Error occurred while creating CSV file");
+                    }
+                    finally
+                    {
+                        this.methCloseForm(frmProgress);
+                    }
+                }
+            }
+            private void BuildExcelReport(object objForm)
+            {
+                frmProgressBar frmProgress = (frmProgressBar)objForm;
+                try
+                {
+                    this.methSetText(frmProgress, "Generating Excel report");
+                    this.methUpdateBar(frmProgress, 0);
+                    ExcelReport excelReport = new ExcelReport(outputFileName);
+                    excelReport.WriteReportFilter(filter, matchingCSobjects.Count);
+                    excelReport.WriteReportHeader(filter, sysAttribs, errorAttribs);
+                    int counter = 0;
+                    foreach (csObject obj in matchingCSobjects)
+                    {
+                        if (frmFilter.stopProcessing)
+                        {
+                            break;
+                        }
+                        this.methUpdateBar(frmProgress, (counter * 100) / matchingCSobjects.Count);
+                        //WriteCSVObjectReport(outFile, obj);
+                        excelReport.WriteCSObject(obj, filter, sysAttribs, errorAttribs, ADdata, knownADattribs);
+                        counter++;
+                    }
+                    excelReport.Dispose();
                 }
                 catch (IOException ex)
                 {
@@ -1978,12 +2047,12 @@ namespace csReporter
                     else
                     {
                         //show regular exception box
-                        ExceptionHandler.handleException(ex, "Error occurred while creating to CSV file");
+                        ExceptionHandler.handleException(ex, "Error occurred while creating to Excel file");
                     }
                 }
                 catch (Exception ex)
                 {
-                    ExceptionHandler.handleException(ex, "Error occurred while creating CSV file");
+                    ExceptionHandler.handleException(ex, "Error occurred while creating Excel file");
                 }
                 finally
                 {
@@ -1993,8 +2062,11 @@ namespace csReporter
             private void BuildHTMLReport(object objForm)
             {
                 frmProgressBar frmProgress = (frmProgressBar)objForm;
+                while (!frmProgress.Visible)
+                {
+                    Thread.SpinWait(200);
+                }
                 this.methSetText(frmProgress, "Generating HTML report");
-                //this.methSetStyle(frmProgress, ProgressBarStyle.Blocks);
                 this.methUpdateBar(frmProgress, 0);
                 using (StreamWriter outFile = new StreamWriter(outputFileName))
                 {
@@ -2032,8 +2104,11 @@ namespace csReporter
                         ExceptionHandler.handleException(ex, "Error occurred while creating HTML file");
                         Application.Exit();
                     }
+                    finally
+                    {
+                        this.methCloseForm(frmProgress);
+                    }
                 }
-                this.methCloseForm(frmProgress);
             }
             private void WriteCSVReportHeaders(StreamWriter writer)
             {
@@ -2632,30 +2707,6 @@ namespace csReporter
                         if (ADdata && knownADattribs.Contains(attribute.Name))
                         {
                             strOutput.Append(syncdAttrib.ADStringValues[0] + "," + attribute.ADStringValues[0]);
-                            //switch (attribute.Name)
-                            //{
-                            //    case "accountExpires":
-                            //        strOutput.Append(syncdAttrib.ADStringValues[0] + "," + attribute.ADStringValues[0]);
-                            //        break;
-                            //    case "objectSid":
-                            //        strOutput.Append(syncdAttrib.ADStringValues[0] + "," + attribute.ADStringValues[0]);
-                            //        break;
-                            //    case "pwdLastSet":
-                            //        strOutput.Append(syncdAttrib.ADStringValues[0] + "," + attribute.ADStringValues[0]);
-                            //        break;
-                            //    case "groupType":
-                            //        strOutput.Append(syncdAttrib.ADStringValues[0] + "," + attribute.ADStringValues[0]);
-                            //        break;
-                            //    case "userAccountControl":
-                            //        strOutput.Append(syncdAttrib.ADStringValues[0] + "," + attribute.ADStringValues[0]);
-                            //        break;
-                            //    //Nothing special done with description so no need to use this - for now....
-                            //    //case "description":
-                            //    //    string curDesc = "\"" + syncdAttrib.StringValues[0] + "\"";
-                            //    //    string newDesc = "\"" + attribute.StringValues[0] + "\"";
-                            //    //    strOutput.Append(curDesc + "," + newDesc);
-                            //    //    break;
-                            //}
                         }
                         else
                         {
@@ -2690,29 +2741,6 @@ namespace csReporter
                         if (ADdata && knownADattribs.Contains(attribute.Name))
                         {
                             strOutput.Append("," + attribute.ADStringValues[0]);
-                            //switch (attribute.Name)
-                            //{
-                            //    case "accountExpires":
-                            //        strOutput.Append("," + attribute.ADStringValues[0]);
-                            //        break;
-                            //    case "objectSid":
-                            //        strOutput.Append("," + attribute.ADStringValues[0]);
-                            //        break;
-                            //    case "pwdLastSet":
-                            //        strOutput.Append("," + attribute.ADStringValues[0]);
-                            //        break;
-                            //    case "groupType":
-                            //        strOutput.Append("," + attribute.ADStringValues[0]);
-                            //        break;
-                            //    case "userAccountControl":
-                            //        strOutput.Append("," + attribute.ADStringValues[0]);
-                            //        break;
-                            //    //Nothing special done with description so no need to use this - for now....
-                            //    //case "description":
-                            //    //    string strTemp = "\"" + attribute.StringValues[0] + "\"";
-                            //    //    strOutput.Append("," + strTemp);
-                            //    //    break;
-                            //}
                         }
                         else
                         {
@@ -2735,29 +2763,6 @@ namespace csReporter
                         if (ADdata && knownADattribs.Contains(syncdAttrib.Name))
                         {
                             strOutput.Append(syncdAttrib.ADStringValues[0] + ",(Deleted)");
-                            //switch (syncdAttrib.Name)
-                            //{
-                            //    case "accountExpires":
-                            //        strOutput.Append(syncdAttrib.ADStringValues[0] + ",(Deleted)");
-                            //        break;
-                            //    case "objectSid":
-                            //        strOutput.Append(syncdAttrib.ADStringValues[0] + ",(Deleted)");
-                            //        break;
-                            //    case "pwdLastSet":
-                            //        strOutput.Append(syncdAttrib.ADStringValues[0] + ",(Deleted)");
-                            //        break;
-                            //    case "groupType":
-                            //        strOutput.Append(syncdAttrib.ADStringValues[0] + ",(Deleted)");
-                            //        break;
-                            //    case "userAccountControl":
-                            //        strOutput.Append(syncdAttrib.ADStringValues[0] + ",(Deleted)");
-                            //        break;
-                            //    //Nothing special done with description so no need to use this - for now....
-                            //    //case "description":
-                            //    //    string strTemp = "\"" + syncdAttrib.StringValues[0] + "\"";
-                            //    //    strOutput.Append(strTemp + ",");
-                            //    //    break;
-                            //}
                         }
                         else
                         {
@@ -3494,9 +3499,9 @@ namespace csReporter
                                                     {
                                                         ExceptionHandler.handleException("While attempting to make a report, output StreamWriter is null.");
                                                     }
-                                                    switch (generateCSVReport)
+                                                    switch (report)
                                                     {
-                                                        case true:
+                                                        case reportType.CSV:
                                                             //making a report, only write headers if counterMatchObjects == 0
                                                             if (counterMatchObjects == 0)
                                                             {
@@ -3614,7 +3619,7 @@ namespace csReporter
                                 }
                                 if (makeReport && outFile != null)
                                 {
-                                    if (!generateCSVReport)
+                                    if (report == reportType.HTML)
                                     {
                                         WriteHTMLEndReport(outFile);
                                     }
@@ -4171,9 +4176,9 @@ namespace csReporter
             {
                 filter.ReportAttributes = reportAttributes;
             }
-            public void SetReportType(bool typeCSV)
+            public void SetReportType(reportType reportT)
             {
-                generateCSVReport = typeCSV;
+                report = reportT;
             }
         #endregion
 

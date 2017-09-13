@@ -35,6 +35,8 @@ using System.Xml;
 
 namespace csReporter
 {
+    public enum reportType { HTML, CSV, Excel };
+
     public enum operation { none, add, replace, update, delete, deleteAdd };
 
     public enum State { UnappliedExport, EscrowedExport, UnconfirmedExport, PendingImport, Synchronized };
