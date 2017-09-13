@@ -38,3 +38,4 @@ E:\CassadyNAS\OneDrive\csReporter\Source\csReporter\obj\Debug\csReporter.csproj.
 E:\CassadyNAS\OneDrive\csReporter\Source\csReporter\obj\Debug\csReporter.csproj.CoreCompileInputs.cache
 E:\CassadyNAS\OneDrive\csReporter\Source\csReporter\obj\Debug\csReporter.exe
 E:\CassadyNAS\OneDrive\csReporter\Source\csReporter\obj\Debug\csReporter.pdb
+E:\CassadyNAS\OneDrive\csReporter\Source\csReporter\obj\Debug\csReporter.csprojResolveAssemblyReference.cache

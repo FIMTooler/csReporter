@@ -403,7 +403,10 @@ namespace csReporter
                             }
                             frmProgress.Dispose();
                         }
-                        System.Diagnostics.Process.Start(outputFileName);
+                        if (File.Exists(outputFileName))
+                        {
+                            System.Diagnostics.Process.Start(outputFileName);
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -1947,11 +1950,15 @@ namespace csReporter
             private void BuildCSVReport(object objForm)
             {
                 frmProgressBar frmProgress = (frmProgressBar)objForm;
-                try
+                while (!frmProgress.Visible)
                 {
-                    this.methSetText(frmProgress, "Generating CSV report");
-                    this.methUpdateBar(frmProgress, 0);
-                    using (StreamWriter outFile = new StreamWriter(outputFileName, false, Encoding.Unicode))
+                    Thread.SpinWait(200);
+                }
+                this.methSetText(frmProgress, "Generating CSV report");
+                this.methUpdateBar(frmProgress, 0);
+                using (StreamWriter outFile = new StreamWriter(outputFileName, false, Encoding.Unicode))
+                {
+                    try
                     {
                         WriteCSVReportHeaders(outFile);
                         //CS-DN     Object Type     Operation       Current Attribute       New Attribute
@@ -1967,34 +1974,37 @@ namespace csReporter
                             counter++;
                         }
                     }
-                }
-                catch (IOException ex)
-                {
-                    if (ex.Message.Contains("it is being used by another process"))
+                    catch (IOException ex)
                     {
-                        //show clean messagebox to notify user
-                        MessageBox.Show("The selected report file is in use by another process.  Please close the file and try again.");
+                        if (ex.Message.Contains("it is being used by another process"))
+                        {
+                            //show clean messagebox to notify user
+                            MessageBox.Show("The selected report file is in use by another process.  Please close the file and try again.");
+                        }
+                        else
+                        {
+                            //show regular exception box
+                            ExceptionHandler.handleException(ex, "Error occurred while creating to CSV file");
+                        }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        //show regular exception box
-                        ExceptionHandler.handleException(ex, "Error occurred while creating to CSV file");
+                        ExceptionHandler.handleException(ex, "Error occurred while creating CSV file");
                     }
-                }
-                catch (Exception ex)
-                {
-                    ExceptionHandler.handleException(ex, "Error occurred while creating CSV file");
-                }
-                finally
-                {
-                    this.methCloseForm(frmProgress);
+                    finally
+                    {
+                        this.methCloseForm(frmProgress);
+                    }
                 }
             }
             private void BuildHTMLReport(object objForm)
             {
                 frmProgressBar frmProgress = (frmProgressBar)objForm;
+                while (!frmProgress.Visible)
+                {
+                    Thread.SpinWait(200);
+                }
                 this.methSetText(frmProgress, "Generating HTML report");
-                //this.methSetStyle(frmProgress, ProgressBarStyle.Blocks);
                 this.methUpdateBar(frmProgress, 0);
                 using (StreamWriter outFile = new StreamWriter(outputFileName))
                 {
@@ -2032,8 +2042,11 @@ namespace csReporter
                         ExceptionHandler.handleException(ex, "Error occurred while creating HTML file");
                         Application.Exit();
                     }
+                    finally
+                    {
+                        this.methCloseForm(frmProgress);
+                    }
                 }
-                this.methCloseForm(frmProgress);
             }
             private void WriteCSVReportHeaders(StreamWriter writer)
             {
@@ -2632,30 +2645,6 @@ namespace csReporter
                         if (ADdata && knownADattribs.Contains(attribute.Name))
                         {
                             strOutput.Append(syncdAttrib.ADStringValues[0] + "," + attribute.ADStringValues[0]);
-                            //switch (attribute.Name)
-                            //{
-                            //    case "accountExpires":
-                            //        strOutput.Append(syncdAttrib.ADStringValues[0] + "," + attribute.ADStringValues[0]);
-                            //        break;
-                            //    case "objectSid":
-                            //        strOutput.Append(syncdAttrib.ADStringValues[0] + "," + attribute.ADStringValues[0]);
-                            //        break;
-                            //    case "pwdLastSet":
-                            //        strOutput.Append(syncdAttrib.ADStringValues[0] + "," + attribute.ADStringValues[0]);
-                            //        break;
-                            //    case "groupType":
-                            //        strOutput.Append(syncdAttrib.ADStringValues[0] + "," + attribute.ADStringValues[0]);
-                            //        break;
-                            //    case "userAccountControl":
-                            //        strOutput.Append(syncdAttrib.ADStringValues[0] + "," + attribute.ADStringValues[0]);
-                            //        break;
-                            //    //Nothing special done with description so no need to use this - for now....
-                            //    //case "description":
-                            //    //    string curDesc = "\"" + syncdAttrib.StringValues[0] + "\"";
-                            //    //    string newDesc = "\"" + attribute.StringValues[0] + "\"";
-                            //    //    strOutput.Append(curDesc + "," + newDesc);
-                            //    //    break;
-                            //}
                         }
                         else
                         {
@@ -2690,29 +2679,6 @@ namespace csReporter
                         if (ADdata && knownADattribs.Contains(attribute.Name))
                         {
                             strOutput.Append("," + attribute.ADStringValues[0]);
-                            //switch (attribute.Name)
-                            //{
-                            //    case "accountExpires":
-                            //        strOutput.Append("," + attribute.ADStringValues[0]);
-                            //        break;
-                            //    case "objectSid":
-                            //        strOutput.Append("," + attribute.ADStringValues[0]);
-                            //        break;
-                            //    case "pwdLastSet":
-                            //        strOutput.Append("," + attribute.ADStringValues[0]);
-                            //        break;
-                            //    case "groupType":
-                            //        strOutput.Append("," + attribute.ADStringValues[0]);
-                            //        break;
-                            //    case "userAccountControl":
-                            //        strOutput.Append("," + attribute.ADStringValues[0]);
-                            //        break;
-                            //    //Nothing special done with description so no need to use this - for now....
-                            //    //case "description":
-                            //    //    string strTemp = "\"" + attribute.StringValues[0] + "\"";
-                            //    //    strOutput.Append("," + strTemp);
-                            //    //    break;
-                            //}
                         }
                         else
                         {
@@ -2735,29 +2701,6 @@ namespace csReporter
                         if (ADdata && knownADattribs.Contains(syncdAttrib.Name))
                         {
                             strOutput.Append(syncdAttrib.ADStringValues[0] + ",(Deleted)");
-                            //switch (syncdAttrib.Name)
-                            //{
-                            //    case "accountExpires":
-                            //        strOutput.Append(syncdAttrib.ADStringValues[0] + ",(Deleted)");
-                            //        break;
-                            //    case "objectSid":
-                            //        strOutput.Append(syncdAttrib.ADStringValues[0] + ",(Deleted)");
-                            //        break;
-                            //    case "pwdLastSet":
-                            //        strOutput.Append(syncdAttrib.ADStringValues[0] + ",(Deleted)");
-                            //        break;
-                            //    case "groupType":
-                            //        strOutput.Append(syncdAttrib.ADStringValues[0] + ",(Deleted)");
-                            //        break;
-                            //    case "userAccountControl":
-                            //        strOutput.Append(syncdAttrib.ADStringValues[0] + ",(Deleted)");
-                            //        break;
-                            //    //Nothing special done with description so no need to use this - for now....
-                            //    //case "description":
-                            //    //    string strTemp = "\"" + syncdAttrib.StringValues[0] + "\"";
-                            //    //    strOutput.Append(strTemp + ",");
-                            //    //    break;
-                            //}
                         }
                         else
                         {
@@ -2808,35 +2751,6 @@ namespace csReporter
                         {
                             strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0]
                                 + "</TD><TD valign=\"top\" nowrap>" + attribute.ADStringValues[0] + "</TD></TR>\r\n");
-                            //switch (attribute.Name)
-                            //{
-                            //    case "accountExpires":
-                            //        strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0]
-                            //            + "</TD><TD valign=\"top\" nowrap>" + attribute.ADStringValues[0] + "</TD></TR>\r\n");
-                            //        break;
-                            //    case "objectSid":
-                            //        strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0]
-                            //            + "</TD><TD valign=\"top\" nowrap>" + attribute.ADStringValues[0] + "</TD></TR>\r\n");
-                            //        break;
-                            //    case "pwdLastSet":
-                            //        strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0]
-                            //            + "</TD><TD valign=\"top\" nowrap>" + attribute.ADStringValues[0] + "</TD></TR>\r\n");
-                            //        break;
-                            //    case "groupType":
-                            //        strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0]
-                            //            + "</TD><TD valign=\"top\" nowrap>" + attribute.ADStringValues[0] + "</TD></TR>\r\n");
-                            //        break;
-                            //    case "userAccountControl":
-                            //        strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0]
-                            //            + "</TD><TD valign=\"top\" nowrap>" + attribute.ADStringValues[0] + "</TD></TR>\r\n");
-                            //        break;
-                            //    //Nothing special done with description so no need to use this - for now....
-                            //    //case "description":
-                            //    //    string curDesc = syncdAttrib.StringValues[0].Replace(". ", ",<BR>");
-                            //    //    string newDesc = attribute.StringValues[0].Replace(". ", ".<BR>");
-                            //    //    strOutput.Append("<TD valign=\"top\">" + curDesc.Replace(" ", "&nbsp;") + "</TD><TD valign=\"top\">" + newDesc.Replace(" ", "&nbsp;") + "</TD><TR>\r\n");
-                            //    //    break;
-                            //}
                         }
                         else
                         {
@@ -2861,30 +2775,6 @@ namespace csReporter
                         if (ADdata && knownADattribs.Contains(attribute.Name))
                         {
                             strOutput.Append("<TD /><TD valign=\"top\" nowrap>" + attribute.ADStringValues[0] + "</TD></TR>\r\n");
-                            //switch (attribute.Name)
-                            //{
-                            //    case "accountExpires":
-                            //        strOutput.Append("<TD /><TD valign=\"top\" nowrap>" + attribute.ADStringValues[0] + "</TD></TR>\r\n");
-                            //        break;
-                            //    case "objectSid":
-                            //        strOutput.Append("<TD /><TD valign=\"top\" nowrap>" + attribute.ADStringValues[0] + "</TD></TR>\r\n");
-                            //        break;
-                            //    case "pwdLastSet":
-                            //        strOutput.Append("<TD /><TD valign=\"top\" nowrap>" + attribute.ADStringValues[0] + "</TD></TR>\r\n");
-                            //        break;
-                            //    case "groupType":
-                            //        strOutput.Append("<TD /><TD valign=\"top\" nowrap>" + attribute.ADStringValues[0] + "</TD></TR>\r\n");
-                            //        break;
-                            //    case "userAccountControl":
-                            //        strOutput.Append("<TD /><TD valign=\"top\" nowrap>" + attribute.ADStringValues[0] + "</TD></TR>\r\n");
-                            //        break;
-                            //    //Nothing special done with description so no need to use this - for now....
-                            //    //case "description":
-                            //    //    string strTemp = attribute.StringValues[0].Replace(". ", ".<BR>");
-                            //    //    strTemp = strTemp.Replace(" ", "&nbsp;");
-                            //    //    strOutput.Append("<TD /><TD valign=\"top\">" + strTemp + "</TD><TR>\r\n");
-                            //    //    break;
-                            //}
                         }
                         else
                         {
@@ -2905,30 +2795,6 @@ namespace csReporter
                         if (ADdata && knownADattribs.Contains(syncdAttrib.Name))
                         {
                             strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0] + "</TD><TD><b><i>(Deleted)</i></b></TD></TR>\r\n");
-                            //switch (syncdAttrib.Name)
-                            //{
-                            //    case "accountExpires":
-                            //        strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0] + "</TD><TD><b><i>(Deleted)</i></b></TD></TR>\r\n");
-                            //        break;
-                            //    case "objectSid":
-                            //        strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0] + "</TD><TD><b><i>(Deleted)</i></b></TD></TR>\r\n");
-                            //        break;
-                            //    case "pwdLastSet":
-                            //        strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0] + "</TD><TD><b><i>(Deleted)</i></b></TD></TR>\r\n");
-                            //        break;
-                            //    case "groupType":
-                            //        strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0] + "</TD><TD><b><i>(Deleted)</i></b></TD></TR>\r\n");
-                            //        break;
-                            //    case "userAccountControl":
-                            //        strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0] + "</TD><TD><b><i>(Deleted)</i></b></TD></TR>\r\n");
-                            //        break;
-                            //    //Nothing special done with description so no need to use this - for now....
-                            //    //case "description":
-                            //    //    string strTemp = syncdAttrib.StringValues[0].Replace(". ", ".<BR>");
-                            //    //    strTemp = strTemp.Replace(" ", "&nbsp;");
-                            //    //    strOutput.Append("<TD valign=\"top\">" + strTemp + "</TD><TD /><TR>\r\n");
-                            //    //    break;
-                            //}
                         }
                         else
                         {
@@ -2967,30 +2833,6 @@ namespace csReporter
                     if (ADdata && knownADattribs.Contains(syncdAttrib.Name))
                     {
                         strOutput.Append(syncdAttrib.ADStringValues[0] + "," + attribValue);
-                        //switch (syncdAttrib.Name)
-                        //{
-                        //    case "accountExpires":
-                        //        strOutput.Append(syncdAttrib.ADStringValues[0] + "," + attribValue);
-                        //        break;
-                        //    case "objectSid":
-                        //        strOutput.Append(syncdAttrib.ADStringValues[0] + "," + attribValue);
-                        //        break;
-                        //    case "pwdLastSet":
-                        //        strOutput.Append(syncdAttrib.ADStringValues[0] + "," + attribValue);
-                        //        break;
-                        //    case "groupType":
-                        //        strOutput.Append(syncdAttrib.ADStringValues[0] + "," + attribValue);
-                        //        break;
-                        //    case "userAccountControl":
-                        //        strOutput.Append(syncdAttrib.ADStringValues[0] + "," + attribValue);
-                        //        break;
-                        //    //Nothing special done with description so no need to use this - for now....
-                        //    //case "description":
-                        //    //    string curDesc = "\"" + syncdAttrib.StringValues[0] + "\"";
-                        //    //    string newDesc = "\"" + attribute.StringValues[0] + "\"";
-                        //    //    strOutput.Append(curDesc + "," + newDesc);
-                        //    //    break;
-                        //}
                     }
                     else
                     {
@@ -3044,35 +2886,6 @@ namespace csReporter
                     {
                         strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0]
                             + "</TD><TD valign=\"top\" nowrap><b><i>" + attribValue + "</i></b></TD></TR>\r\n");
-                        //switch (syncdAttrib.Name)
-                        //{
-                        //    case "accountExpires":
-                        //        strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0]
-                        //            + "</TD><TD valign=\"top\" nowrap><b><i>" + attribValue+ "</i></b></TD></TR>\r\n");
-                        //        break;
-                        //    case "objectSid":
-                        //        strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0]
-                        //            + "</TD><TD valign=\"top\" nowrap><b><i>" + attribValue + "</i></b></TD></TR>\r\n");
-                        //        break;
-                        //    case "pwdLastSet":
-                        //        strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0]
-                        //            + "</TD><TD valign=\"top\" nowrap><b><i>" + attribValue + "</i></b></TD></TR>\r\n");
-                        //        break;
-                        //    case "groupType":
-                        //        strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0]
-                        //            + "</TD><TD valign=\"top\" nowrap><b><i>" + attribValue + "</i></b></TD></TR>\r\n");
-                        //        break;
-                        //    case "userAccountControl":
-                        //        strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0]
-                        //            + "</TD><TD valign=\"top\" nowrap><b><i>" + attribValue + "</i></b></TD></TR>\r\n");
-                        //        break;
-                        //    //Nothing special done with description so no need to use this - for now....
-                        //    //case "description":
-                        //    //    string curDesc = syncdAttrib.StringValues[0].Replace(". ", ",<BR>");
-                        //    //    string newDesc = attribute.StringValues[0].Replace(". ", ".<BR>");
-                        //    //    strOutput.Append("<TD valign=\"top\">" + curDesc.Replace(" ", "&nbsp;") + "</TD><TD valign=\"top\">" + newDesc.Replace(" ", "&nbsp;") + "</TD><TR>\r\n");
-                        //    //    break;
-                        //}
                     }
                     else
                     {
@@ -3116,29 +2929,6 @@ namespace csReporter
                         if (ADdata && knownADattribs.Contains(syncdAttrib.Name))
                         {
                             strOutput.Append(syncdAttrib.ADStringValues[0]);
-                            //switch (syncdAttrib.Name)
-                            //{
-                            //    case "accountExpires":
-                            //        strOutput.Append(syncdAttrib.ADStringValues[0]);
-                            //        break;
-                            //    case "objectSid":
-                            //        strOutput.Append(syncdAttrib.ADStringValues[0]);
-                            //        break;
-                            //    case "pwdLastSet":
-                            //        strOutput.Append(syncdAttrib.ADStringValues[0]);
-                            //        break;
-                            //    case "groupType":
-                            //        strOutput.Append(syncdAttrib.ADStringValues[0]);
-                            //        break;
-                            //    case "userAccountControl":
-                            //        strOutput.Append(syncdAttrib.ADStringValues[0]);
-                            //        break;
-                            //    //Nothing special done with description so no need to use this - for now....
-                            //    //case "description":
-                            //    //    string curDesc = syncdAttrib.StringValues[0];
-                            //    //    strOutput.Append("\"" + curDesc + "\"");
-                            //    //    break;
-                            //}
                         }
                         else
                         {
@@ -3182,29 +2972,6 @@ namespace csReporter
                         if (ADdata && knownADattribs.Contains(syncdAttrib.Name))
                         {
                             strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0] + "</TD></TR>\r\n");
-                            //switch (syncdAttrib.Name)
-                            //{
-                            //    case "accountExpires":
-                            //        strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0] + "</TD></TR>\r\n");
-                            //        break;
-                            //    case "objectSid":
-                            //        strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0] + "</TD></TR>\r\n");
-                            //        break;
-                            //    case "pwdLastSet":
-                            //        strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0] + "</TD></TR>\r\n");
-                            //        break;
-                            //    case "groupType":
-                            //        strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0] + "</TD></TR>\r\n");
-                            //        break;
-                            //    case "userAccountControl":
-                            //        strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0] + "</TD></TR>\r\n");
-                            //        break;
-                            //    //Nothing special done with description so no need to use this - for now....
-                            //    //case "description":
-                            //    //    string curDesc = syncdAttrib.StringValues[0].Replace(". ", ".<BR>");
-                            //    //    strOutput.Append("<TD valign=\"top\">" + curDesc.Replace(" ", "&nbsp;") + "</TD><TR>\r\n");
-                            //    //    break;
-                            //}
                         }
                         else
                         {
@@ -3343,13 +3110,13 @@ namespace csReporter
             private void parseFileToMem(object[] input)
             {
                 frmProgressBar frmProgress = (frmProgressBar)input[0];
-                long fileLength = (long)input[1];
-                this.methUpdateBar(frmProgress, 0);
-                this.methSetText(frmProgress, "Processing XML file");
                 while (!frmProgress.Visible)
                 {
                     Thread.SpinWait(200);
                 }
+                long fileLength = (long)input[1];
+                this.methUpdateBar(frmProgress, 0);
+                this.methSetText(frmProgress, "Processing XML file");
 
                 FileStream fsRead = null;
                 BufferedStream bsRead = null;
@@ -3411,6 +3178,10 @@ namespace csReporter
             private void parseFileLowMem(object[] input)
             {
                 frmProgressBar frmProgress = (frmProgressBar)input[0];
+                while (!frmProgress.Visible)
+                {
+                    Thread.SpinWait(200);
+                }
                 long fileLength = (long)input[1];
                 FilterObject filterRef = null;
                 bool needADdata = false;
@@ -3441,10 +3212,6 @@ namespace csReporter
                 XmlReader xmlRead = null;
                 this.methUpdateBar(frmProgress, 0);
                 this.methSetText(frmProgress, "Processing XML file");
-                while (!frmProgress.Visible)
-                {
-                    Thread.SpinWait(200);
-                }
                 StreamWriter outFile = null;
                 if (makeReport)
                 {
