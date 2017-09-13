@@ -1956,7 +1956,7 @@ namespace csReporter
                 }
                 this.methSetText(frmProgress, "Generating CSV report");
                 this.methUpdateBar(frmProgress, 0);
-                using (StreamWriter outFile = new StreamWriter(outputFileName, false, Encoding.Unicode))
+                using (StreamWriter outFile = new StreamWriter(outputFileName, false, Encoding.UTF8))
                 {
                     try
                     {
