@@ -6,8 +6,10 @@ This is the entire project folder for a Visual Studio 2012 project.  It should b
 
 
 Recent Updates
+
 CSV reports now generated in UTF8 instead of Unicode.  Excel now honors multi-line cells
 
 
 Comming Soon!
+
 Native Excel Reports
