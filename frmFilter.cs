@@ -3950,12 +3950,24 @@ namespace csReporter
                                 }
                                 if (makeReport && outFile != null)
                                 {
-                                    if (report == reportType.HTML)
+                                    switch (report)
                                     {
-                                        WriteHTMLEndReport(outFile);
+                                        case reportType.CSV:
+                                            outFile.Close();
+                                            outFile.Dispose();
+                                            break;
+                                        case reportType.Excel:
+                                            excelFile.Dispose();
+                                            break;
+                                        default:
+                                            if (report == reportType.HTML)
+                                            {
+                                                WriteHTMLEndReport(outFile);
+                                            }
+                                            outFile.Close();
+                                            outFile.Dispose();
+                                            break;
                                     }
-                                    outFile.Close();
-                                    outFile.Dispose();
                                     makeReport = false;
                                 }
                                 if (filter != null && !stopProcessing)
