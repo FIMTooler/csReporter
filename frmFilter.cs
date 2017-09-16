@@ -3009,6 +3009,10 @@ namespace csReporter
             private void BuildExcelReport(object objForm)
             {
                 frmProgressBar frmProgress = (frmProgressBar)objForm;
+                while (!frmProgress.Visible)
+                {
+                    Thread.SpinWait(200);
+                }
                 try
                 {
                     this.methSetText(frmProgress, "Generating Excel report");
