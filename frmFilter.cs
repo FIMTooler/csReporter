@@ -3658,13 +3658,13 @@ namespace csReporter
             private void parseFileToMem(object[] input)
             {
                 frmProgressBar frmProgress = (frmProgressBar)input[0];
-                long fileLength = (long)input[1];
-                this.methUpdateBar(frmProgress, 0);
-                this.methSetText(frmProgress, "Processing XML file");
                 while (!frmProgress.Visible)
                 {
                     Thread.SpinWait(200);
                 }
+                long fileLength = (long)input[1];
+                this.methUpdateBar(frmProgress, 0);
+                this.methSetText(frmProgress, "Processing XML file");
 
                 FileStream fsRead = null;
                 BufferedStream bsRead = null;
@@ -3726,6 +3726,10 @@ namespace csReporter
             private void parseFileLowMem(object[] input)
             {
                 frmProgressBar frmProgress = (frmProgressBar)input[0];
+                while (!frmProgress.Visible)
+                {
+                    Thread.SpinWait(200);
+                }
                 long fileLength = (long)input[1];
                 FilterObject filterRef = null;
                 bool needADdata = false;
@@ -3756,10 +3760,6 @@ namespace csReporter
                 XmlReader xmlRead = null;
                 this.methUpdateBar(frmProgress, 0);
                 this.methSetText(frmProgress, "Processing XML file");
-                while (!frmProgress.Visible)
-                {
-                    Thread.SpinWait(200);
-                }
                 StreamWriter outFile = null;
                 if (makeReport)
                 {
