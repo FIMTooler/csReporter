@@ -49,8 +49,7 @@ namespace csReporter
 
             CustomConcurrentBag<csObject> csObjects = new CustomConcurrentBag<csObject>();
             ConcurrentBag<csObject> matchingCSobjects = new ConcurrentBag<csObject>();
-            FilterObject filter;// = new FilterObject();
-            //enum recalcLevel { State, ObjectType, Operation, AttributeValue };
+            FilterObject filter;
             string inputFileName;
             string outputFileName;
             ToolTip tTipInfo = new ToolTip();
@@ -66,7 +65,6 @@ namespace csReporter
             bool unappliedExportHologramExist;
             bool escrowedExportHologramExist;
             bool unconfirmedExportHologramExist;
-            //bool generateCSVReport;
             bool lowMemProcessing;
             bool makeReport;
             reportType report;
@@ -88,7 +86,7 @@ namespace csReporter
         
             private bool ADdata = false;
             public static volatile bool stopProcessing = false;
-            List<string> knownADattribs = new List<string>() { "accountExpires", "objectSid", "groupType", "pwdLastSet", "userAccountControl", "lastLogonTimestamp", "createTimeStamp" }; //, "description" };
+            List<string> knownADattribs = new List<string>() { "accountExpires", "objectSid", "groupType", "pwdLastSet", "userAccountControl", "lastLogonTimestamp", "createTimeStamp" };
 
         #endregion
 
@@ -705,7 +703,6 @@ namespace csReporter
                     filter.FilterState = filterAction;
                     filter.Level = FilterLevel.Operation;
                     filter.ObjectTypes = objTypes;
-                    //filter.Operations = GetSelectedOps();
                     filter.Operations = op;
                     filter.AttributeFilters.Clear();
 
@@ -748,7 +745,6 @@ namespace csReporter
                     filter.FilterState = filterAction;
                     filter.Level = FilterLevel.AttributeValue;
                     filter.ObjectTypes = objTypes;
-                    //filter.Operations = GetSelectedOps();
                     filter.Operations = op;
                     filter.AttributeFilters = attribFilters;
 
@@ -796,7 +792,6 @@ namespace csReporter
 
                     filter.FilterState = State.Synchronized;
                     filter.Level = FilterLevel.AttributeValue;
-                    //filter.ObjectTypes = lbObjectType.SelectedItems.Cast<string>().ToList();
                     filter.ObjectTypes = objTypes;
                     filter.Operations.Clear();
                     filter.AttributeFilters = attribFilters;
@@ -1963,56 +1958,7 @@ namespace csReporter
         #endregion
 
         #region Reporting functions
-            private void BuildCSVReport(object objForm)
-            {
-                frmProgressBar frmProgress = (frmProgressBar)objForm;
-                while (!frmProgress.Visible)
-                {
-                    Thread.SpinWait(200);
-                }
-                this.methSetText(frmProgress, "Generating CSV report");
-                this.methUpdateBar(frmProgress, 0);
-                using (StreamWriter outFile = new StreamWriter(outputFileName, false, Encoding.UTF8))
-                {
-                    try
-                    {
-                        WriteCSVReportHeaders(outFile);
-                        //CS-DN     Object Type     Operation       Current Attribute       New Attribute
-                        int counter = 0;
-                        foreach (csObject obj in matchingCSobjects)
-                        {
-                            if (frmFilter.stopProcessing)
-                            {
-                                break;
-                            }
-                            this.methUpdateBar(frmProgress, (counter * 100) / matchingCSobjects.Count);
-                            WriteCSVObjectReport(outFile, obj);
-                            counter++;
-                        }
-                    }
-                    catch (IOException ex)
-                    {
-                        if (ex.Message.Contains("it is being used by another process"))
-                        {
-                            //show clean messagebox to notify user
-                            MessageBox.Show("The selected report file is in use by another process.  Please close the file and try again.");
-                        }
-                        else
-                        {
-                            //show regular exception box
-                            ExceptionHandler.handleException(ex, "Error occurred while creating to CSV file");
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        ExceptionHandler.handleException(ex, "Error occurred while creating CSV file");
-                    }
-                    finally
-                    {
-                        this.methCloseForm(frmProgress);
-                    }
-                }
-            }
+            #region Reporting - Excel
             private void BuildExcelReport(object objForm)
             {
                 frmProgressBar frmProgress = (frmProgressBar)objForm;
@@ -2020,9 +1966,8 @@ namespace csReporter
                 {
                     this.methSetText(frmProgress, "Generating Excel report");
                     this.methUpdateBar(frmProgress, 0);
-                    ExcelReport excelReport = new ExcelReport(outputFileName);
-                    excelReport.WriteReportFilter(filter, matchingCSobjects.Count);
-                    excelReport.WriteReportHeader(filter, sysAttribs, errorAttribs);
+                    ExcelWriter excelReport = new ExcelWriter(outputFileName);
+                    WriteExcelReportHeader(excelReport);
                     int counter = 0;
                     foreach (csObject obj in matchingCSobjects)
                     {
@@ -2031,8 +1976,7 @@ namespace csReporter
                             break;
                         }
                         this.methUpdateBar(frmProgress, (counter * 100) / matchingCSobjects.Count);
-                        //WriteCSVObjectReport(outFile, obj);
-                        excelReport.WriteCSObject(obj, filter, sysAttribs, errorAttribs, ADdata, knownADattribs);
+                        excelReport.WriteNextRow(WriteExcelCSObjectReport(obj));
                         counter++;
                     }
                     excelReport.Dispose();
@@ -2058,58 +2002,554 @@ namespace csReporter
                 {
                     this.methCloseForm(frmProgress);
                 }
-            }
-            private void BuildHTMLReport(object objForm)
+        }
+            private void WriteExcelReportHeader(ExcelWriter excelReport)
             {
-                frmProgressBar frmProgress = (frmProgressBar)objForm;
-                while (!frmProgress.Visible)
+                excelReport.WriteNextRow("Criterial");
+                excelReport.WriteNextRow(new List<string> { "", "Data Type:", filter.FilterState.ToString() });
+                if (filter.ObjectTypes.Count > 0)
                 {
-                    Thread.SpinWait(200);
+                    excelReport.WriteNextRow(new List<string> { "", "Object Type:", String.Join("\n", filter.ObjectTypes) });
                 }
-                this.methSetText(frmProgress, "Generating HTML report");
-                this.methUpdateBar(frmProgress, 0);
-                using (StreamWriter outFile = new StreamWriter(outputFileName))
+                if (filter.Operations.Count > 0)
                 {
-                    try
+                    excelReport.WriteNextRow(new List<string> { "", "Operations:", String.Join("\n", filter.Operations) });
+                }
+                if (filter.AttributeFilters.Count > 0)
+                {
+                    string strFilters = "";
+                    foreach (FilterAttribute FA in filter.AttributeFilters)
                     {
-                        WriteHTMLReportHeaders(outFile);
-                        int counter = 0;
-                        foreach (csObject obj in matchingCSobjects)
-                        {
-                            if (frmFilter.stopProcessing)
-                            {
-                                break;
-                            }
-                            this.methUpdateBar(frmProgress, (counter * 100) / matchingCSobjects.Count);
-                            WriteHTMLObjectReport(outFile, obj);
-                            counter++;
-                        }
-
+                        strFilters += FA.Attribute + " " + FA.Operation + " " + FA.Value + "\n";
                     }
-                    catch (IOException ex)
+                    strFilters.Remove(strFilters.Length - 1, 1);
+                    excelReport.WriteNextRow(new List<string> { "", "Attribute Filters:", });
+                }
+                if (filter.ReportAttributes.Count > 0)
+                {
+                    excelReport.WriteNextRow(new List<string> { "", "Report Attributes:", String.Join("\n", filter.ReportAttributes) });
+                }
+                excelReport.WriteNextRow(new List<string> { "", "Object Count:", matchingCSobjects.Count.ToString() });
+
+                //empty rows before report headers
+                excelReport.WriteNextRow("");
+                excelReport.WriteNextRow("");
+
+                List<string> dataValues = new List<string>();
+                dataValues.Add("CS distinguished name");
+                dataValues.Add("Object Type");
+                if (filter.FilterState == State.Synchronized)
+                {
+                    foreach (string Attrib in filter.ReportAttributes)
                     {
-                        if (ex.Message.Contains("it is being used by another process"))
+                        if (Attrib != "<DN>")
                         {
-                            //show clean messagebox to notify user
-                            MessageBox.Show("The selected report file is in use by another process.  Please close the file and try again.");
+                            dataValues.Add(Attrib);
+                        }
+                    }
+                }
+                else
+                {
+                    dataValues.Add("Operation");
+                    foreach (string Attrib in filter.ReportAttributes)
+                    {
+                        if (Attrib != "<DN>" && (sysAttribs.Contains(Attrib) || errorAttribs.Contains(Attrib)))
+                        {
+                            dataValues.Add(Attrib);
                         }
                         else
                         {
-                            //show regular exception box
-                            ExceptionHandler.handleException(ex, "Error occurred while creating to HTML file");
+                            dataValues.Add("current " + Attrib);
+                            dataValues.Add("new " + Attrib);
                         }
                     }
-                    catch (Exception ex)
+                }
+                excelReport.WriteNextRow(dataValues);
+            }
+            private List<string> WriteExcelCSObjectReport(csObject obj)
+            {
+                List<string> rowValues = new List<string>();
+
+                if (filter.FilterState == State.Synchronized)
+                {
+                    rowValues.Add(obj.csDN);
+                    rowValues.Add(obj.ObjectType);
+
+                    foreach (string attrib in filter.ReportAttributes)
                     {
-                        ExceptionHandler.handleException(ex, "Error occurred while creating HTML file");
-                        Application.Exit();
-                    }
-                    finally
-                    {
-                        this.methCloseForm(frmProgress);
+                        try
+                        {
+                            if (sysAttribs.Contains(attrib))
+                            {
+                                switch (attrib)
+                                {
+                                    case "<Connector>":
+                                        if (obj.Connector != null)
+                                        {
+                                            rowValues.Add(obj.Connector.ToString());
+                                        }
+                                        break;
+                                    case "<Connect Time>":
+                                        if (obj.ConnectionTime != null)
+                                        {
+                                            rowValues.Add(obj.ConnectionTime.ToString("g"));
+                                        }
+                                        break;
+                                    case "<Connector Operation>":
+                                        if (obj.ConnectionOperation != "")
+                                        {
+                                            rowValues.Add(obj.ConnectionOperation);
+                                        }
+                                        break;
+                                    case "<Disconnect Time>":
+                                        if (obj.DisconnectionTime != null)
+                                        {
+                                            rowValues.Add(obj.DisconnectionTime.ToString("g"));
+                                        }
+                                        break;
+                                    case "<Connector State>":
+                                        if (obj.ConnectorState != "")
+                                        {
+                                            rowValues.Add(obj.ConnectorState);
+                                        }
+                                        break;
+                                }
+                            }
+                            else if (obj.ExportError != null && errorAttribs.Contains(attrib))
+                            {
+                                switch (attrib)
+                                {
+                                    case "<ExportErrorDetails>":
+                                        StringBuilder errorInfo = new StringBuilder();
+                                        if (obj.ExportError.DateOccurred != null)
+                                        {
+                                            errorInfo.Append("Date Occurred: " + obj.ExportError.DateOccurred + "\n");
+                                        }
+                                        if (obj.ExportError.FirstOccurred != null)
+                                        {
+                                            errorInfo.Append("First Occurred: " + obj.ExportError.FirstOccurred + "\n");
+                                        }
+                                        if (obj.ExportError.RetryCount != null)
+                                        {
+                                            errorInfo.Append("Retry Count: " + obj.ExportError.RetryCount + "\n");
+                                        }
+                                        if (obj.ExportError.ErrorType != null)
+                                        {
+                                            errorInfo.Append("Error Type: " + obj.ExportError.ErrorType + "\n");
+                                        }
+                                        if (obj.ExportError.ErrorCode != null)
+                                        {
+                                            errorInfo.Append("Error Code: " + obj.ExportError.ErrorCode + "\n");
+                                        }
+                                        if (obj.ExportError.ErrorLiteral != null)
+                                        {
+                                            errorInfo.Append("Error Literal: " + obj.ExportError.ErrorLiteral + "\n");
+                                        }
+                                        if (obj.ExportError.ServerErrorDetail != null)
+                                        {
+                                            errorInfo.Append("Server Error Detail: " + obj.ExportError.ServerErrorDetail + "\n");
+                                        }
+                                        errorInfo.Replace("\r\n", "");
+                                        errorInfo.Replace("\"", "'");
+                                        errorInfo.Insert(0, "\"");
+                                        errorInfo.Append("\"");
+                                        rowValues.Add(errorInfo.ToString());
+                                        break;
+                                }
+                            }
+                            else
+                            {
+                                Attribute shAttrib = GetMatchingAttribute(attrib, obj.SynchronizedHologram.Attributes);
+                                rowValues.AddRange(AddAttribToReportExcel(shAttrib));
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            ExceptionHandler.handleException(ex, "Error occurred processing an attribute on a object for Excel file.\r\n\r\nDN=" + obj.csDN + "\r\n\r\nAttributeName=" + attrib);
+                        }
                     }
                 }
+                else
+                {
+                    rowValues.AddRange(new List<string> { obj.csDN, obj.ObjectType, filter.FilterState.ToString() + "-" + obj.Delta(filter.FilterState).Operation });
+                    foreach (string attrib in filter.ReportAttributes)
+                    {
+                        try
+                        {
+                            if (sysAttribs.Contains(attrib))
+                            {
+                                switch (attrib)
+                                {
+                                    case "<Connector>":
+                                        if (obj.Connector != null)
+                                        {
+                                            rowValues.Add(obj.Connector.ToString());
+                                        }
+                                        break;
+                                    case "<Connect Time>":
+                                        if (obj.ConnectionTime != null)
+                                        {
+                                            rowValues.Add(obj.ConnectionTime.ToString("g"));
+                                        }
+                                        break;
+                                    case "<Connector Operation>":
+                                        if (obj.ConnectionOperation != "")
+                                        {
+                                            rowValues.Add(obj.ConnectionOperation);
+                                        }
+                                        break;
+                                    case "<Disconnect Time>":
+                                        if (obj.DisconnectionTime != null)
+                                        {
+                                            rowValues.Add(obj.DisconnectionTime.ToString("g"));
+                                        }
+                                        break;
+                                    case "<Connector State>":
+                                        if (obj.ConnectorState != "")
+                                        {
+                                            rowValues.Add(obj.ConnectorState);
+                                        }
+                                        break;
+                                }
+                            }
+                            else if (obj.ExportError != null && errorAttribs.Contains(attrib))
+                            {
+                                switch (attrib)
+                                {
+                                    case "<ExportErrorDetails>":
+                                        StringBuilder errorInfo = new StringBuilder();
+                                        if (obj.ExportError.DateOccurred != null)
+                                        {
+                                            errorInfo.Append("Date Occurred: " + obj.ExportError.DateOccurred + "\n");
+                                        }
+                                        if (obj.ExportError.FirstOccurred != null)
+                                        {
+                                            errorInfo.Append("First Occurred: " + obj.ExportError.FirstOccurred + "\n");
+                                        }
+                                        if (obj.ExportError.RetryCount != null)
+                                        {
+                                            errorInfo.Append("Retry Count: " + obj.ExportError.RetryCount + "\n");
+                                        }
+                                        if (obj.ExportError.ErrorType != null)
+                                        {
+                                            errorInfo.Append("Error Type: " + obj.ExportError.ErrorType + "\n");
+                                        }
+                                        if (obj.ExportError.ErrorCode != null)
+                                        {
+                                            errorInfo.Append("Error Code: " + obj.ExportError.ErrorCode + "\n");
+                                        }
+                                        if (obj.ExportError.ErrorLiteral != null)
+                                        {
+                                            errorInfo.Append("Error Literal: " + obj.ExportError.ErrorLiteral + "\n");
+                                        }
+                                        if (obj.ExportError.ServerErrorDetail != null)
+                                        {
+                                            errorInfo.Append("Server Error Detail: " + obj.ExportError.ServerErrorDetail + "\n");
+                                        }
+                                        errorInfo.Replace("\r\n", "");
+                                        errorInfo.Replace("\"", "'");
+                                        errorInfo.Insert(0, "\"");
+                                        errorInfo.Append("\"");
+                                        rowValues.Add(errorInfo.ToString());
+                                        break;
+                                }
+                            }
+                            else
+                            {
+                                Attribute pihAttrib = null;
+                                Attribute shAttrib = null;
+                                if (obj.Hologram(filter.FilterState) != null)
+                                {
+                                    pihAttrib = GetMatchingAttribute(attrib, obj.Hologram(filter.FilterState).Attributes);
+                                }
+                                if (obj.SynchronizedHologram != null)
+                                {
+                                    shAttrib = GetMatchingAttribute(attrib, obj.SynchronizedHologram.Attributes);
+                                }
+                                if (obj.Delta(filter.FilterState).AttributeNames.Contains(attrib))
+                                {
+                                    rowValues.AddRange(AddAttribToReportExcel(pihAttrib, shAttrib));
+                                }
+                                else if (shAttrib != null)
+                                {
+                                    rowValues.AddRange(AddAttribToReportExcel("(No Change)", shAttrib));
+                                }
+                                else
+                                {
+                                    rowValues.Add("");
+                                    rowValues.Add("");
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            ExceptionHandler.handleException(ex, "Error occurred processing an attribute on an object for Excel file.\r\n\r\nDN=" + obj.csDN + "\r\n\r\nAttributeName=" + attrib);
+                        }
+                    }
+                }
+                return rowValues;
             }
+            private List<string> AddAttribToReportExcel(Attribute attribute, Attribute syncdAttrib)
+            {
+                List<string> dataValues = new List<string>();
+                StringBuilder strOutput = new StringBuilder("");
+
+                try
+                {
+                    if (syncdAttrib != null && attribute != null)
+                    {
+                        if (ADdata && knownADattribs.Contains(attribute.Name))
+                        {
+                            dataValues.Add(syncdAttrib.ADStringValues[0]);
+                            dataValues.Add(attribute.ADStringValues[0]);
+                        }
+                        else
+                        {
+                            foreach (string val in syncdAttrib.StringValues)
+                            {
+                                string strTemp = val;
+                                if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))
+                                {
+                                    strTemp = strTemp.Insert(0, "'");
+                                }
+                                strOutput.Append(strTemp + "\n");
+                            }
+                            strOutput.Remove(strOutput.Length - 1, 1);
+                            dataValues.Add(strOutput.ToString());
+                            strOutput = new StringBuilder();
+
+                            foreach (string val in attribute.StringValues)
+                            {
+                                string strTemp = val;
+                                if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))
+                                {
+                                    strTemp = strTemp.Insert(0, "'");
+                                }
+                                strOutput.Append(strTemp + "\n");
+                            }
+                            strOutput.Remove(strOutput.Length - 1, 1);
+                            dataValues.Add(strOutput.ToString());
+                        }
+                    }
+                    else if (syncdAttrib == null && attribute != null)
+                    {
+                        dataValues.Add("");
+                        if (ADdata && knownADattribs.Contains(attribute.Name))
+                        {
+                            dataValues.Add(attribute.ADStringValues[0]);
+                        }
+                        else
+                        {
+                            foreach (string val in attribute.StringValues)
+                            {
+                                string strTemp = val;
+                                if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))
+                                {
+                                    strTemp = strTemp.Insert(0, "'");
+                                }
+                                strOutput.Append(strTemp + "\n");
+                            }
+                            strOutput.Remove(strOutput.Length - 1, 1);
+                            dataValues.Add(strOutput.ToString());
+                            strOutput = new StringBuilder();
+                        }
+                    }
+                    else if (syncdAttrib != null && attribute == null)
+                    {
+                        if (ADdata && knownADattribs.Contains(syncdAttrib.Name))
+                        {
+                            dataValues.Add(syncdAttrib.ADStringValues[0]);
+                            dataValues.Add("(Deleted)");
+                        }
+                        else
+                        {
+                            foreach (string val in syncdAttrib.StringValues)
+                            {
+                                string strTemp = val;
+                                if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))
+                                {
+                                    strTemp = strTemp.Insert(0, "'");
+                                }
+                                strOutput.Append(strTemp + "\n");
+                            }
+                            strOutput.Remove(strOutput.Length - 1, 1);
+                            dataValues.Add(strOutput.ToString());
+                            strOutput = new StringBuilder();
+                            dataValues.Add("(Deleted)");
+                        }
+                    }
+                    else if (syncdAttrib == null && attribute == null)
+                    {
+                        dataValues.Add("");
+                        dataValues.Add("");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    string errorMessage = "";
+                    if (attribute != null)
+                    {
+                        errorMessage = "Error getting attribute values\r\nAttributeName=" + attribute.Name;
+                    }
+                    else if (syncdAttrib != null)
+                    {
+                        errorMessage = "Error getting attribute values\r\nAttributeName=" + syncdAttrib.Name;
+                    }
+                    ExceptionHandler.handleException(ex, errorMessage);
+                    Application.Exit();
+            }
+                return dataValues;
+            }
+            private List<string> AddAttribToReportExcel(string attribValue, Attribute syncdAttrib)
+            {
+                List<string> dataValues = new List<string>();
+                StringBuilder strOutput = new StringBuilder("");
+
+                try
+                {
+                    if (ADdata && knownADattribs.Contains(syncdAttrib.Name))
+                    {
+                        dataValues.Add(syncdAttrib.ADStringValues[0]);
+                        dataValues.Add(attribValue);
+                    }
+                    else
+                    {
+                        string strTemp = "";
+                        foreach (string val in syncdAttrib.StringValues)
+                        {
+                            strTemp = val;
+                            if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))
+                            {
+                                strTemp = strTemp.Insert(0, "'");
+                            }
+                            strOutput.Append(strTemp + "\n");
+                        }
+                        strOutput.Remove(strOutput.Length - 1, 1);
+                        dataValues.Add(strOutput.ToString());
+                        strOutput = new StringBuilder();
+
+                        strTemp = attribValue;
+                        if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))
+                        {
+                            strTemp = strTemp.Insert(0, "'");
+                        }
+                        dataValues.Add(strOutput.ToString());
+                    }
+                }
+                catch (Exception ex)
+                {
+                    string errorMessage = "";
+                    if (attribValue != null)
+                    {
+                        errorMessage = "Error getting attribute values\r\nAttribValue=" + attribValue;
+                    }
+                    else if (syncdAttrib != null)
+                    {
+                        errorMessage = "Error getting attribute values\r\nAttributeName=" + syncdAttrib.Name;
+                    }
+                    ExceptionHandler.handleException(ex, errorMessage);
+                    Application.Exit();
+                }
+                return dataValues;
+            }
+            private List<string> AddAttribToReportExcel(Attribute syncdAttrib)
+            {
+                List<string> dataValues = new List<string>();
+                StringBuilder strOutput = new StringBuilder("");
+
+                try
+                {
+                    if (syncdAttrib != null)
+                    {
+                        if (ADdata && knownADattribs.Contains(syncdAttrib.Name))
+                        {
+                            dataValues.Add(syncdAttrib.ADStringValues[0]);
+                        }
+                        else
+                        {
+                            foreach (string val in syncdAttrib.StringValues)
+                            {
+                                string strTemp = val;
+                                if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))
+                                {
+                                    strTemp = strTemp.Insert(0, "'");
+                                }
+                                strOutput.Append(strTemp + "\n");
+                            }
+                            strOutput.Remove(strOutput.Length - 1, 1);
+                            dataValues.Add(strOutput.ToString());
+                        }
+                    }
+                    else
+                    {
+                        dataValues.Add("");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    string errorMessage = "Error getting attribute values";
+                    if (syncdAttrib != null)
+                    {
+                        errorMessage = "\r\nAttributeName=" + syncdAttrib.Name;
+                    }
+                    ExceptionHandler.handleException(ex, errorMessage);
+                    Application.Exit();
+                }
+                return dataValues;
+            }
+            #endregion
+
+            #region Reporting - CSV
+            private void BuildCSVReport(object objForm)
+                {
+                    frmProgressBar frmProgress = (frmProgressBar)objForm;
+                    while (!frmProgress.Visible)
+                    {
+                        Thread.SpinWait(200);
+                    }
+                    this.methSetText(frmProgress, "Generating CSV report");
+                    this.methUpdateBar(frmProgress, 0);
+                    using (StreamWriter outFile = new StreamWriter(outputFileName, false, Encoding.UTF8))
+                    {
+                        try
+                        {
+                            WriteCSVReportHeaders(outFile);
+                            //CS-DN     Object Type     Operation       Current Attribute       New Attribute
+                            int counter = 0;
+                            foreach (csObject obj in matchingCSobjects)
+                            {
+                                if (frmFilter.stopProcessing)
+                                {
+                                    break;
+                                }
+                                this.methUpdateBar(frmProgress, (counter * 100) / matchingCSobjects.Count);
+                                WriteCSVObjectReport(outFile, obj);
+                                counter++;
+                            }
+                        }
+                        catch (IOException ex)
+                        {
+                            if (ex.Message.Contains("it is being used by another process"))
+                            {
+                                //show clean messagebox to notify user
+                                MessageBox.Show("The selected report file is in use by another process.  Please close the file and try again.");
+                            }
+                            else
+                            {
+                                //show regular exception box
+                                ExceptionHandler.handleException(ex, "Error occurred while creating to CSV file");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            ExceptionHandler.handleException(ex, "Error occurred while creating CSV file");
+                        }
+                        finally
+                        {
+                            this.methCloseForm(frmProgress);
+                        }
+                    }
+                }
             private void WriteCSVReportHeaders(StreamWriter writer)
             {
                 writer.Write("Criteria\r\n");
@@ -2166,76 +2606,6 @@ namespace csReporter
                     }
                 }
                 writer.Write("\r\n");
-            }
-            private void WriteHTMLReportHeaders(StreamWriter writer)
-            {
-                writer.Write("<HTML>\r\n");
-
-                writer.Write(@"<head>
-    <meta charset=""UTF-8"">
-    <style>
-    table { 
-        border-collapse: collapse;
-    }
-    table td, th {
-        border: 1px solid black;
-    }
-    </style>
-    </head>");
-
-                //add logo to report
-                System.Reflection.Assembly myAssembly = System.Reflection.Assembly.GetExecutingAssembly();
-                Stream myStream = myAssembly.GetManifestResourceStream("csReporter.csrLogo.png");
-                Bitmap logo = new Bitmap(myStream);
-                string strLogo = "";
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    logo.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-                    byte[] imageBytes = ms.ToArray();
-
-                    strLogo = Convert.ToBase64String(imageBytes);
-                }
-                writer.Write("<img src=\"data:image/png;base64," + strLogo + "\" alt=\"CSRLogo.png\" /><br><br><br><br><br>\r\n");
-                writer.Write("<Table cellpadding=\"10\">\r\n");
-                writer.Write("<TR><TH>Criteria</TH><TR>\r\n");
-                writer.Write("<TR><TD style=\"border-style: none;\" /><TD>Data Type:</TD><TD>" + filter.FilterState + "</TD></TR>\r\n");
-                if (filter.ObjectTypes.Count > 0)
-                {
-                    writer.Write("<TR><TD style=\"border-style: none;\" /><TD valign=\"top\">Object Types:</TD><TD>" + String.Join("<BR>", filter.ObjectTypes.ToArray()) + "</TD></TR>\r\n");
-                }
-                if (filter.Operations.Count > 0)
-                {
-                    writer.Write("<TR><TD style=\"border-style: none;\" /><TD valign=\"top\">Operations:</TD><TD>" + String.Join("<BR>", filter.Operations.ToArray()) + "</TD></TR>\r\n");
-                }
-                if (filter.ReportAttributes.Count > 0)
-                {
-                    writer.Write("<TR><TD style=\"border-style: none;\" /><TD valign=\"top\">Attributes:</TD><TD>" + String.Join("<BR>", filter.ReportAttributes.ToArray()) + "</TD></TR>\r\n");
-                }
-                if (filter.AttributeFilters.Count > 0)
-                {
-                    writer.Write("<TR><TD style=\"border-style: none;\" /><TD valign=\"top\">Attribute Filters:</TD><TD>");
-                    foreach (FilterAttribute FA in filter.AttributeFilters)
-                    {
-                        writer.Write(FA.Attribute + " " + FA.Operation + " " + FA.Value + "<BR>");
-                    }
-                    writer.Write("</TD></TR>\r\n");
-                }
-
-                writer.Write("<TR><TD><B>Object Count:</B> " + matchingCSobjects.Count.ToString() + "</TD></TR>\r\n");
-
-                writer.Write("</Table><BR><BR><Table cellpadding=\"10\">\r\n");
-
-                writer.Write("<TR><TH>CS distinguished name</TH><TH>Object Type</TH>");
-                if (filter.FilterState == State.Synchronized)
-                {
-                    writer.Write("<TH>Attribute</TH><TH>Current Value</TH></TR>\r\n");
-                }
-                else
-                {
-                    writer.Write("<TH>Operation</TH><TH>Attribute</TH><TH>Current Value</TH><TH>New Value</TH></TR>\r\n");
-                }
-                //CS-DN     Object Type     Operation       Attribute       Current Value       New Value
-
             }
             private void WriteCSVObjectReport(StreamWriter writer, csObject obj)
             {
@@ -2339,8 +2709,7 @@ namespace csReporter
                         }
                     }
                 }
-                //IF should not be necessary.  Operation cannot be none (no longer allowing combined import/export reports)
-                else //if (obj.Delta(filter.FilterState).Operation != operation.none)
+                else
                 {
                     writer.Write("\"" + obj.csDN + "\"," + obj.ObjectType + "," + filter.FilterState.ToString() + "-" + obj.Delta(filter.FilterState).Operation);
                     writer.Write(",");
@@ -2461,6 +2830,328 @@ namespace csReporter
                 }
                 writer.Write("\r\n");
             }
+            private string AddAttribToReportCSV(Attribute attribute, Attribute syncdAttrib)
+            {
+                StringBuilder strOutput = new StringBuilder("");
+
+                try
+                {
+                    if (syncdAttrib != null && attribute != null)
+                    {
+                        if (ADdata && knownADattribs.Contains(attribute.Name))
+                        {
+                            strOutput.Append(syncdAttrib.ADStringValues[0] + "," + attribute.ADStringValues[0]);
+                        }
+                        else
+                        {
+                            strOutput.Append("\"");
+                            foreach (string val in syncdAttrib.StringValues)
+                            {
+                                string strTemp = val;
+                                if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))
+                                {
+                                    strTemp = strTemp.Insert(0, "'");
+                                }
+                                strOutput.Append(strTemp + "\n");
+                            }
+                            strOutput.Remove(strOutput.Length - 1, 1);
+                            strOutput.Append("\",\"");
+
+                            foreach (string val in attribute.StringValues)
+                            {
+                                string strTemp = val;
+                                if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))
+                                {
+                                    strTemp = strTemp.Insert(0, "'");
+                                }
+                                strOutput.Append(strTemp + "\n");
+                            }
+                            strOutput.Remove(strOutput.Length - 1, 1);
+                            strOutput.Append("\"");
+                        }
+                    }
+                    else if (syncdAttrib == null && attribute != null)
+                    {
+                        if (ADdata && knownADattribs.Contains(attribute.Name))
+                        {
+                            strOutput.Append("," + attribute.ADStringValues[0]);
+                        }
+                        else
+                        {
+                            strOutput.Append(",\"");
+                            foreach (string val in attribute.StringValues)
+                            {
+                                string strTemp = val;
+                                if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))
+                                {
+                                    strTemp = strTemp.Insert(0, "'");
+                                }
+                                strOutput.Append(strTemp + "\n");
+                            }
+                            strOutput.Remove(strOutput.Length - 1, 1);
+                            strOutput.Append("\"");
+                        }
+                    }
+                    else if (syncdAttrib != null && attribute == null)
+                    {
+                        if (ADdata && knownADattribs.Contains(syncdAttrib.Name))
+                        {
+                            strOutput.Append(syncdAttrib.ADStringValues[0] + ",(Deleted)");
+                        }
+                        else
+                        {
+                            strOutput.Append("\"");
+                            foreach (string val in syncdAttrib.StringValues)
+                            {
+                                string strTemp = val;
+                                if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))
+                                {
+                                    strTemp = strTemp.Insert(0, "'");
+                                }
+                                strOutput.Append(strTemp + "\n");
+                            }
+                            strOutput.Remove(strOutput.Length - 1, 1);
+                            strOutput.Append("\",(Deleted)");
+                        }
+                    }
+                    else if (syncdAttrib == null && attribute == null)
+                    {
+                        strOutput.Append(",");
+                    }                
+                }
+                catch (Exception ex)
+                {
+                    string errorMessage = "";
+                    if (attribute != null)
+                    {
+                        errorMessage = "Error getting attribute values\r\nAttributeName=" + attribute.Name;
+                    }
+                    else if (syncdAttrib != null)
+                    {
+                        errorMessage = "Error getting attribute values\r\nAttributeName=" + syncdAttrib.Name;
+                    }
+                    ExceptionHandler.handleException(ex, errorMessage);
+                    Application.Exit();
+                }
+                return strOutput.ToString();
+            }
+            private string AddAttribToReportCSV(string attribValue, Attribute syncdAttrib)
+            {
+                StringBuilder strOutput = new StringBuilder("");
+
+                try
+                {
+                    if (ADdata && knownADattribs.Contains(syncdAttrib.Name))
+                    {
+                        strOutput.Append(syncdAttrib.ADStringValues[0] + "," + attribValue);
+                    }
+                    else
+                    {
+                        strOutput.Append("\"");
+                        string strTemp = "";
+                        foreach (string val in syncdAttrib.StringValues)
+                        {
+                            strTemp = val;
+                            if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))
+                            {
+                                strTemp = strTemp.Insert(0, "'");
+                            }
+                            strOutput.Append(strTemp + "\n");
+                        }
+                        strOutput.Remove(strOutput.Length - 1, 1);
+                        strOutput.Append("\",\"");
+
+                        strTemp = attribValue;
+                        if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))
+                        {
+                            strTemp = strTemp.Insert(0, "'");
+                        }
+                        strOutput.Append(strTemp + "\n");
+                        strOutput.Remove(strOutput.Length - 1, 1);
+                        strOutput.Append("\"");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    string errorMessage = "";
+                    if (attribValue != null)
+                    {
+                        errorMessage = "Error getting attribute values\r\nAttribValue=" + attribValue;
+                    }
+                    else if (syncdAttrib != null)
+                    {
+                        errorMessage = "Error getting attribute values\r\nAttributeName=" + syncdAttrib.Name;
+                    }
+                    ExceptionHandler.handleException(ex, errorMessage);
+                    Application.Exit();
+                }
+                return strOutput.ToString();
+            }
+            private string AddAttribToReportCSV(Attribute syncdAttrib)
+            {
+                StringBuilder strOutput = new StringBuilder("");
+
+                try
+                {
+                    if (syncdAttrib != null)
+                    {
+                        if (ADdata && knownADattribs.Contains(syncdAttrib.Name))
+                        {
+                            strOutput.Append(syncdAttrib.ADStringValues[0]);
+                        }
+                        else
+                        {
+                            strOutput.Append("\"");
+                            foreach (string val in syncdAttrib.StringValues)
+                            {
+                                string strTemp = val;
+                                if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))
+                                {
+                                    strTemp = strTemp.Insert(0, "'");
+                                }
+                                strOutput.Append(strTemp + "\n");
+                            }
+                            strOutput.Remove(strOutput.Length - 1, 1);
+                            strOutput.Append("\"");
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    string errorMessage = "Error getting attribute values";
+                    if (syncdAttrib != null)
+                    {
+                        errorMessage = "\r\nAttributeName=" + syncdAttrib.Name;
+                    }
+                    ExceptionHandler.handleException(ex, errorMessage);
+                    Application.Exit();
+                }
+                return strOutput.ToString();
+            }
+            #endregion
+
+            #region Reporting - HTML
+            private void BuildHTMLReport(object objForm)
+            {
+                frmProgressBar frmProgress = (frmProgressBar)objForm;
+                while (!frmProgress.Visible)
+                {
+                    Thread.SpinWait(200);
+                }
+                this.methSetText(frmProgress, "Generating HTML report");
+                this.methUpdateBar(frmProgress, 0);
+                using (StreamWriter outFile = new StreamWriter(outputFileName))
+                {
+                    try
+                    {
+                        WriteHTMLReportHeaders(outFile);
+                        int counter = 0;
+                        foreach (csObject obj in matchingCSobjects)
+                        {
+                            if (frmFilter.stopProcessing)
+                            {
+                                break;
+                            }
+                            this.methUpdateBar(frmProgress, (counter * 100) / matchingCSobjects.Count);
+                            WriteHTMLObjectReport(outFile, obj);
+                            counter++;
+                        }
+
+                    }
+                    catch (IOException ex)
+                    {
+                        if (ex.Message.Contains("it is being used by another process"))
+                        {
+                            //show clean messagebox to notify user
+                            MessageBox.Show("The selected report file is in use by another process.  Please close the file and try again.");
+                        }
+                        else
+                        {
+                            //show regular exception box
+                            ExceptionHandler.handleException(ex, "Error occurred while creating to HTML file");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ExceptionHandler.handleException(ex, "Error occurred while creating HTML file");
+                        Application.Exit();
+                    }
+                    finally
+                    {
+                        this.methCloseForm(frmProgress);
+                    }
+                }
+            }
+            private void WriteHTMLReportHeaders(StreamWriter writer)
+            {
+                writer.Write("<HTML>\r\n");
+
+                writer.Write(@"<head>
+    <meta charset=""UTF-8"">
+    <style>
+    table { 
+        border-collapse: collapse;
+    }
+    table td, th {
+        border: 1px solid black;
+    }
+    </style>
+    </head>");
+
+                //add logo to report
+                System.Reflection.Assembly myAssembly = System.Reflection.Assembly.GetExecutingAssembly();
+                Stream myStream = myAssembly.GetManifestResourceStream("csReporter.csrLogo.png");
+                Bitmap logo = new Bitmap(myStream);
+                string strLogo = "";
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    logo.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                    byte[] imageBytes = ms.ToArray();
+
+                    strLogo = Convert.ToBase64String(imageBytes);
+                }
+                writer.Write("<img src=\"data:image/png;base64," + strLogo + "\" alt=\"CSRLogo.png\" /><br><br><br><br><br>\r\n");
+                writer.Write("<Table cellpadding=\"10\">\r\n");
+                writer.Write("<TR><TH>Criteria</TH><TR>\r\n");
+                writer.Write("<TR><TD style=\"border-style: none;\" /><TD>Data Type:</TD><TD>" + filter.FilterState + "</TD></TR>\r\n");
+                if (filter.ObjectTypes.Count > 0)
+                {
+                    writer.Write("<TR><TD style=\"border-style: none;\" /><TD valign=\"top\">Object Types:</TD><TD>" + String.Join("<BR>", filter.ObjectTypes.ToArray()) + "</TD></TR>\r\n");
+                }
+                if (filter.Operations.Count > 0)
+                {
+                    writer.Write("<TR><TD style=\"border-style: none;\" /><TD valign=\"top\">Operations:</TD><TD>" + String.Join("<BR>", filter.Operations.ToArray()) + "</TD></TR>\r\n");
+                }
+                if (filter.ReportAttributes.Count > 0)
+                {
+                    writer.Write("<TR><TD style=\"border-style: none;\" /><TD valign=\"top\">Attributes:</TD><TD>" + String.Join("<BR>", filter.ReportAttributes.ToArray()) + "</TD></TR>\r\n");
+                }
+                if (filter.AttributeFilters.Count > 0)
+                {
+                    writer.Write("<TR><TD style=\"border-style: none;\" /><TD valign=\"top\">Attribute Filters:</TD><TD>");
+                    foreach (FilterAttribute FA in filter.AttributeFilters)
+                    {
+                        writer.Write(FA.Attribute + " " + FA.Operation + " " + FA.Value + "<BR>");
+                    }
+                    writer.Write("</TD></TR>\r\n");
+                }
+
+                writer.Write("<TR><TD><B>Object Count:</B> " + matchingCSobjects.Count.ToString() + "</TD></TR>\r\n");
+
+                writer.Write("</Table><BR><BR><Table cellpadding=\"10\">\r\n");
+
+                writer.Write("<TR><TH>CS distinguished name</TH><TH>Object Type</TH>");
+                if (filter.FilterState == State.Synchronized)
+                {
+                    writer.Write("<TH>Attribute</TH><TH>Current Value</TH></TR>\r\n");
+                }
+                else
+                {
+                    writer.Write("<TH>Operation</TH><TH>Attribute</TH><TH>Current Value</TH><TH>New Value</TH></TR>\r\n");
+                }
+                //CS-DN     Object Type     Operation       Attribute       Current Value       New Value
+
+            }
             private void WriteHTMLObjectReport(StreamWriter writer, csObject obj)
             {
                 if (frmFilter.stopProcessing)
@@ -2565,8 +3256,7 @@ namespace csReporter
                         }
                     }
                 }
-                //IF should not be necessary.  Operation cannot be none (no longer allowing combined import/export reports)
-                else// if (obj.Delta(filter.FilterState).Operation != operation.none)
+                else
                 {
                     writer.Write("<TR><TD>" + obj.csDN + "</TD><TD>" + obj.ObjectType + "</TD><TD>" + filter.FilterState.ToString() + "-" + obj.Delta(filter.FilterState).Operation + "</TD></TR>\r\n");
 
@@ -2696,111 +3386,6 @@ namespace csReporter
                 //wrap up HTML tags
                 writer.Write("</Table></HTML>");
             }
-            private string AddAttribToReportCSV(Attribute attribute, Attribute syncdAttrib)
-            {
-                StringBuilder strOutput = new StringBuilder("");
-
-                try
-                {
-                    if (syncdAttrib != null && attribute != null)
-                    {
-                        if (ADdata && knownADattribs.Contains(attribute.Name))
-                        {
-                            strOutput.Append(syncdAttrib.ADStringValues[0] + "," + attribute.ADStringValues[0]);
-                        }
-                        else
-                        {
-                            strOutput.Append("\"");
-                            foreach (string val in syncdAttrib.StringValues)
-                            {
-                                string strTemp = val;
-                                if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))//(Regex.IsMatch(strTemp, @"^\d"))
-                                {
-                                    strTemp = strTemp.Insert(0, "'");
-                                }
-                                strOutput.Append(strTemp + "\n");
-                            }
-                            strOutput.Remove(strOutput.Length - 1, 1);
-                            strOutput.Append("\",\"");
-
-                            foreach (string val in attribute.StringValues)
-                            {
-                                string strTemp = val;
-                                if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))//(Regex.IsMatch(strTemp, @"^\d"))
-                                {
-                                    strTemp = strTemp.Insert(0, "'");
-                                }
-                                strOutput.Append(strTemp + "\n");
-                            }
-                            strOutput.Remove(strOutput.Length - 1, 1);
-                            strOutput.Append("\"");
-                        }
-                    }
-                    else if (syncdAttrib == null && attribute != null)
-                    {
-                        if (ADdata && knownADattribs.Contains(attribute.Name))
-                        {
-                            strOutput.Append("," + attribute.ADStringValues[0]);
-                        }
-                        else
-                        {
-                            strOutput.Append(",\"");
-                            foreach (string val in attribute.StringValues)
-                            {
-                                string strTemp = val;
-                                if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))//(Regex.IsMatch(strTemp, @"^\d"))
-                                {
-                                    strTemp = strTemp.Insert(0, "'");
-                                }
-                                strOutput.Append(strTemp + "\n");
-                            }
-                            strOutput.Remove(strOutput.Length - 1, 1);
-                            strOutput.Append("\"");
-                        }
-                    }
-                    else if (syncdAttrib != null && attribute == null)
-                    {
-                        if (ADdata && knownADattribs.Contains(syncdAttrib.Name))
-                        {
-                            strOutput.Append(syncdAttrib.ADStringValues[0] + ",(Deleted)");
-                        }
-                        else
-                        {
-                            strOutput.Append("\"");
-                            foreach (string val in syncdAttrib.StringValues)
-                            {
-                                string strTemp = val;
-                                if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))//(Regex.IsMatch(strTemp, @"^\d"))
-                                {
-                                    strTemp = strTemp.Insert(0, "'");
-                                }
-                                strOutput.Append(strTemp + "\n");
-                            }
-                            strOutput.Remove(strOutput.Length - 1, 1);
-                            strOutput.Append("\",(Deleted)");
-                        }
-                    }
-                    else if (syncdAttrib == null && attribute == null)
-                    {
-                        strOutput.Append(",");
-                    }                
-                }
-                catch (Exception ex)
-                {
-                    string errorMessage = "";
-                    if (attribute != null)
-                    {
-                        errorMessage = "Error getting attribute values\r\nAttributeName=" + attribute.Name;
-                    }
-                    else if (syncdAttrib != null)
-                    {
-                        errorMessage = "Error getting attribute values\r\nAttributeName=" + syncdAttrib.Name;
-                    }
-                    ExceptionHandler.handleException(ex, errorMessage);
-                    Application.Exit();
-                }
-                return strOutput.ToString();
-            }
             private string AddAttribToReportHTML(Attribute attribute, Attribute syncdAttrib)
             {
                 StringBuilder strOutput = new StringBuilder("");
@@ -2808,40 +3393,10 @@ namespace csReporter
                 {
                     if (syncdAttrib != null && attribute != null)
                     {
-                        //strOutput.Append("<TR><TD style=\"border-style: none;\" /><TD style=\"border-style: none;\" /><TD style=\"border-style: none;\" /><TD valign=\"top\" nowrap>" + attribute.Name + "</TD>");
                         if (ADdata && knownADattribs.Contains(attribute.Name))
                         {
                             strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0]
                                 + "</TD><TD valign=\"top\" nowrap>" + attribute.ADStringValues[0] + "</TD></TR>\r\n");
-                            //switch (attribute.Name)
-                            //{
-                            //    case "accountExpires":
-                            //        strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0]
-                            //            + "</TD><TD valign=\"top\" nowrap>" + attribute.ADStringValues[0] + "</TD></TR>\r\n");
-                            //        break;
-                            //    case "objectSid":
-                            //        strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0]
-                            //            + "</TD><TD valign=\"top\" nowrap>" + attribute.ADStringValues[0] + "</TD></TR>\r\n");
-                            //        break;
-                            //    case "pwdLastSet":
-                            //        strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0]
-                            //            + "</TD><TD valign=\"top\" nowrap>" + attribute.ADStringValues[0] + "</TD></TR>\r\n");
-                            //        break;
-                            //    case "groupType":
-                            //        strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0]
-                            //            + "</TD><TD valign=\"top\" nowrap>" + attribute.ADStringValues[0] + "</TD></TR>\r\n");
-                            //        break;
-                            //    case "userAccountControl":
-                            //        strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0]
-                            //            + "</TD><TD valign=\"top\" nowrap>" + attribute.ADStringValues[0] + "</TD></TR>\r\n");
-                            //        break;
-                            //    //Nothing special done with description so no need to use this - for now....
-                            //    //case "description":
-                            //    //    string curDesc = syncdAttrib.StringValues[0].Replace(". ", ",<BR>");
-                            //    //    string newDesc = attribute.StringValues[0].Replace(". ", ".<BR>");
-                            //    //    strOutput.Append("<TD valign=\"top\">" + curDesc.Replace(" ", "&nbsp;") + "</TD><TD valign=\"top\">" + newDesc.Replace(" ", "&nbsp;") + "</TD><TR>\r\n");
-                            //    //    break;
-                            //}
                         }
                         else
                         {
@@ -2862,41 +3417,15 @@ namespace csReporter
                     }
                     else if (syncdAttrib == null && attribute != null)
                     {
-                        //strOutput.Append("<TR><TD style=\"border-style: none;\" /><TD style=\"border-style: none;\" /><TD style=\"border-style: none;\" /><TD valign=\"top\" nowrap>" + attribute.Name + "</TD>");
                         if (ADdata && knownADattribs.Contains(attribute.Name))
                         {
                             strOutput.Append("<TD /><TD valign=\"top\" nowrap>" + attribute.ADStringValues[0] + "</TD></TR>\r\n");
-                            //switch (attribute.Name)
-                            //{
-                            //    case "accountExpires":
-                            //        strOutput.Append("<TD /><TD valign=\"top\" nowrap>" + attribute.ADStringValues[0] + "</TD></TR>\r\n");
-                            //        break;
-                            //    case "objectSid":
-                            //        strOutput.Append("<TD /><TD valign=\"top\" nowrap>" + attribute.ADStringValues[0] + "</TD></TR>\r\n");
-                            //        break;
-                            //    case "pwdLastSet":
-                            //        strOutput.Append("<TD /><TD valign=\"top\" nowrap>" + attribute.ADStringValues[0] + "</TD></TR>\r\n");
-                            //        break;
-                            //    case "groupType":
-                            //        strOutput.Append("<TD /><TD valign=\"top\" nowrap>" + attribute.ADStringValues[0] + "</TD></TR>\r\n");
-                            //        break;
-                            //    case "userAccountControl":
-                            //        strOutput.Append("<TD /><TD valign=\"top\" nowrap>" + attribute.ADStringValues[0] + "</TD></TR>\r\n");
-                            //        break;
-                            //    //Nothing special done with description so no need to use this - for now....
-                            //    //case "description":
-                            //    //    string strTemp = attribute.StringValues[0].Replace(". ", ".<BR>");
-                            //    //    strTemp = strTemp.Replace(" ", "&nbsp;");
-                            //    //    strOutput.Append("<TD /><TD valign=\"top\">" + strTemp + "</TD><TR>\r\n");
-                            //    //    break;
-                            //}
                         }
                         else
                         {
                             strOutput.Append("<TD /><TD valign=\"top\" nowrap>");
                             foreach (string val in attribute.StringValues)
                             {
-                                //strTemp = val.Replace("\\,", ",");
                                 string strTemp = val.Replace(" ", "&nbsp;");
                                 strOutput.Append(strTemp + "<BR>\r\n");
                             }
@@ -2905,35 +3434,9 @@ namespace csReporter
                     }
                     else if (syncdAttrib != null && attribute == null)
                     {
-                        //strOutput.Append("<TR><TD style=\"border-style: none;\" /><TD style=\"border-style: none;\" /><TD style=\"border-style: none;\" /><TD valign=\"top\" nowrap>" + syncdAttrib.Name + "</TD>");
-
                         if (ADdata && knownADattribs.Contains(syncdAttrib.Name))
                         {
                             strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0] + "</TD><TD><b><i>(Deleted)</i></b></TD></TR>\r\n");
-                            //switch (syncdAttrib.Name)
-                            //{
-                            //    case "accountExpires":
-                            //        strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0] + "</TD><TD><b><i>(Deleted)</i></b></TD></TR>\r\n");
-                            //        break;
-                            //    case "objectSid":
-                            //        strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0] + "</TD><TD><b><i>(Deleted)</i></b></TD></TR>\r\n");
-                            //        break;
-                            //    case "pwdLastSet":
-                            //        strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0] + "</TD><TD><b><i>(Deleted)</i></b></TD></TR>\r\n");
-                            //        break;
-                            //    case "groupType":
-                            //        strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0] + "</TD><TD><b><i>(Deleted)</i></b></TD></TR>\r\n");
-                            //        break;
-                            //    case "userAccountControl":
-                            //        strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0] + "</TD><TD><b><i>(Deleted)</i></b></TD></TR>\r\n");
-                            //        break;
-                            //    //Nothing special done with description so no need to use this - for now....
-                            //    //case "description":
-                            //    //    string strTemp = syncdAttrib.StringValues[0].Replace(". ", ".<BR>");
-                            //    //    strTemp = strTemp.Replace(" ", "&nbsp;");
-                            //    //    strOutput.Append("<TD valign=\"top\">" + strTemp + "</TD><TD /><TR>\r\n");
-                            //    //    break;
-                            //}
                         }
                         else
                         {
@@ -2963,121 +3466,15 @@ namespace csReporter
                 }
                 return strOutput.ToString();
             }
-            private string AddAttribToReportCSV(string attribValue, Attribute syncdAttrib)
-            {
-                StringBuilder strOutput = new StringBuilder("");
-
-                try
-                {
-                    if (ADdata && knownADattribs.Contains(syncdAttrib.Name))
-                    {
-                        strOutput.Append(syncdAttrib.ADStringValues[0] + "," + attribValue);
-                        //switch (syncdAttrib.Name)
-                        //{
-                        //    case "accountExpires":
-                        //        strOutput.Append(syncdAttrib.ADStringValues[0] + "," + attribValue);
-                        //        break;
-                        //    case "objectSid":
-                        //        strOutput.Append(syncdAttrib.ADStringValues[0] + "," + attribValue);
-                        //        break;
-                        //    case "pwdLastSet":
-                        //        strOutput.Append(syncdAttrib.ADStringValues[0] + "," + attribValue);
-                        //        break;
-                        //    case "groupType":
-                        //        strOutput.Append(syncdAttrib.ADStringValues[0] + "," + attribValue);
-                        //        break;
-                        //    case "userAccountControl":
-                        //        strOutput.Append(syncdAttrib.ADStringValues[0] + "," + attribValue);
-                        //        break;
-                        //    //Nothing special done with description so no need to use this - for now....
-                        //    //case "description":
-                        //    //    string curDesc = "\"" + syncdAttrib.StringValues[0] + "\"";
-                        //    //    string newDesc = "\"" + attribute.StringValues[0] + "\"";
-                        //    //    strOutput.Append(curDesc + "," + newDesc);
-                        //    //    break;
-                        //}
-                    }
-                    else
-                    {
-                        strOutput.Append("\"");
-                        string strTemp = "";
-                        foreach (string val in syncdAttrib.StringValues)
-                        {
-                            strTemp = val;
-                            if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))//(Regex.IsMatch(strTemp, @"^\d"))
-                            {
-                                strTemp = strTemp.Insert(0, "'");
-                            }
-                            strOutput.Append(strTemp + "\n");
-                        }
-                        strOutput.Remove(strOutput.Length - 1, 1);
-                        strOutput.Append("\",\"");
-
-                        strTemp = attribValue;
-                        if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))//(Regex.IsMatch(strTemp, @"^\d"))
-                        {
-                            strTemp = strTemp.Insert(0, "'");
-                        }
-                        strOutput.Append(strTemp + "\n");
-                        strOutput.Remove(strOutput.Length - 1, 1);
-                        strOutput.Append("\"");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    string errorMessage = "";
-                    if (attribValue != null)
-                    {
-                        errorMessage = "Error getting attribute values\r\nAttribValue=" + attribValue;
-                    }
-                    else if (syncdAttrib != null)
-                    {
-                        errorMessage = "Error getting attribute values\r\nAttributeName=" + syncdAttrib.Name;
-                    }
-                    ExceptionHandler.handleException(ex, errorMessage);
-                    Application.Exit();
-                }
-                return strOutput.ToString();
-            }
             private string AddAttribToReportHTML(string attribValue, Attribute syncdAttrib)
             {
                 StringBuilder strOutput = new StringBuilder("");
                 try
                 {
-                    //strOutput.Append("<TR><TD style=\"border-style: none;\" /><TD style=\"border-style: none;\" /><TD style=\"border-style: none;\" /><TD valign=\"top\" nowrap>" + syncdAttrib.Name + "</TD>");
                     if (ADdata && knownADattribs.Contains(syncdAttrib.Name))
                     {
                         strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0]
                             + "</TD><TD valign=\"top\" nowrap><b><i>" + attribValue + "</i></b></TD></TR>\r\n");
-                        //switch (syncdAttrib.Name)
-                        //{
-                        //    case "accountExpires":
-                        //        strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0]
-                        //            + "</TD><TD valign=\"top\" nowrap><b><i>" + attribValue+ "</i></b></TD></TR>\r\n");
-                        //        break;
-                        //    case "objectSid":
-                        //        strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0]
-                        //            + "</TD><TD valign=\"top\" nowrap><b><i>" + attribValue + "</i></b></TD></TR>\r\n");
-                        //        break;
-                        //    case "pwdLastSet":
-                        //        strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0]
-                        //            + "</TD><TD valign=\"top\" nowrap><b><i>" + attribValue + "</i></b></TD></TR>\r\n");
-                        //        break;
-                        //    case "groupType":
-                        //        strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0]
-                        //            + "</TD><TD valign=\"top\" nowrap><b><i>" + attribValue + "</i></b></TD></TR>\r\n");
-                        //        break;
-                        //    case "userAccountControl":
-                        //        strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0]
-                        //            + "</TD><TD valign=\"top\" nowrap><b><i>" + attribValue + "</i></b></TD></TR>\r\n");
-                        //        break;
-                        //    //Nothing special done with description so no need to use this - for now....
-                        //    //case "description":
-                        //    //    string curDesc = syncdAttrib.StringValues[0].Replace(". ", ",<BR>");
-                        //    //    string newDesc = attribute.StringValues[0].Replace(". ", ".<BR>");
-                        //    //    strOutput.Append("<TD valign=\"top\">" + curDesc.Replace(" ", "&nbsp;") + "</TD><TD valign=\"top\">" + newDesc.Replace(" ", "&nbsp;") + "</TD><TR>\r\n");
-                        //    //    break;
-                        //}
                     }
                     else
                     {
@@ -3110,71 +3507,6 @@ namespace csReporter
                 }
                 return strOutput.ToString();
             }
-            private string AddAttribToReportCSV(Attribute syncdAttrib)
-            {
-                StringBuilder strOutput = new StringBuilder("");
-
-                try
-                {
-                    if (syncdAttrib != null)
-                    {
-                        if (ADdata && knownADattribs.Contains(syncdAttrib.Name))
-                        {
-                            strOutput.Append(syncdAttrib.ADStringValues[0]);
-                            //switch (syncdAttrib.Name)
-                            //{
-                            //    case "accountExpires":
-                            //        strOutput.Append(syncdAttrib.ADStringValues[0]);
-                            //        break;
-                            //    case "objectSid":
-                            //        strOutput.Append(syncdAttrib.ADStringValues[0]);
-                            //        break;
-                            //    case "pwdLastSet":
-                            //        strOutput.Append(syncdAttrib.ADStringValues[0]);
-                            //        break;
-                            //    case "groupType":
-                            //        strOutput.Append(syncdAttrib.ADStringValues[0]);
-                            //        break;
-                            //    case "userAccountControl":
-                            //        strOutput.Append(syncdAttrib.ADStringValues[0]);
-                            //        break;
-                            //    //Nothing special done with description so no need to use this - for now....
-                            //    //case "description":
-                            //    //    string curDesc = syncdAttrib.StringValues[0];
-                            //    //    strOutput.Append("\"" + curDesc + "\"");
-                            //    //    break;
-                            //}
-                        }
-                        else
-                        {
-                            strOutput.Append("\"");
-                            foreach (string val in syncdAttrib.StringValues)
-                            {
-                                string strTemp = val;
-                                if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))//(Regex.IsMatch(strTemp, @"^\d"))
-                                {
-                                    strTemp = strTemp.Insert(0, "'");
-                                }
-                                //strTemp = strTemp.Replace("\\,", ",");
-                                strOutput.Append(strTemp + "\n");
-                            }
-                            strOutput.Remove(strOutput.Length - 1, 1);
-                            strOutput.Append("\"");
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    string errorMessage = "Error getting attribute values";
-                    if (syncdAttrib != null)
-                    {
-                        errorMessage = "\r\nAttributeName=" + syncdAttrib.Name;
-                    }
-                    ExceptionHandler.handleException(ex, errorMessage);
-                    Application.Exit();
-                }
-                return strOutput.ToString();
-            }
             private string AddAttribToReportHTML(Attribute syncdAttrib)
             {
                 StringBuilder strOutput = new StringBuilder("");
@@ -3183,33 +3515,9 @@ namespace csReporter
                 {
                     if (syncdAttrib != null)
                     {
-                        //strOutput.Append("<TR><TD style=\"border-style: none;\" /><TD style=\"border-style: none;\" /><TD valign=\"top\" nowrap>" + syncdAttrib.Name + "</TD>");
                         if (ADdata && knownADattribs.Contains(syncdAttrib.Name))
                         {
                             strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0] + "</TD></TR>\r\n");
-                            //switch (syncdAttrib.Name)
-                            //{
-                            //    case "accountExpires":
-                            //        strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0] + "</TD></TR>\r\n");
-                            //        break;
-                            //    case "objectSid":
-                            //        strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0] + "</TD></TR>\r\n");
-                            //        break;
-                            //    case "pwdLastSet":
-                            //        strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0] + "</TD></TR>\r\n");
-                            //        break;
-                            //    case "groupType":
-                            //        strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0] + "</TD></TR>\r\n");
-                            //        break;
-                            //    case "userAccountControl":
-                            //        strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0] + "</TD></TR>\r\n");
-                            //        break;
-                            //    //Nothing special done with description so no need to use this - for now....
-                            //    //case "description":
-                            //    //    string curDesc = syncdAttrib.StringValues[0].Replace(". ", ".<BR>");
-                            //    //    strOutput.Append("<TD valign=\"top\">" + curDesc.Replace(" ", "&nbsp;") + "</TD><TR>\r\n");
-                            //    //    break;
-                            //}
                         }
                         else
                         {
@@ -3235,10 +3543,12 @@ namespace csReporter
                 }
                 return strOutput.ToString();
             }
+            #endregion
+
             private Attribute GetMatchingAttribute(string inputName, List<Attribute> attribList)
-            {
-                return attribList.Find(attrib => attrib.Name == inputName);
-            }
+                {
+                    return attribList.Find(attrib => attrib.Name == inputName);
+                }
         #endregion
 
         #region Parsing functions
@@ -3262,7 +3572,6 @@ namespace csReporter
                         {
                             MessageBox.Show("Progress window closed before processing was completed.\r\n\r\nNo data was processed", "Processing Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             frmProgress.Dispose();
-                            //ShowGetDataForm();
 
                             //reset for future use
                             stopProcessing = false;
@@ -3322,8 +3631,8 @@ namespace csReporter
                                     if (xmlRead.Name == "cs-object" && xmlRead.NodeType == XmlNodeType.Element)
                                     {
                                         string line = xmlRead.ReadOuterXml();
-                                        //createTasks.Add(Task.Factory.StartNew(() => createAddcsObject(line)));
-                                        createAddcsObject(line);
+                                        createTasks.Add(Task.Factory.StartNew(() => createAddcsObject(line)));
+                                        //createAddcsObject(line);
                                     }
                                     else
                                     {

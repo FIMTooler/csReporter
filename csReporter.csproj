@@ -72,7 +72,7 @@
     <Compile Include="csReporter2.cs" />
     <Compile Include="csReporter3.cs" />
     <Compile Include="csReporter4.cs" />
-    <Compile Include="ExcelReport.cs" />
+    <Compile Include="ExcelWriter.cs" />
     <Compile Include="frmCSExamples.cs">
       <SubType>Form</SubType>
     </Compile>
