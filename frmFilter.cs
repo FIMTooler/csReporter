@@ -3014,7 +3014,7 @@ namespace csReporter
                     this.methSetText(frmProgress, "Generating Excel report");
                     this.methUpdateBar(frmProgress, 0);
                     ExcelWriter excelReport = new ExcelWriter(outputFileName);
-                    WriteExcelReportHeader(excelReport);
+                    WriteExcelReportHeaders(excelReport);
                     int counter = 0;
                     foreach (csObject obj in matchingCSobjects)
                     {
@@ -3023,7 +3023,7 @@ namespace csReporter
                             break;
                         }
                         this.methUpdateBar(frmProgress, (counter * 100) / matchingCSobjects.Count);
-                        excelReport.WriteNextRow(WriteExcelCSObjectReport(obj));
+                        excelReport.WriteNextRow(WriteExcelObjectReport(obj));
                         counter++;
                     }
                     excelReport.Dispose();
@@ -3050,7 +3050,7 @@ namespace csReporter
                     this.methCloseForm(frmProgress);
                 }
         }
-            private void WriteExcelReportHeader(ExcelWriter excelReport)
+            private void WriteExcelReportHeaders(ExcelWriter excelReport)
             {
                 excelReport.WriteNextRow("Criterial");
                 excelReport.WriteNextRow(new List<string> { "", "Data Type:", filter.FilterState.ToString() });
@@ -3113,7 +3113,7 @@ namespace csReporter
                 }
                 excelReport.WriteNextRow(dataValues);
             }
-            private List<string> WriteExcelCSObjectReport(csObject obj)
+            private List<string> WriteExcelObjectReport(csObject obj)
             {
                 List<string> rowValues = new List<string>();
 
@@ -3761,9 +3761,18 @@ namespace csReporter
                 this.methUpdateBar(frmProgress, 0);
                 this.methSetText(frmProgress, "Processing XML file");
                 StreamWriter outFile = null;
+                ExcelWriter excelFile = null;
                 if (makeReport)
                 {
-                    outFile = new StreamWriter(outputFileName);
+                    switch (report)
+                    {
+                        case reportType.Excel:
+                            excelFile = new ExcelWriter(outputFileName);
+                            break;
+                        default:
+                            outFile = new StreamWriter(outputFileName);
+                            break;
+                    }
                 }
 
                 try
@@ -3805,13 +3814,13 @@ namespace csReporter
                                             {
                                                 if (makeReport)
                                                 {
-                                                    if (outFile == null)
-                                                    {
-                                                        ExceptionHandler.handleException("While attempting to make a report, output StreamWriter is null.");
-                                                    }
                                                     switch (report)
                                                     {
                                                         case reportType.CSV:
+                                                            if (outFile == null)
+                                                            {
+                                                                ExceptionHandler.handleException("While attempting to make a report, output StreamWriter is null.");
+                                                            }
                                                             //making a report, only write headers if counterMatchObjects == 0
                                                             if (counterMatchObjects == 0)
                                                             {
@@ -3819,7 +3828,19 @@ namespace csReporter
                                                             }
                                                             WriteCSVObjectReport(outFile, tmpCSO);
                                                             break;
+                                                        case reportType.Excel:
+                                                            //making a report, only write headers if counterMatchObjects == 0
+                                                            if (counterMatchObjects == 0)
+                                                            {
+                                                                WriteExcelReportHeaders(excelFile);
+                                                            }
+                                                            excelFile.WriteNextRow(WriteExcelObjectReport(tmpCSO));
+                                                            break;
                                                         default:
+                                                            if (outFile == null)
+                                                            {
+                                                                ExceptionHandler.handleException("While attempting to make a report, output StreamWriter is null.");
+                                                            }
                                                             //making a report, only write headers if counterMatchObjects == 0
                                                             if (counterMatchObjects == 0)
                                                             {
