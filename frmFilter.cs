@@ -1961,55 +1961,55 @@ namespace csReporter
 
             #region Reporting - CSV
             private void BuildCSVReport(object objForm)
+            {
+                frmProgressBar frmProgress = (frmProgressBar)objForm;
+                while (!frmProgress.Visible)
                 {
-                    frmProgressBar frmProgress = (frmProgressBar)objForm;
-                    while (!frmProgress.Visible)
+                    Thread.SpinWait(200);
+                }
+                this.methSetText(frmProgress, "Generating CSV report");
+                this.methUpdateBar(frmProgress, 0);
+                using (StreamWriter outFile = new StreamWriter(outputFileName, false, Encoding.UTF8))
+                {
+                    try
                     {
-                        Thread.SpinWait(200);
+                        WriteCSVReportHeaders(outFile);
+                        //CS-DN     Object Type     Operation       Current Attribute       New Attribute
+                        int counter = 0;
+                        foreach (csObject obj in matchingCSobjects)
+                        {
+                            if (frmFilter.stopProcessing)
+                            {
+                                break;
+                            }
+                            this.methUpdateBar(frmProgress, (counter * 100) / matchingCSobjects.Count);
+                            WriteCSVObjectReport(outFile, obj);
+                            counter++;
+                        }
                     }
-                    this.methSetText(frmProgress, "Generating CSV report");
-                    this.methUpdateBar(frmProgress, 0);
-                    using (StreamWriter outFile = new StreamWriter(outputFileName, false, Encoding.UTF8))
+                    catch (IOException ex)
                     {
-                        try
+                        if (ex.Message.Contains("it is being used by another process"))
                         {
-                            WriteCSVReportHeaders(outFile);
-                            //CS-DN     Object Type     Operation       Current Attribute       New Attribute
-                            int counter = 0;
-                            foreach (csObject obj in matchingCSobjects)
-                            {
-                                if (frmFilter.stopProcessing)
-                                {
-                                    break;
-                                }
-                                this.methUpdateBar(frmProgress, (counter * 100) / matchingCSobjects.Count);
-                                WriteCSVObjectReport(outFile, obj);
-                                counter++;
-                            }
+                            //show clean messagebox to notify user
+                            MessageBox.Show("The selected report file is in use by another process.  Please close the file and try again.");
                         }
-                        catch (IOException ex)
+                        else
                         {
-                            if (ex.Message.Contains("it is being used by another process"))
-                            {
-                                //show clean messagebox to notify user
-                                MessageBox.Show("The selected report file is in use by another process.  Please close the file and try again.");
-                            }
-                            else
-                            {
-                                //show regular exception box
-                                ExceptionHandler.handleException(ex, "Error occurred while creating to CSV file");
-                            }
+                            //show regular exception box
+                            ExceptionHandler.handleException(ex, "Error occurred while creating to CSV file");
                         }
-                        catch (Exception ex)
-                        {
-                            ExceptionHandler.handleException(ex, "Error occurred while creating CSV file");
-                        }
-                        finally
-                        {
-                            this.methCloseForm(frmProgress);
-                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ExceptionHandler.handleException(ex, "Error occurred while creating CSV file");
+                    }
+                    finally
+                    {
+                        this.methCloseForm(frmProgress);
                     }
                 }
+            }
             private void WriteCSVReportHeaders(StreamWriter writer)
             {
                 writer.Write("Criteria\r\n");
