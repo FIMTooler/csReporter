@@ -49,8 +49,7 @@ namespace csReporter
 
             CustomConcurrentBag<csObject> csObjects = new CustomConcurrentBag<csObject>();
             ConcurrentBag<csObject> matchingCSobjects = new ConcurrentBag<csObject>();
-            FilterObject filter;// = new FilterObject();
-            //enum recalcLevel { State, ObjectType, Operation, AttributeValue };
+            FilterObject filter;
             string inputFileName;
             string outputFileName;
             ToolTip tTipInfo = new ToolTip();
@@ -689,7 +688,6 @@ namespace csReporter
                     filter.FilterState = filterAction;
                     filter.Level = FilterLevel.Operation;
                     filter.ObjectTypes = objTypes;
-                    //filter.Operations = GetSelectedOps();
                     filter.Operations = op;
                     filter.AttributeFilters.Clear();
 
@@ -732,7 +730,6 @@ namespace csReporter
                     filter.FilterState = filterAction;
                     filter.Level = FilterLevel.AttributeValue;
                     filter.ObjectTypes = objTypes;
-                    //filter.Operations = GetSelectedOps();
                     filter.Operations = op;
                     filter.AttributeFilters = attribFilters;
 
@@ -780,7 +777,6 @@ namespace csReporter
 
                     filter.FilterState = State.Synchronized;
                     filter.Level = FilterLevel.AttributeValue;
-                    //filter.ObjectTypes = lbObjectType.SelectedItems.Cast<string>().ToList();
                     filter.ObjectTypes = objTypes;
                     filter.Operations.Clear();
                     filter.AttributeFilters = attribFilters;
@@ -2277,8 +2273,7 @@ namespace csReporter
                         }
                     }
                 }
-                //IF should not be necessary.  Operation cannot be none (no longer allowing combined import/export reports)
-                else //if (obj.Delta(filter.FilterState).Operation != operation.none)
+                else
                 {
                     writer.Write("\"" + obj.csDN + "\"," + obj.ObjectType + "," + filter.FilterState.ToString() + "-" + obj.Delta(filter.FilterState).Operation);
                     writer.Write(",");
@@ -2503,8 +2498,7 @@ namespace csReporter
                         }
                     }
                 }
-                //IF should not be necessary.  Operation cannot be none (no longer allowing combined import/export reports)
-                else// if (obj.Delta(filter.FilterState).Operation != operation.none)
+                else
                 {
                     writer.Write("<TR><TD>" + obj.csDN + "</TD><TD>" + obj.ObjectType + "</TD><TD>" + filter.FilterState.ToString() + "-" + obj.Delta(filter.FilterState).Operation + "</TD></TR>\r\n");
 
@@ -2652,7 +2646,7 @@ namespace csReporter
                             foreach (string val in syncdAttrib.StringValues)
                             {
                                 string strTemp = val;
-                                if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))//(Regex.IsMatch(strTemp, @"^\d"))
+                                if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))
                                 {
                                     strTemp = strTemp.Insert(0, "'");
                                 }
@@ -2664,7 +2658,7 @@ namespace csReporter
                             foreach (string val in attribute.StringValues)
                             {
                                 string strTemp = val;
-                                if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))//(Regex.IsMatch(strTemp, @"^\d"))
+                                if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))
                                 {
                                     strTemp = strTemp.Insert(0, "'");
                                 }
@@ -2686,7 +2680,7 @@ namespace csReporter
                             foreach (string val in attribute.StringValues)
                             {
                                 string strTemp = val;
-                                if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))//(Regex.IsMatch(strTemp, @"^\d"))
+                                if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))
                                 {
                                     strTemp = strTemp.Insert(0, "'");
                                 }
@@ -2708,7 +2702,7 @@ namespace csReporter
                             foreach (string val in syncdAttrib.StringValues)
                             {
                                 string strTemp = val;
-                                if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))//(Regex.IsMatch(strTemp, @"^\d"))
+                                if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))
                                 {
                                     strTemp = strTemp.Insert(0, "'");
                                 }
@@ -2746,7 +2740,6 @@ namespace csReporter
                 {
                     if (syncdAttrib != null && attribute != null)
                     {
-                        //strOutput.Append("<TR><TD style=\"border-style: none;\" /><TD style=\"border-style: none;\" /><TD style=\"border-style: none;\" /><TD valign=\"top\" nowrap>" + attribute.Name + "</TD>");
                         if (ADdata && knownADattribs.Contains(attribute.Name))
                         {
                             strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0]
@@ -2771,7 +2764,6 @@ namespace csReporter
                     }
                     else if (syncdAttrib == null && attribute != null)
                     {
-                        //strOutput.Append("<TR><TD style=\"border-style: none;\" /><TD style=\"border-style: none;\" /><TD style=\"border-style: none;\" /><TD valign=\"top\" nowrap>" + attribute.Name + "</TD>");
                         if (ADdata && knownADattribs.Contains(attribute.Name))
                         {
                             strOutput.Append("<TD /><TD valign=\"top\" nowrap>" + attribute.ADStringValues[0] + "</TD></TR>\r\n");
@@ -2781,7 +2773,6 @@ namespace csReporter
                             strOutput.Append("<TD /><TD valign=\"top\" nowrap>");
                             foreach (string val in attribute.StringValues)
                             {
-                                //strTemp = val.Replace("\\,", ",");
                                 string strTemp = val.Replace(" ", "&nbsp;");
                                 strOutput.Append(strTemp + "<BR>\r\n");
                             }
@@ -2790,8 +2781,6 @@ namespace csReporter
                     }
                     else if (syncdAttrib != null && attribute == null)
                     {
-                        //strOutput.Append("<TR><TD style=\"border-style: none;\" /><TD style=\"border-style: none;\" /><TD style=\"border-style: none;\" /><TD valign=\"top\" nowrap>" + syncdAttrib.Name + "</TD>");
-
                         if (ADdata && knownADattribs.Contains(syncdAttrib.Name))
                         {
                             strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0] + "</TD><TD><b><i>(Deleted)</i></b></TD></TR>\r\n");
@@ -2841,7 +2830,7 @@ namespace csReporter
                         foreach (string val in syncdAttrib.StringValues)
                         {
                             strTemp = val;
-                            if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))//(Regex.IsMatch(strTemp, @"^\d"))
+                            if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))
                             {
                                 strTemp = strTemp.Insert(0, "'");
                             }
@@ -2851,7 +2840,7 @@ namespace csReporter
                         strOutput.Append("\",\"");
 
                         strTemp = attribValue;
-                        if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))//(Regex.IsMatch(strTemp, @"^\d"))
+                        if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))
                         {
                             strTemp = strTemp.Insert(0, "'");
                         }
@@ -2881,7 +2870,6 @@ namespace csReporter
                 StringBuilder strOutput = new StringBuilder("");
                 try
                 {
-                    //strOutput.Append("<TR><TD style=\"border-style: none;\" /><TD style=\"border-style: none;\" /><TD style=\"border-style: none;\" /><TD valign=\"top\" nowrap>" + syncdAttrib.Name + "</TD>");
                     if (ADdata && knownADattribs.Contains(syncdAttrib.Name))
                     {
                         strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0]
@@ -2936,11 +2924,10 @@ namespace csReporter
                             foreach (string val in syncdAttrib.StringValues)
                             {
                                 string strTemp = val;
-                                if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))//(Regex.IsMatch(strTemp, @"^\d"))
+                                if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))
                                 {
                                     strTemp = strTemp.Insert(0, "'");
                                 }
-                                //strTemp = strTemp.Replace("\\,", ",");
                                 strOutput.Append(strTemp + "\n");
                             }
                             strOutput.Remove(strOutput.Length - 1, 1);
@@ -2968,7 +2955,6 @@ namespace csReporter
                 {
                     if (syncdAttrib != null)
                     {
-                        //strOutput.Append("<TR><TD style=\"border-style: none;\" /><TD style=\"border-style: none;\" /><TD valign=\"top\" nowrap>" + syncdAttrib.Name + "</TD>");
                         if (ADdata && knownADattribs.Contains(syncdAttrib.Name))
                         {
                             strOutput.Append("<TD valign=\"top\" nowrap>" + syncdAttrib.ADStringValues[0] + "</TD></TR>\r\n");
@@ -3024,7 +3010,6 @@ namespace csReporter
                         {
                             MessageBox.Show("Progress window closed before processing was completed.\r\n\r\nNo data was processed", "Processing Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             frmProgress.Dispose();
-                            //ShowGetDataForm();
 
                             //reset for future use
                             stopProcessing = false;
@@ -3084,8 +3069,8 @@ namespace csReporter
                                     if (xmlRead.Name == "cs-object" && xmlRead.NodeType == XmlNodeType.Element)
                                     {
                                         string line = xmlRead.ReadOuterXml();
-                                        //createTasks.Add(Task.Factory.StartNew(() => createAddcsObject(line)));
-                                        createAddcsObject(line);
+                                        createTasks.Add(Task.Factory.StartNew(() => createAddcsObject(line)));
+                                        //createAddcsObject(line);
                                     }
                                     else
                                     {
