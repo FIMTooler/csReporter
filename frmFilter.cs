@@ -363,7 +363,7 @@ namespace csReporter
                                 break;
                             case reportType.Excel:
                                 sfdReport.Filter = "excel files (*.xlsx)|*.xlsx";
-                                break;
+                            break;
                             default:
                                 sfdReport.Filter = "html files (*.html)|*.html";
                                 break;
@@ -389,16 +389,7 @@ namespace csReporter
                                     worker = new Thread(BuildCSVReport);
                                     break;
                                 case reportType.Excel:
-                                    Assembly executingAssembly = Assembly.GetExecutingAssembly();
-                                    using (Stream stream = executingAssembly.GetManifestResourceStream("csReporter.DocumentFormat.OpenXml.dll"))
-                                    {
-                                        if (stream == null)
-                                            throw new ArgumentException("Embedded assembly not found: DocumentFormat.OpenXml.dll");
-                                        byte[] assemblyRawBytes = new byte[stream.Length];
-                                        stream.Read(assemblyRawBytes, 0, assemblyRawBytes.Length);
-                                        Assembly.Load(assemblyRawBytes);
-                                    }
-                                    worker = new Thread(BuildExcelReport);
+                                worker = new Thread(BuildExcelReport);
                                     break;
                                 default:
                                     worker = new Thread(BuildHTMLReport);
@@ -3729,58 +3720,58 @@ namespace csReporter
             }
             private void parseFileLowMem(object[] input)
             {
-                frmProgressBar frmProgress = (frmProgressBar)input[0];
-                while (!frmProgress.Visible)
-                {
-                    Thread.SpinWait(200);
-                }
-                long fileLength = (long)input[1];
-                FilterObject filterRef = null;
-                bool needADdata = false;
-                if (input[2] != null)
-                {
-                    filterRef = (FilterObject)input[2];
-                }
-                if (input[3] != null)
-                {
-                    needADdata = (bool)input[3];
-                }
-                //Local variables to hold new values while filtering with the existing global variables
-                List<string> newSysAttribs = new List<string>();
-                List<string> newChangingAttribs = new List<string>();
-                List<string> newNonChangingAttribs = new List<string>();
-                List<string> newErrorAttribs = new List<string>();
-                newChangingAttribs.Clear();
-                newNonChangingAttribs.Clear();
-                newSysAttribs.Clear();
-                newSysAttribs.Add("<DN>");
-                mvAttribs.Clear();
-                int counterCSObjects = 0;
-                int counterMatchObjects = 0;
-                List<string> objTypes = new List<string>();
-                List<string> ops = new List<string>();
-                FileStream fsRead = null;
-                BufferedStream bsRead = null;
-                XmlReader xmlRead = null;
-                this.methUpdateBar(frmProgress, 0);
-                this.methSetText(frmProgress, "Processing XML file");
-                StreamWriter outFile = null;
-                ExcelWriter excelFile = null;
-                if (makeReport)
-                {
-                    switch (report)
-                    {
-                        case reportType.Excel:
-                            excelFile = new ExcelWriter(outputFileName);
-                            break;
-                        default:
-                            outFile = new StreamWriter(outputFileName);
-                            break;
-                    }
-                }
-
                 try
                 {
+                    frmProgressBar frmProgress = (frmProgressBar)input[0];
+                    while (!frmProgress.Visible)
+                    {
+                        Thread.SpinWait(200);
+                    }
+                    long fileLength = (long)input[1];
+                    FilterObject filterRef = null;
+                    bool needADdata = false;
+                    if (input[2] != null)
+                    {
+                        filterRef = (FilterObject)input[2];
+                    }
+                    if (input[3] != null)
+                    {
+                        needADdata = (bool)input[3];
+                    }
+                    //Local variables to hold new values while filtering with the existing global variables
+                    List<string> newSysAttribs = new List<string>();
+                    List<string> newChangingAttribs = new List<string>();
+                    List<string> newNonChangingAttribs = new List<string>();
+                    List<string> newErrorAttribs = new List<string>();
+                    newChangingAttribs.Clear();
+                    newNonChangingAttribs.Clear();
+                    newSysAttribs.Clear();
+                    newSysAttribs.Add("<DN>");
+                    mvAttribs.Clear();
+                    int counterCSObjects = 0;
+                    int counterMatchObjects = 0;
+                    List<string> objTypes = new List<string>();
+                    List<string> ops = new List<string>();
+                    FileStream fsRead = null;
+                    BufferedStream bsRead = null;
+                    XmlReader xmlRead = null;
+                    this.methUpdateBar(frmProgress, 0);
+                    this.methSetText(frmProgress, "Processing XML file");
+                    StreamWriter outFile = null;
+                    ExcelWriter excelFile = null;
+                    if (makeReport)
+                    {
+                        switch (report)
+                        {
+                            case reportType.Excel:
+                                excelFile = new ExcelWriter(outputFileName);
+                                break;
+                            default:
+                                outFile = new StreamWriter(outputFileName);
+                                break;
+                        }
+                    }
+
                     using (fsRead = File.Open(inputFileName, FileMode.Open, FileAccess.Read, FileShare.Read))
                     {
                         using (bsRead = new BufferedStream(fsRead, 512000))
@@ -3792,187 +3783,196 @@ namespace csReporter
                                 long readSoFar = 0;
                                 //update interval is 5%
                                 long updateInterval = Convert.ToInt64(fileLength * .05);
-
-                                //stopProcessing signals thread to end/abort and exit
-                                while (!xmlRead.EOF && !stopProcessing)
+                                try
                                 {
-                                    if (xmlRead.Name == "cs-object" && xmlRead.NodeType == XmlNodeType.Element)
+                                    //stopProcessing signals thread to end/abort and exit
+                                    while (!xmlRead.EOF && !stopProcessing)
                                     {
-                                        csObject tmpCSO = new csObject(xmlRead.ReadSubtree());
-                                        mvAttribs.AddRange(tmpCSO.MVAttribNames);
-                                        mvAttribs = mvAttribs.Distinct().ToList();
-                                        //if filter exists check for match
-                                        if (filterRef != null)
+                                        if (xmlRead.Name == "cs-object" && xmlRead.NodeType == XmlNodeType.Element)
                                         {
-                                            if (needADdata)
+                                            csObject tmpCSO = new csObject(xmlRead.ReadSubtree());
+                                            mvAttribs.AddRange(tmpCSO.MVAttribNames);
+                                            mvAttribs = mvAttribs.Distinct().ToList();
+                                            //if filter exists check for match
+                                            if (filterRef != null)
                                             {
-                                                //Set attribute AD values
-                                                SetAttribADvals(tmpCSO.PendingImportHologram);
-                                                SetAttribADvals(tmpCSO.UnappliedExportHologram);
-                                                SetAttribADvals(tmpCSO.SynchronizedHologram);
-                                                SetAttribADvals(tmpCSO.EscrowedExportHologram);
-                                                SetAttribADvals(tmpCSO.UnconfirmedExportHologram);
+                                                if (needADdata)
+                                                {
+                                                    //Set attribute AD values
+                                                    SetAttribADvals(tmpCSO.PendingImportHologram);
+                                                    SetAttribADvals(tmpCSO.UnappliedExportHologram);
+                                                    SetAttribADvals(tmpCSO.SynchronizedHologram);
+                                                    SetAttribADvals(tmpCSO.EscrowedExportHologram);
+                                                    SetAttribADvals(tmpCSO.UnconfirmedExportHologram);
+                                                }
+                                                //check for match
+                                                if (MatchFilter(tmpCSO))
+                                                {
+                                                    if (makeReport)
+                                                    {
+                                                        switch (report)
+                                                        {
+                                                            case reportType.CSV:
+                                                                if (outFile == null)
+                                                                {
+                                                                    ExceptionHandler.handleException("While attempting to make a report, output StreamWriter is null.");
+                                                                }
+                                                                //making a report, only write headers if counterMatchObjects == 0
+                                                                if (counterMatchObjects == 0)
+                                                                {
+                                                                    WriteCSVReportHeaders(outFile);
+                                                                }
+                                                                WriteCSVObjectReport(outFile, tmpCSO);
+                                                                break;
+                                                            case reportType.Excel:
+                                                                if (excelFile == null)
+                                                                {
+                                                                    ExceptionHandler.handleException("While attempting to make a report, output ExcelWriter is null.");
+                                                                }
+                                                                //making a report, only write headers if counterMatchObjects == 0
+                                                                if (counterMatchObjects == 0)
+                                                                {
+                                                                    WriteExcelReportHeaders(excelFile);
+                                                                }
+                                                                excelFile.WriteNextRow(WriteExcelObjectReport(tmpCSO));
+                                                                break;
+                                                            default:
+                                                                if (outFile == null)
+                                                                {
+                                                                    ExceptionHandler.handleException("While attempting to make a report, output StreamWriter is null.");
+                                                                }
+                                                                //making a report, only write headers if counterMatchObjects == 0
+                                                                if (counterMatchObjects == 0)
+                                                                {
+                                                                    WriteHTMLReportHeaders(outFile);
+                                                                }
+                                                                WriteHTMLObjectReport(outFile, tmpCSO);
+                                                                break;
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        //update objTypes and operations
+                                                        if (filter.Level == FilterLevel.State)
+                                                        {
+                                                            objTypes.Add(tmpCSO.ObjectType);
+                                                        }
+                                                        if (filter.Level == FilterLevel.ObjectType && filter.FilterState != State.Synchronized)
+                                                        {
+                                                            ops.Add(tmpCSO.Delta(filter.FilterState).Operation.ToString());
+                                                        }
+                                                        //update attribute lists
+                                                        if (filter.FilterState != State.Synchronized)
+                                                        {
+                                                            newChangingAttribs.AddRange(tmpCSO.Delta(filter.FilterState).AttributeNames);
+                                                        }
+                                                        if (tmpCSO.SynchronizedHologram != null)
+                                                        {
+                                                            newNonChangingAttribs.AddRange(tmpCSO.SynchronizedHologram.AttributeNames);
+                                                        }
+                                                        if (tmpCSO.ConnectorState != "")
+                                                        {
+                                                            newSysAttribs.Add("<Connector State>");
+                                                        }
+                                                        if (tmpCSO.DisconnectionTime != DateTime.MinValue)
+                                                        {
+                                                            newSysAttribs.Add("<Disconnect Time>");
+                                                        }
+                                                        if (tmpCSO.ConnectionOperation != "")
+                                                        {
+                                                            newSysAttribs.Add("<Connector Operation>");
+                                                        }
+                                                        if (tmpCSO.ConnectionTime != DateTime.MinValue)
+                                                        {
+                                                            newSysAttribs.Add("<Connect Time>");
+                                                        }
+                                                        if (tmpCSO.Connector.HasValue)
+                                                        {
+                                                            newSysAttribs.Add("<Connector>");
+                                                        }
+                                                        if (tmpCSO.ExportError != null)
+                                                        {
+                                                            newErrorAttribs.Add("<ExportErrorDetails>");
+                                                        }
+                                                    }
+                                                    //if match update match counter
+                                                    counterMatchObjects++;
+                                                }
                                             }
-                                            //check for match
-                                            if (MatchFilter(tmpCSO))
+                                            //No filter selected - for initial loading of a file
+                                            else
                                             {
-                                                if (makeReport)
+                                                //update attribute lists
+                                                if (tmpCSO.SynchronizedHologram != null)
                                                 {
-                                                    switch (report)
-                                                    {
-                                                        case reportType.CSV:
-                                                            if (outFile == null)
-                                                            {
-                                                                ExceptionHandler.handleException("While attempting to make a report, output StreamWriter is null.");
-                                                            }
-                                                            //making a report, only write headers if counterMatchObjects == 0
-                                                            if (counterMatchObjects == 0)
-                                                            {
-                                                                WriteCSVReportHeaders(outFile);
-                                                            }
-                                                            WriteCSVObjectReport(outFile, tmpCSO);
-                                                            break;
-                                                        case reportType.Excel:
-                                                            //making a report, only write headers if counterMatchObjects == 0
-                                                            if (counterMatchObjects == 0)
-                                                            {
-                                                                WriteExcelReportHeaders(excelFile);
-                                                            }
-                                                            excelFile.WriteNextRow(WriteExcelObjectReport(tmpCSO));
-                                                            break;
-                                                        default:
-                                                            if (outFile == null)
-                                                            {
-                                                                ExceptionHandler.handleException("While attempting to make a report, output StreamWriter is null.");
-                                                            }
-                                                            //making a report, only write headers if counterMatchObjects == 0
-                                                            if (counterMatchObjects == 0)
-                                                            {
-                                                                WriteHTMLReportHeaders(outFile);
-                                                            }
-                                                            WriteHTMLObjectReport(outFile, tmpCSO);                                                                
-                                                            break;
-                                                    }
+                                                    newNonChangingAttribs.AddRange(tmpCSO.SynchronizedHologram.AttributeNames);
                                                 }
-                                                else
+                                                if (tmpCSO.ConnectorState != "")
                                                 {
-                                                    //update objTypes and operations
-                                                    if (filter.Level == FilterLevel.State)
-                                                    {
-                                                        objTypes.Add(tmpCSO.ObjectType);
-                                                    }
-                                                    if (filter.Level == FilterLevel.ObjectType && filter.FilterState != State.Synchronized)
-                                                    {
-                                                        ops.Add(tmpCSO.Delta(filter.FilterState).Operation.ToString());
-                                                    }
-                                                    //update attribute lists
-                                                    if (filter.FilterState != State.Synchronized)
-                                                    {
-                                                        newChangingAttribs.AddRange(tmpCSO.Delta(filter.FilterState).AttributeNames);
-                                                    }
-                                                    if (tmpCSO.SynchronizedHologram != null)
-                                                    {
-                                                        newNonChangingAttribs.AddRange(tmpCSO.SynchronizedHologram.AttributeNames);
-                                                    }
-                                                    if (tmpCSO.ConnectorState != "")
-                                                    {
-                                                        newSysAttribs.Add("<Connector State>");
-                                                    }
-                                                    if (tmpCSO.DisconnectionTime != DateTime.MinValue)
-                                                    {
-                                                        newSysAttribs.Add("<Disconnect Time>");
-                                                    }
-                                                    if (tmpCSO.ConnectionOperation != "")
-                                                    {
-                                                        newSysAttribs.Add("<Connector Operation>");
-                                                    }
-                                                    if (tmpCSO.ConnectionTime != DateTime.MinValue)
-                                                    {
-                                                        newSysAttribs.Add("<Connect Time>");
-                                                    }
-                                                    if (tmpCSO.Connector.HasValue)
-                                                    {
-                                                        newSysAttribs.Add("<Connector>");
-                                                    }
-                                                    if (tmpCSO.ExportError != null)
-                                                    {
-                                                        newErrorAttribs.Add("<ExportErrorDetails>");
-                                                    }
+                                                    newSysAttribs.Add("<Connector State>");
                                                 }
-                                                //if match update match counter
-                                                counterMatchObjects++;
+                                                if (tmpCSO.DisconnectionTime != DateTime.MinValue)
+                                                {
+                                                    newSysAttribs.Add("<Disconnect Time>");
+                                                }
+                                                if (tmpCSO.ConnectionOperation != "")
+                                                {
+                                                    newSysAttribs.Add("<Connector Operation>");
+                                                }
+                                                if (tmpCSO.ConnectionTime != DateTime.MinValue)
+                                                {
+                                                    newSysAttribs.Add("<Connect Time>");
+                                                }
+                                                if (tmpCSO.Connector.HasValue)
+                                                {
+                                                    newSysAttribs.Add("<Connector>");
+                                                }
+                                                if (tmpCSO.ExportError != null)
+                                                {
+                                                    newErrorAttribs.Add("<ExportErrorDetails>");
+                                                }
+                                            }
+                                            //update total object counter
+                                            counterCSObjects++;
+                                            readSoFar = bsRead.Position;
+                                            if (!stopProcessing && readSoFar >= updateInterval)
+                                            {
+                                                int temp = (int)((readSoFar / fileLength) * 200);
+                                                this.methUpdateBar(frmProgress, (int)((readSoFar * 100) / fileLength));
+                                                //increases updateInterval by 5%
+                                                updateInterval += Convert.ToInt64(fileLength * .05);
                                             }
                                         }
-                                        //No filter selected - for initial loading of a file
                                         else
                                         {
-                                            //update attribute lists
-                                            if (tmpCSO.SynchronizedHologram != null)
-                                            {
-                                                newNonChangingAttribs.AddRange(tmpCSO.SynchronizedHologram.AttributeNames);
-                                            }
-                                            if (tmpCSO.ConnectorState != "")
-                                            {
-                                                newSysAttribs.Add("<Connector State>");
-                                            }
-                                            if (tmpCSO.DisconnectionTime != DateTime.MinValue)
-                                            {
-                                                newSysAttribs.Add("<Disconnect Time>");
-                                            }
-                                            if (tmpCSO.ConnectionOperation != "")
-                                            {
-                                                newSysAttribs.Add("<Connector Operation>");
-                                            }
-                                            if (tmpCSO.ConnectionTime != DateTime.MinValue)
-                                            {
-                                                newSysAttribs.Add("<Connect Time>");
-                                            }
-                                            if (tmpCSO.Connector.HasValue)
-                                            {
-                                                newSysAttribs.Add("<Connector>");
-                                            }
-                                            if (tmpCSO.ExportError != null)
-                                            {
-                                                newErrorAttribs.Add("<ExportErrorDetails>");
-                                            }
+                                            xmlRead.Read();
                                         }
-                                        //update total object counter
-                                        counterCSObjects++;
-                                        readSoFar = bsRead.Position;
-                                        if (!stopProcessing && readSoFar >= updateInterval)
-                                        {
-                                            int temp = (int)((readSoFar / fileLength) * 200);
-                                            this.methUpdateBar(frmProgress, (int)((readSoFar * 100) / fileLength));
-                                            //increases updateInterval by 5%
-                                            updateInterval += Convert.ToInt64(fileLength * .05);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        xmlRead.Read();
                                     }
                                 }
-                                if (makeReport && outFile != null)
+                                finally
                                 {
-                                    switch (report)
-                                    {
-                                        case reportType.CSV:
-                                            outFile.Close();
-                                            outFile.Dispose();
-                                            break;
-                                        case reportType.Excel:
-                                            excelFile.Dispose();
-                                            break;
-                                        default:
-                                            if (report == reportType.HTML)
-                                            {
-                                                WriteHTMLEndReport(outFile);
-                                            }
-                                            outFile.Close();
-                                            outFile.Dispose();
-                                            break;
-                                    }
+                                    if (makeReport && (outFile != null || excelFile != null))
+                                     {
+                                        switch (report)
+                                        {
+                                            case reportType.CSV:
+                                                outFile.Close();
+                                                outFile.Dispose();
+                                                break;
+                                            case reportType.Excel:
+                                                excelFile.Dispose();
+                                                break;
+                                            default:
+                                                if (report == reportType.HTML)
+                                                {
+                                                    WriteHTMLEndReport(outFile);
+                                                }
+                                                outFile.Close();
+                                                outFile.Dispose();
+                                                break;
+                                        }
                                     makeReport = false;
+                                    }
                                 }
                                 if (filter != null && !stopProcessing)
                                 {
@@ -4008,16 +4008,16 @@ namespace csReporter
                     nonChangingAttribs = newNonChangingAttribs;
                     sysAttribs = newSysAttribs;
                     errorAttribs = newErrorAttribs;
+                    if (!stopProcessing)
+                    {
+                        this.SetTotalObjectCount(counterCSObjects);
+                        this.methCloseForm(frmProgress);
+                    }
                 }
                 catch (Exception ex)
                 {
                     ExceptionHandler.handleException(ex, "Error occurred parsing file.  Ensure the file follows proper XML syntax.  Regenerate file if necessary");
                     Application.Exit();
-                }
-                if (!stopProcessing)
-                {
-                    this.SetTotalObjectCount(counterCSObjects);
-                    this.methCloseForm(frmProgress);
                 }
             }
             private void createAddcsObject(object xmlStr)
