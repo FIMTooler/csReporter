@@ -23,9 +23,9 @@ SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Windows.Forms;
+using System.Reflection;
 
 namespace csReporter
 {
@@ -37,9 +37,22 @@ namespace csReporter
         [STAThread]
         static void Main()
         {
+            AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(ResolveExcel);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new frmGetData());
+        }
+        static Assembly ResolveExcel(object sender, ResolveEventArgs args)
+        {
+            Assembly executingAssembly = Assembly.GetExecutingAssembly();
+            using (Stream stream = executingAssembly.GetManifestResourceStream("csReporter.DocumentFormat.OpenXml.dll"))
+            {
+                if (stream == null)
+                    throw new ArgumentException("Embedded assembly not found: DocumentFormat.OpenXml.dll");
+                byte[] assemblyRawBytes = new byte[stream.Length];
+                stream.Read(assemblyRawBytes, 0, assemblyRawBytes.Length);
+                return Assembly.Load(assemblyRawBytes);
+            }
         }
     }
 }

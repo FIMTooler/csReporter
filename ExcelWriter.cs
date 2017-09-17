@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 //Namespaces needed for Excel processing
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
@@ -23,6 +24,9 @@ namespace csReporter
         Worksheet ws;
         private enum columnNames { A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, X, Y, Z, AA, AB, AC, AD, AE, AF, AG, AH, AI, AJ, AK, AL, AM, AN, AO, AP, AQ, AR, AS, AT, AU, AV, AW, AX, AY, AZ, BA, BB, BC, BD, BE, BF, BG, BH, BI, BJ, BK, BL, BM, BN, BO, BP, BQ, BR, BS, BT, BU, BV, BW, BX, BY, BZ, CA, CB, CC, CD, CE, CF, CG, CH, CI, CJ, CK, CL, CM, CN, CO, CP, CQ, CR, CS, CT, CU, CV, CW, CX, CY, CZ, DA, DB, DC, DD, DE, DF, DG, DH, DI, DJ, DK, DL, DM, DN, DO, DP, DQ, DR, DS, DT, DU, DV, DW, DX, DY, DZ }
         private uint currentRow;
+        Cell lastCell;
+        Row curRow;
+        List<string> sharedString;
 
         public ExcelWriter(string filePath)
         {
@@ -38,10 +42,12 @@ namespace csReporter
             sd = ws.GetFirstChild<SheetData>();
             ssp = doc.WorkbookPart.AddNewPart<SharedStringTablePart>();
             currentRow = 1;
+            sharedString = new List<string>();
         }
 
         public void Dispose()
         {
+            Thread.Sleep(2000);
             // Save the new worksheet.
             ws.Save();
             wbp.Workbook.Save();
@@ -94,19 +100,26 @@ namespace csReporter
             int i = 0;
 
             // Iterate through all the items in the SharedStringTable. If the text already exists, return its index.
-            foreach (SharedStringItem item in ssp.SharedStringTable.Elements<SharedStringItem>())
+            //foreach (SharedStringItem item in ssp.SharedStringTable.Elements<SharedStringItem>())
+            //{
+            //    if (item.InnerText == text)
+            //    {
+            //        return i;
+            //    }
+            //    i++;
+            //}
+
+            //looking up in List<string> is faster than above foreach
+            i = sharedString.IndexOf(text);
+            if (i == -1)
             {
-                if (item.InnerText == text)
-                {
-                    return i;
-                }
+                sharedString.Add(text);
+                // The text does not exist in the part. Create the SharedStringItem and return its index.
+                ssp.SharedStringTable.AppendChild(new SharedStringItem(new DocumentFormat.OpenXml.Spreadsheet.Text(text)));
+                ssp.SharedStringTable.Save();
 
-                i++;
+                return sharedString.Count;
             }
-
-            // The text does not exist in the part. Create the SharedStringItem and return its index.
-            ssp.SharedStringTable.AppendChild(new SharedStringItem(new DocumentFormat.OpenXml.Spreadsheet.Text(text)));
-            ssp.SharedStringTable.Save();
 
             return i;
         }
@@ -119,49 +132,23 @@ namespace csReporter
 
             // If the worksheet does not contain a row with the specified row index, insert one.
             Row row;
-            if (sd.Elements<Row>().Where(r => r.RowIndex == rowIndex).Count() != 0)
-            {
-                row = sd.Elements<Row>().Where(r => r.RowIndex == rowIndex).First();
-            }
-            else
+            //Writing only forward, no need to look for existing row object
+            //after initializing curRow, either existing row or new row
+            if (curRow == null || curRow.RowIndex < currentRow)
             {
                 row = new Row() { RowIndex = rowIndex };
                 sd.Append(row);
-            }
-
-            // If there is not a cell with the specified column name, insert one.
-            //empty string converts columnName to string
-            if (row.Elements<Cell>().Where(c => c.CellReference.Value == "" + columnName + rowIndex).Count() > 0)
-            {
-                return row.Elements<Cell>().Where(c => c.CellReference.Value == cellReference).First();
+                curRow = row;
             }
             else
             {
-                // Cells must be in sequential order according to CellReference. Determine where to insert the new cell.
-                Cell refCell = null;
-                foreach (Cell cell in row.Elements<Cell>())
-                {
-                    //Compare using Enum which is numerics.
-                    //String compare causes errors with AA coming before B which is not case in Excel columns
-                    string existingCellColumn = Regex.Replace(cell.CellReference.Value, "[0-9]", "");
-                    string newCellColumn = Regex.Replace(cellReference, "[0-9]", "");
-                    columnNames existingCellCol;
-                    Enum.TryParse<columnNames>(existingCellColumn, out existingCellCol);
-                    columnNames newCellCol;
-                    Enum.TryParse<columnNames>(newCellColumn, out newCellCol);
-                    if (existingCellCol > newCellCol)
-                    {
-                        refCell = cell;
-                        break;
-                    }
-                }
-
-                Cell newCell = new Cell() { CellReference = cellReference };
-                row.InsertBefore(newCell, refCell);
-
-                ws.Save();
-                return newCell;
+                row = curRow;
             }
+            //No need to check for overwrite existing cell
+            Cell newCell = new Cell() { CellReference = cellReference };
+            row.InsertBefore(newCell, lastCell);
+
+            return newCell;
         }
 
         private void WriteCell(string value, columnNames column, uint row)
@@ -171,11 +158,5 @@ namespace csReporter
             cell.CellValue = new CellValue(index.ToString());
             cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
         }
-        
-        private Attribute GetMatchingAttribute(string inputName, List<Attribute> attribList)
-        {
-            return attribList.Find(attrib => attrib.Name == inputName);
-        }
-
     }
 }
