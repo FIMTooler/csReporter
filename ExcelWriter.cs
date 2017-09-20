@@ -53,7 +53,6 @@ namespace csReporter
 
         public void Dispose()
         {
-            Thread.Sleep(2000);
             // Save the new worksheet.
             ws.Save();
             wbp.Workbook.Save();
