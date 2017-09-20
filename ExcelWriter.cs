@@ -27,6 +27,7 @@ namespace csReporter
         Cell lastCell;
         Row curRow;
         List<string> sharedString;
+        Stylesheet ss;
 
         public ExcelWriter(string filePath)
         {
@@ -43,6 +44,11 @@ namespace csReporter
             ssp = doc.WorkbookPart.AddNewPart<SharedStringTablePart>();
             currentRow = 1;
             sharedString = new List<string>();
+            
+            ss = GenerateStylesheet();
+            wbp.AddNewPart<WorkbookStylesPart>();
+            wbp.WorkbookStylesPart.Stylesheet = ss;
+            wbp.WorkbookStylesPart.Stylesheet.Save();
         }
 
         public void Dispose()
@@ -108,7 +114,7 @@ namespace csReporter
             //    }
             //    i++;
             //}
-
+            
             //looking up in List<string> is faster than above foreach
             i = sharedString.IndexOf(text);
             if (i == -1)
@@ -146,8 +152,9 @@ namespace csReporter
             }
             //No need to check for overwrite existing cell
             Cell newCell = new Cell() { CellReference = cellReference };
+            newCell.StyleIndex = 1;
             row.InsertBefore(newCell, lastCell);
-
+            
             return newCell;
         }
 
@@ -157,6 +164,20 @@ namespace csReporter
             Cell cell = InsertCellInWorksheet(column, row);
             cell.CellValue = new CellValue(index.ToString());
             cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
+        }
+        
+        private Stylesheet GenerateStylesheet()
+        {
+            Stylesheet styleSheet = null;
+            Fonts fonts = new Fonts(new Font(new FontSize() { Val = 10 }));
+            Fills fills = new Fills(new Fill(new PatternFill() { PatternType = PatternValues.None }));
+            Borders borders = new Borders(new Border());
+            CellFormat cf = new CellFormat() { FontId = 0, FillId = 0, BorderId = 0 };
+            CellFormat cfW = new CellFormat() { FontId = 0, FillId = 0, BorderId = 0, ApplyAlignment = true };
+            cfW.Append(new Alignment() { WrapText = true });
+            CellFormats cellFormats = new CellFormats(cf, cfW);
+            styleSheet = new Stylesheet(fonts, fills, borders, cellFormats);
+            return styleSheet;
         }
     }
 }
