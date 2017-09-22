@@ -3000,6 +3000,7 @@ namespace csReporter
             private void BuildExcelReport(object objForm)
             {
                 frmProgressBar frmProgress = (frmProgressBar)objForm;
+                ExcelWriter excelReport = null;
                 while (!frmProgress.Visible)
                 {
                     Thread.SpinWait(200);
@@ -3008,7 +3009,7 @@ namespace csReporter
                 {
                     this.methSetText(frmProgress, "Generating Excel report");
                     this.methUpdateBar(frmProgress, 0);
-                    ExcelWriter excelReport = new ExcelWriter(outputFileName);
+                    excelReport = new ExcelWriter(outputFileName);
                     WriteExcelReportHeaders(excelReport);
                     int counter = 0;
                     foreach (csObject obj in matchingCSobjects)
@@ -3021,7 +3022,6 @@ namespace csReporter
                         excelReport.WriteNextRow(WriteExcelObjectReport(obj));
                         counter++;
                     }
-                    excelReport.Dispose();
                 }
                 catch (IOException ex)
                 {
@@ -3042,6 +3042,7 @@ namespace csReporter
                 }
                 finally
                 {
+                    excelReport.Dispose();
                     this.methCloseForm(frmProgress);
                 }
         }
