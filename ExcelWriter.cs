@@ -24,7 +24,6 @@ namespace csReporter
         Worksheet ws;
         private enum columnNames { A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, X, Y, Z, AA, AB, AC, AD, AE, AF, AG, AH, AI, AJ, AK, AL, AM, AN, AO, AP, AQ, AR, AS, AT, AU, AV, AW, AX, AY, AZ, BA, BB, BC, BD, BE, BF, BG, BH, BI, BJ, BK, BL, BM, BN, BO, BP, BQ, BR, BS, BT, BU, BV, BW, BX, BY, BZ, CA, CB, CC, CD, CE, CF, CG, CH, CI, CJ, CK, CL, CM, CN, CO, CP, CQ, CR, CS, CT, CU, CV, CW, CX, CY, CZ, DA, DB, DC, DD, DE, DF, DG, DH, DI, DJ, DK, DL, DM, DN, DO, DP, DQ, DR, DS, DT, DU, DV, DW, DX, DY, DZ }
         private uint currentRow;
-        Cell lastCell;
         Row curRow;
         List<string> sharedString;
         Stylesheet ss;
@@ -53,11 +52,17 @@ namespace csReporter
 
         public void Dispose()
         {
-            // Save the new worksheet.
-            ws.Save();
-            wbp.Workbook.Save();
+            Save();
             doc.Close();
             doc.Dispose();
+        }
+
+        public void Save()
+        {
+            // Save the new worksheet
+            ssp.SharedStringTable.Save();
+            ws.Save();
+            wbp.Workbook.Save();
         }
         
         public void WriteNextRow(List<string> dataValues)
@@ -71,8 +76,18 @@ namespace csReporter
                 }
                 else
                 {
-                    InsertSharedStringItem(val);
-                    WriteCell(val, col++, currentRow);
+                    //greater than 600-700 seems to cause issues with string table and opening in Excel
+                    //if greater than 250, break into multiple rows
+                    if (val.Count(f => f == '\n') > 250)
+                    {
+                        //add code to break into multiple rows with minimum of DN column
+                        //Sync has less columns in front
+                    }
+                    else
+                    {
+                        InsertSharedStringItem(val);
+                        WriteCell(val, col++, currentRow);
+                    }
                 }
             }
             currentRow++;
@@ -121,7 +136,7 @@ namespace csReporter
                 sharedString.Add(text);
                 // The text does not exist in the part. Create the SharedStringItem and return its index.
                 ssp.SharedStringTable.AppendChild(new SharedStringItem(new DocumentFormat.OpenXml.Spreadsheet.Text(text)));
-                ssp.SharedStringTable.Save();
+                //ssp.SharedStringTable.Save();
 
                 return sharedString.Count;
             }
@@ -152,7 +167,7 @@ namespace csReporter
             //No need to check for overwrite existing cell
             Cell newCell = new Cell() { CellReference = cellReference };
             newCell.StyleIndex = 1;
-            row.InsertBefore(newCell, lastCell);
+            row.InsertAfter(newCell, row.LastChild);
             
             return newCell;
         }
@@ -173,7 +188,7 @@ namespace csReporter
             Borders borders = new Borders(new Border());
             CellFormat cf = new CellFormat() { FontId = 0, FillId = 0, BorderId = 0 };
             CellFormat cfW = new CellFormat() { FontId = 0, FillId = 0, BorderId = 0, ApplyAlignment = true };
-            cfW.Append(new Alignment() { WrapText = true });
+            cfW.Append(new Alignment() { Vertical = VerticalAlignmentValues.Top, Horizontal = HorizontalAlignmentValues.Left, WrapText = true });
             CellFormats cellFormats = new CellFormats(cf, cfW);
             styleSheet = new Stylesheet(fonts, fills, borders, cellFormats);
             return styleSheet;
