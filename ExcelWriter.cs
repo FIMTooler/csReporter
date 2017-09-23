@@ -24,8 +24,8 @@ namespace csReporter
         Worksheet ws;
         private enum columnNames { A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, X, Y, Z, AA, AB, AC, AD, AE, AF, AG, AH, AI, AJ, AK, AL, AM, AN, AO, AP, AQ, AR, AS, AT, AU, AV, AW, AX, AY, AZ, BA, BB, BC, BD, BE, BF, BG, BH, BI, BJ, BK, BL, BM, BN, BO, BP, BQ, BR, BS, BT, BU, BV, BW, BX, BY, BZ, CA, CB, CC, CD, CE, CF, CG, CH, CI, CJ, CK, CL, CM, CN, CO, CP, CQ, CR, CS, CT, CU, CV, CW, CX, CY, CZ, DA, DB, DC, DD, DE, DF, DG, DH, DI, DJ, DK, DL, DM, DN, DO, DP, DQ, DR, DS, DT, DU, DV, DW, DX, DY, DZ }
         private uint currentRow;
-        Row curRow;
         List<string> sharedString;
+        Dictionary<uint, Row> myRows;
         Stylesheet ss;
 
         public ExcelWriter(string filePath)
@@ -43,6 +43,7 @@ namespace csReporter
             ssp = doc.WorkbookPart.AddNewPart<SharedStringTablePart>();
             currentRow = 1;
             sharedString = new List<string>();
+            myRows = new Dictionary<uint, Row>();
             
             ss = GenerateStylesheet();
             wbp.AddNewPart<WorkbookStylesPart>();
@@ -68,43 +69,56 @@ namespace csReporter
         public void WriteNextRow(List<string> dataValues)
         {
             columnNames col = columnNames.A;
+            //needed to reset row when there's multiple rows for single cs object
+            //any columns after large multivalue column needs to be back on top row.
+            uint startRow = currentRow;
+            uint lastRow = currentRow;
             foreach (string val in dataValues)
             {
-                if (val == "")
-                {
-                    col++;
-                }
-                else
+                if (val != "")
                 {
                     //greater than 600-700 seems to cause issues with string table and opening in Excel
                     //if greater than 250, break into multiple rows
                     if (val.Count(f => f == '\n') > 250)
                     {
-                        //add code to break into multiple rows with minimum of DN column
-                        //Sync has less columns in front
+                        string[] vals = val.Split(new char[] { '\n' }, StringSplitOptions.None);
+                        for (int i = 0; i < vals.Length; i++)
+                        {
+                            //prevents Cells A and B from getting re-written
+                            //Re-writing Cells means extra lookups and time
+                            if (i != 0)
+                            {
+                                //dataValues[0] should always be DN unless >250 attributes in report
+                                WriteCell(dataValues[0], columnNames.A, currentRow);
+                                //dataValues[1] should always be object type unless >250 attributes in report
+                                WriteCell(dataValues[1], columnNames.B, currentRow);
+                            }
+                            WriteCell(vals[i], col, currentRow++);
+                        }
+                        //save last row for later
+                        //don't need advance, added below
+                        lastRow = currentRow - 1;
+                        currentRow = startRow;
                     }
                     else
                     {
-                        InsertSharedStringItem(val);
-                        WriteCell(val, col++, currentRow);
+                        WriteCell(val, col, currentRow);
                     }
                 }
+                col++;
             }
-            currentRow++;
+            //advance and reset
+            currentRow = ++lastRow;
         }
 
         public void WriteNextRow(string dataValue)
         {
             columnNames col = columnNames.A;
-            if (dataValue == "")
+            if (dataValue != "")
             {
-                currentRow++;
-            }
-            else
-            {
-                InsertSharedStringItem(dataValue);
                 WriteCell(dataValue, col++, currentRow);
             }
+            currentRow++;
         }
 
         // Given text and a SharedStringTablePart, creates a SharedStringItem with the specified text 
@@ -138,7 +152,7 @@ namespace csReporter
                 ssp.SharedStringTable.AppendChild(new SharedStringItem(new DocumentFormat.OpenXml.Spreadsheet.Text(text)));
                 //ssp.SharedStringTable.Save();
 
-                return sharedString.Count;
+                return sharedString.Count - 1;
             }
 
             return i;
@@ -148,28 +162,36 @@ namespace csReporter
         private Cell InsertCellInWorksheet(columnNames columnName, uint rowIndex)
         {
             //empty string converts columnName to string
-            string cellReference = "" + columnName + rowIndex;
+            string cellReference = columnName.ToString() + rowIndex;
 
             // If the worksheet does not contain a row with the specified row index, insert one.
             Row row;
-            //Writing only forward, no need to look for existing row object
-            //after initializing curRow, either existing row or new row
-            if (curRow == null || curRow.RowIndex < currentRow)
+
+            // If the worksheet does not contain a row with the specified row index, insert one.
+            if (myRows.Keys.Contains(rowIndex))
             {
-                row = new Row() { RowIndex = rowIndex };
-                sd.Append(row);
-                curRow = row;
+                row = myRows[rowIndex];
             }
             else
             {
-                row = curRow;
+                row = new Row() { RowIndex = rowIndex };
+                sd.Append(row);
+                myRows.Add(rowIndex, row);
             }
-            //No need to check for overwrite existing cell
+
+        //Avoid re-writing Cells. Means extra lookups and time.  Lookups vary by row length/number of columns
+            //if (row.Elements<Cell>().Where(c => c.CellReference.Value == cellReference).Count() > 0)
+            //{
+            //    string a = cellReference;
+            //    return row.Elements<Cell>().Where(c => c.CellReference.Value == cellReference).First();
+            //}
+            //else
+            //{
             Cell newCell = new Cell() { CellReference = cellReference };
-            newCell.StyleIndex = 1;
-            row.InsertAfter(newCell, row.LastChild);
-            
-            return newCell;
+                newCell.StyleIndex = 1;
+                row.InsertAfter(newCell, row.LastChild);
+                return newCell;
+            //}
         }
 
         private void WriteCell(string value, columnNames column, uint row)

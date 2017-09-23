@@ -3048,7 +3048,7 @@ namespace csReporter
         }
             private void WriteExcelReportHeaders(ExcelWriter excelReport)
             {
-                excelReport.WriteNextRow("Criterial");
+                excelReport.WriteNextRow("Criteria");
                 excelReport.WriteNextRow(new List<string> { "", "Data Type:", filter.FilterState.ToString() });
                 if (filter.ObjectTypes.Count > 0)
                 {
