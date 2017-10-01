@@ -24,7 +24,7 @@ namespace csReporter
         Worksheet ws;
         private enum columnNames { A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, X, Y, Z, AA, AB, AC, AD, AE, AF, AG, AH, AI, AJ, AK, AL, AM, AN, AO, AP, AQ, AR, AS, AT, AU, AV, AW, AX, AY, AZ, BA, BB, BC, BD, BE, BF, BG, BH, BI, BJ, BK, BL, BM, BN, BO, BP, BQ, BR, BS, BT, BU, BV, BW, BX, BY, BZ, CA, CB, CC, CD, CE, CF, CG, CH, CI, CJ, CK, CL, CM, CN, CO, CP, CQ, CR, CS, CT, CU, CV, CW, CX, CY, CZ, DA, DB, DC, DD, DE, DF, DG, DH, DI, DJ, DK, DL, DM, DN, DO, DP, DQ, DR, DS, DT, DU, DV, DW, DX, DY, DZ }
         private uint currentRow;
-        List<string> sharedString;
+        Dictionary<string, int> sharedString;
         Dictionary<uint, Row> myRows;
         Stylesheet ss;
 
@@ -42,7 +42,7 @@ namespace csReporter
             sd = ws.GetFirstChild<SheetData>();
             ssp = doc.WorkbookPart.AddNewPart<SharedStringTablePart>();
             currentRow = 1;
-            sharedString = new List<string>();
+            sharedString = new Dictionary<string, int>();
             myRows = new Dictionary<uint, Row>();
             
             ss = GenerateStylesheet();
@@ -144,15 +144,27 @@ namespace csReporter
             //}
             
             //looking up in List<string> is faster than above foreach
-            i = sharedString.IndexOf(text);
-            if (i == -1)
-            {
-                sharedString.Add(text);
-                // The text does not exist in the part. Create the SharedStringItem and return its index.
-                ssp.SharedStringTable.AppendChild(new SharedStringItem(new DocumentFormat.OpenXml.Spreadsheet.Text(text)));
-                //ssp.SharedStringTable.Save();
+            //i = sharedString.IndexOf(text);
+            //if (i == -1)
+            //{
+            //    sharedString.Add(text);
+            //    // The text does not exist in the part. Create the SharedStringItem and return its index.
+            //    ssp.SharedStringTable.AppendChild(new SharedStringItem(new DocumentFormat.OpenXml.Spreadsheet.Text(text)));
+            //    //ssp.SharedStringTable.Save();
 
-                return sharedString.Count - 1;
+            //    return sharedString.Count - 1;
+            //}
+
+            //Dictionary is fastest
+            if (sharedString.Keys.Contains(text))
+            {
+                return sharedString[text];
+            }
+            else
+            {
+                i = sharedString.Count;
+                sharedString.Add(text, i);
+                ssp.SharedStringTable.AppendChild(new SharedStringItem(new DocumentFormat.OpenXml.Spreadsheet.Text(text)));
             }
 
             return i;

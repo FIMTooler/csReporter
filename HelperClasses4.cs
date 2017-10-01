@@ -337,12 +337,16 @@ namespace csReporter
                     list.Add(item);
                     return list.Count - 1;
                 case false:
-                    if (!list.Contains(item))
+                    int i = list.IndexOf(item);
+                    if (i == -1)
                     {
                         list.Add(item);
                         return list.Count - 1;
                     }
-                    break;
+                    else
+                    {
+                        return i;
+                    }
             }
             return list.IndexOf(item);
         }

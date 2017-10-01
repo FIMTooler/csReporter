@@ -3961,6 +3961,7 @@ namespace csReporter
                                                 outFile.Dispose();
                                                 break;
                                             case reportType.Excel:
+                                                this.methSetText(frmProgress, "Saving Excel file");
                                                 excelFile.Dispose();
                                                 break;
                                             default:
