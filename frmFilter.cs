@@ -2262,10 +2262,11 @@ namespace csReporter
                                 {
                                     writer.Write(AddAttribToReportCSV(pihAttrib, shAttrib));
                                 }
-                                else if (shAttrib != null)
-                                {
-                                    writer.Write(AddAttribToReportCSV("(No Change)", shAttrib));
-                                }
+                                //Only include attributes in reports if it is changing on a object
+                                //else if (shAttrib != null)
+                                //{
+                                //    writer.Write(AddAttribToReportCSV("(No Change)", shAttrib));
+                                //}
                                 else
                                 {
                                     writer.Write(",");
@@ -2818,11 +2819,12 @@ namespace csReporter
                                     writer.Write("<TR><TD style=\"border-style: none;\" /><TD style=\"border-style: none;\" /><TD style=\"border-style: none;\" /><TD valign=\"top\" nowrap>" + attribName + "</TD>");
                                     writer.Write(AddAttribToReportHTML(uehAttrib, shAttrib));
                                 }
-                                else if (shAttrib != null)
-                                {
-                                    writer.Write("<TR><TD style=\"border-style: none;\" /><TD style=\"border-style: none;\" /><TD style=\"border-style: none;\" /><TD valign=\"top\" nowrap>" + attribName + "</TD>");
-                                    writer.Write(AddAttribToReportHTML("(No Change)", shAttrib));
-                                }
+                                //Only include attributes in reports if it is changing on a object
+                                //else if (shAttrib != null)
+                                //{
+                                //    writer.Write("<TR><TD style=\"border-style: none;\" /><TD style=\"border-style: none;\" /><TD style=\"border-style: none;\" /><TD valign=\"top\" nowrap>" + attribName + "</TD>");
+                                //    writer.Write(AddAttribToReportHTML("(No Change)", shAttrib));
+                                //}
                             }
                         }
                         catch (Exception ex)
@@ -3313,10 +3315,11 @@ namespace csReporter
                                 {
                                     rowValues.AddRange(AddAttribToReportExcel(pihAttrib, shAttrib));
                                 }
-                                else if (shAttrib != null)
-                                {
-                                    rowValues.AddRange(AddAttribToReportExcel("(No Change)", shAttrib));
-                                }
+                                //Only include attributes in reports if it is changing on a object
+                                //else if (shAttrib != null)
+                                //{
+                                //    rowValues.AddRange(AddAttribToReportExcel("(No Change)", shAttrib));
+                                //}
                                 else
                                 {
                                     rowValues.Add("");
