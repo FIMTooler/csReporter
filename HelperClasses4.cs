@@ -35,6 +35,8 @@ using System.Xml;
 
 namespace csReporter
 {
+    public enum reportType { HTML, CSV, Excel };
+
     public enum operation { none, add, replace, update, delete, deleteAdd };
 
     public enum State { UnappliedExport, EscrowedExport, UnconfirmedExport, PendingImport, Synchronized };
@@ -335,12 +337,16 @@ namespace csReporter
                     list.Add(item);
                     return list.Count - 1;
                 case false:
-                    if (!list.Contains(item))
+                    int i = list.IndexOf(item);
+                    if (i == -1)
                     {
                         list.Add(item);
                         return list.Count - 1;
                     }
-                    break;
+                    else
+                    {
+                        return i;
+                    }
             }
             return list.IndexOf(item);
         }
