@@ -49,7 +49,6 @@ namespace csReporter
         List<string> objTypes = new List<string>();
         List<operation> ops = new List<operation>();
         List<string> availableAttribs = new List<string>();
-        List<string> reportAttribs = new List<string>();
         BindingList<FilterAttribute> attribFilters = new BindingList<FilterAttribute>();
         private FilterLevel lev;
 
@@ -138,19 +137,7 @@ namespace csReporter
                 availableAttribs = value;
             }
         }
-
-        public List<string> ReportAttributes
-        {
-            get
-            {
-                return reportAttribs;
-            }
-            set
-            {
-                reportAttribs = value;
-            }
-        }
-
+        
         public BindingList<FilterAttribute> AttributeFilters
         {
             get
@@ -180,12 +167,69 @@ namespace csReporter
             ObjectTypes.Clear();
             ops.Clear();
             availableAttribs.Clear();
-            reportAttribs.Clear();
             attribFilters.Clear();
             lev = new FilterLevel();
         }
     }
 
+    class ReportObject
+    {
+        reportType type;
+        List<string> reportAttribs = new List<string>();
+        bool horizontal = true;
+
+        public ReportObject()
+        { }
+
+        public ReportObject(reportType reportType, List<string> attributes)
+        {
+            type = reportType;
+            reportAttribs = attributes;
+            horizontal = true;
+        }
+
+        public ReportObject(reportType reportType, List<string> attributes, bool horizontal)
+        {
+            type = reportType;
+            reportAttribs = attributes;
+            this.horizontal = horizontal;
+        }
+
+        public reportType ReportType
+        {
+            get
+            {
+                return type;
+            }
+            set
+            {
+                type = value;
+            }
+        }
+
+        public List<string> ReportAttributes
+        {
+            get
+            {
+                return reportAttribs;
+            }
+            set
+            {
+                reportAttribs = value;
+            }
+        }
+        public bool Horizontal
+        {
+            get
+            {
+                return horizontal;
+            }
+            set
+            {
+                horizontal = value;
+            }
+        }
+    }
     //implements interfaces for binding list and DataGrig control
     class FilterAttribute : INotifyPropertyChanged, IEquatable<FilterAttribute>
     {

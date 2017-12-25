@@ -121,6 +121,38 @@ namespace csReporter
             currentRow++;
         }
 
+        public void WriteNextRow(string colValue1, string colValue2)
+        {
+            columnNames col = columnNames.A;
+            if (colValue1 != "")
+            {
+                WriteCell(colValue1, col++, currentRow);
+            }
+            if (colValue2 != "")
+            {
+                WriteCell(colValue2, col++, currentRow);
+            }
+            currentRow++;
+        }
+
+        public void WriteNextRow(string colValue1, string colValue2, string colValue3)
+        {
+            columnNames col = columnNames.A;
+            if (colValue1 != "")
+            {
+                WriteCell(colValue1, col++, currentRow);
+            }
+            if (colValue2 != "")
+            {
+                WriteCell(colValue2, col++, currentRow);
+            }
+            if (colValue3 != "")
+            {
+                WriteCell(colValue3, col++, currentRow);
+            }
+            currentRow++;
+        }
+
         // Given text and a SharedStringTablePart, creates a SharedStringItem with the specified text 
         // and inserts it into the SharedStringTablePart. If the item already exists, returns its index.
         private int InsertSharedStringItem(string text)
@@ -132,28 +164,6 @@ namespace csReporter
             }
 
             int i = 0;
-
-            // Iterate through all the items in the SharedStringTable. If the text already exists, return its index.
-            //foreach (SharedStringItem item in ssp.SharedStringTable.Elements<SharedStringItem>())
-            //{
-            //    if (item.InnerText == text)
-            //    {
-            //        return i;
-            //    }
-            //    i++;
-            //}
-            
-            //looking up in List<string> is faster than above foreach
-            //i = sharedString.IndexOf(text);
-            //if (i == -1)
-            //{
-            //    sharedString.Add(text);
-            //    // The text does not exist in the part. Create the SharedStringItem and return its index.
-            //    ssp.SharedStringTable.AppendChild(new SharedStringItem(new DocumentFormat.OpenXml.Spreadsheet.Text(text)));
-            //    //ssp.SharedStringTable.Save();
-
-            //    return sharedString.Count - 1;
-            //}
 
             //Dictionary is fastest
             if (sharedString.Keys.Contains(text))

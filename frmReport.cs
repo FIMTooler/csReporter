@@ -70,7 +70,20 @@ namespace csReporter
                 }
                 else
                 {
+                    if (!rbHorizontal.Checked && !rbVertical.Checked)
+                    {
+                        MessageBox.Show("You must choose a report layout.", "Report layout", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        return;
+                    }
                     parent.SetReportType(reportType.Excel);
+                    if (rbHorizontal.Checked)
+                    {
+                        parent.SetReportLayout(true);
+                    }
+                    else
+                    {
+                        parent.SetReportLayout(false);
+                    }
                 }
                 this.DialogResult = System.Windows.Forms.DialogResult.OK;
             }
@@ -84,6 +97,18 @@ namespace csReporter
         private void btnCancel_Click(object sender, EventArgs e)
         {
             this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+        }
+
+        private void rbExcel_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rbExcel.Checked)
+            {
+                gbLayout.Visible = true;
+            }
+            else
+            {
+                gbLayout.Visible = false;
+            }
         }
     }
 }
