@@ -4121,8 +4121,19 @@ namespace csReporter
                                                                 if (counterMatchObjects == 0)
                                                                 {
                                                                     WriteExcelReportHeaders(excelFile);
+                                                                    if (report.Horizontal)
+                                                                    {
+                                                                        WriteExcelDataHeader(excelFile);
+                                                                    }
                                                                 }
-                                                                excelFile.WriteNextRow(WriteExcelObjectReport(tmpCSO));
+                                                                if (report.Horizontal)
+                                                                {
+                                                                    excelFile.WriteNextRow(WriteExcelObjectReport(tmpCSO));
+                                                                }
+                                                                else
+                                                                {
+                                                                    WriteExcelObjectReportVertical(excelFile, tmpCSO);
+                                                                }
                                                                 break;
                                                             default:
                                                                 if (outFile == null)
