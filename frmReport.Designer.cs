@@ -51,7 +51,7 @@
             this.lbAttribute.Margin = new System.Windows.Forms.Padding(4);
             this.lbAttribute.Name = "lbAttribute";
             this.lbAttribute.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.lbAttribute.Size = new System.Drawing.Size(241, 388);
+            this.lbAttribute.Size = new System.Drawing.Size(470, 388);
             this.lbAttribute.Sorted = true;
             this.lbAttribute.TabIndex = 5;
             // 
@@ -60,11 +60,11 @@
             this.gbFormat.Controls.Add(this.rbExcel);
             this.gbFormat.Controls.Add(this.rbCSV);
             this.gbFormat.Controls.Add(this.rbHTML);
-            this.gbFormat.Location = new System.Drawing.Point(279, 15);
+            this.gbFormat.Location = new System.Drawing.Point(494, 13);
             this.gbFormat.Margin = new System.Windows.Forms.Padding(4);
             this.gbFormat.Name = "gbFormat";
             this.gbFormat.Padding = new System.Windows.Forms.Padding(4);
-            this.gbFormat.Size = new System.Drawing.Size(117, 149);
+            this.gbFormat.Size = new System.Drawing.Size(117, 114);
             this.gbFormat.TabIndex = 6;
             this.gbFormat.TabStop = false;
             this.gbFormat.Text = "Format";
@@ -72,7 +72,7 @@
             // rbExcel
             // 
             this.rbExcel.AutoSize = true;
-            this.rbExcel.Location = new System.Drawing.Point(20, 120);
+            this.rbExcel.Location = new System.Drawing.Point(8, 85);
             this.rbExcel.Margin = new System.Windows.Forms.Padding(4);
             this.rbExcel.Name = "rbExcel";
             this.rbExcel.Size = new System.Drawing.Size(62, 21);
@@ -85,7 +85,7 @@
             // rbCSV
             // 
             this.rbCSV.AutoSize = true;
-            this.rbCSV.Location = new System.Drawing.Point(20, 76);
+            this.rbCSV.Location = new System.Drawing.Point(8, 56);
             this.rbCSV.Margin = new System.Windows.Forms.Padding(4);
             this.rbCSV.Name = "rbCSV";
             this.rbCSV.Size = new System.Drawing.Size(56, 21);
@@ -97,7 +97,7 @@
             // rbHTML
             // 
             this.rbHTML.AutoSize = true;
-            this.rbHTML.Location = new System.Drawing.Point(20, 36);
+            this.rbHTML.Location = new System.Drawing.Point(8, 27);
             this.rbHTML.Margin = new System.Windows.Forms.Padding(4);
             this.rbHTML.Name = "rbHTML";
             this.rbHTML.Size = new System.Drawing.Size(67, 21);
@@ -132,11 +132,11 @@
             // 
             this.gbLayout.Controls.Add(this.rbVertical);
             this.gbLayout.Controls.Add(this.rbHorizontal);
-            this.gbLayout.Location = new System.Drawing.Point(279, 172);
+            this.gbLayout.Location = new System.Drawing.Point(494, 144);
             this.gbLayout.Margin = new System.Windows.Forms.Padding(4);
             this.gbLayout.Name = "gbLayout";
             this.gbLayout.Padding = new System.Windows.Forms.Padding(4);
-            this.gbLayout.Size = new System.Drawing.Size(117, 107);
+            this.gbLayout.Size = new System.Drawing.Size(117, 90);
             this.gbLayout.TabIndex = 7;
             this.gbLayout.TabStop = false;
             this.gbLayout.Text = "Layout";
@@ -145,7 +145,7 @@
             // rbVertical
             // 
             this.rbVertical.AutoSize = true;
-            this.rbVertical.Location = new System.Drawing.Point(20, 76);
+            this.rbVertical.Location = new System.Drawing.Point(8, 57);
             this.rbVertical.Margin = new System.Windows.Forms.Padding(4);
             this.rbVertical.Name = "rbVertical";
             this.rbVertical.Size = new System.Drawing.Size(76, 21);
@@ -157,7 +157,7 @@
             // rbHorizontal
             // 
             this.rbHorizontal.AutoSize = true;
-            this.rbHorizontal.Location = new System.Drawing.Point(20, 36);
+            this.rbHorizontal.Location = new System.Drawing.Point(8, 28);
             this.rbHorizontal.Margin = new System.Windows.Forms.Padding(4);
             this.rbHorizontal.Name = "rbHorizontal";
             this.rbHorizontal.Size = new System.Drawing.Size(93, 21);
@@ -170,7 +170,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(424, 479);
+            this.ClientSize = new System.Drawing.Size(624, 479);
             this.Controls.Add(this.gbLayout);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOK);

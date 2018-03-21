@@ -232,17 +232,6 @@ namespace csReporter
                 }
                 Cursor = Cursors.Default;
             }
-            private void lbAttribute_SelectedValueChanged(object sender, EventArgs e)
-            {
-                if (lbAttribute.SelectedItems.Count == 0)
-                {
-                    report.ReportAttributes = lbAttribute.Items.Cast<string>().ToList();
-                }
-                else
-                {
-                    report.ReportAttributes = lbAttribute.SelectedItems.Cast<string>().ToList();
-                }
-            }
             private void btnAddFilter_Click(object sender, EventArgs e)
             {
                 if (dgvAdvanced.DataSource == null)
@@ -594,7 +583,6 @@ namespace csReporter
             {
                 try
                 {
-                    lbAttribute.Items.Clear();
                     lbOperation.Items.Clear();
                     lbObjectType.Items.Clear();
                     cbbAttributes.Items.Clear();
@@ -642,7 +630,6 @@ namespace csReporter
 
                     if (filterAction != State.Synchronized)
                     {
-                        lbAttribute.Items.Clear();
                         lbOperation.Items.Clear();
                     }
                     cbbAttributes.Items.Clear();
@@ -4474,7 +4461,6 @@ namespace csReporter
                     cbbAttributes.Enabled = false;
                     cbbComparators.Enabled = false;
                     cbbValue.Enabled = false;
-                    lbAttribute.Enabled = false;
                     lbObjectType.Enabled = false;
                     lbOperation.Enabled = false;
                 }
@@ -4592,7 +4578,6 @@ namespace csReporter
             rbUnconfirmedExport.Checked = false;
             lbObjectType.Items.Clear();
             lbOperation.Items.Clear();
-            lbAttribute.Items.Clear();
             lblCount.Text = "Matching Count:";
             cbADMA.Checked = false;
             if (filter != null)
@@ -4784,32 +4769,24 @@ namespace csReporter
         }
         private void UpdateAttributeUI()
         {
-            lbAttribute.Items.Clear();
             cbbAttributes.Items.Clear();
             switch (filter.Level)
             {
-                case  FilterLevel.State:
-                    lbAttribute.Items.AddRange(filter.AvailableAttributes.ToArray());
-                    break;
                 case FilterLevel.ObjectType:
-                    lbAttribute.Items.AddRange(filter.AvailableAttributes.ToArray());
                     if (filter.FilterState == State.Synchronized)
                     {
                         cbbAttributes.Items.AddRange(filter.AvailableAttributes.ToArray());
                     }
                     break;
                 case FilterLevel.Operation:
-                    lbAttribute.Items.AddRange(filter.AvailableAttributes.ToArray());
                     cbbAttributes.Items.AddRange(filter.AvailableAttributes.ToArray());
                     break;
                 case FilterLevel.AttributeValue:
-                    lbAttribute.Items.AddRange(filter.AvailableAttributes.ToArray());
                     cbbAttributes.Items.AddRange(filter.AvailableAttributes.ToArray());
                     break;
             }
             if (errorAttribs.Count > 0)
             {
-                lbAttribute.Items.AddRange(errorAttribs.ToArray());
                 filter.AvailableAttributes.AddRange(errorAttribs.ToArray());
             }
         }
