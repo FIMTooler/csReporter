@@ -325,10 +325,37 @@ namespace csReporter
             }
             private void cbNonChanging_CheckedChanged(object sender, EventArgs e)
             {
-                Cursor = Cursors.WaitCursor;
-                SetFilterAttributes();
-                UpdateAttributeUI();
-                Cursor = Cursors.Default;
+                if (cbNonChanging.Checked == true)
+                {
+                    if (MessageBox.Show("Checking this box forces ALL attribute level filters to be applied to the Synchronized hologram.  It should not be used with the Add operation where a Synchronized hologram doesn't exist.\r\n\r\n***Any existing attribute filters will be removed.***\r\n\r\nWould you like to continue?", "Caption", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                    {
+                        Cursor = Cursors.WaitCursor;
+                        if (filter.AttributeFilters.Count > 0)
+                        {
+                            filter.AttributeFilters.Clear();
+                            filter.Level = FilterLevel.Operation;
+                            reCalcMatching(filter.Level);
+                        }
+                        //No attribute filters exist, update filter attributes and UI
+                        else
+                        {
+                            SetFilterAttributes();
+                            UpdateAttributeUI();
+                        }
+                        Cursor = Cursors.Default;
+                    }
+                    else
+                    {
+                        cbNonChanging.Checked = false;
+                        }
+                    }
+                    else
+                    {
+                        Cursor = Cursors.WaitCursor;
+                        SetFilterAttributes();
+                        UpdateAttributeUI();
+                        Cursor = Cursors.Default;
+                    }
             }
             private void btnCreateReport_Click(object sender, EventArgs e)
             {
@@ -561,7 +588,7 @@ namespace csReporter
                     cbbComparators.Items.Add("Does not contain");
                     cbbComparators.Items.Add("Is present");
                     cbbComparators.Items.Add("Is not present");
-                    if (filter.FilterState != State.Synchronized)
+                    if (filter.FilterState != State.Synchronized || cbNonChanging.Checked == true)
                     {
                         cbbComparators.Items.Add("Is changing");
                         cbbComparators.Items.Add("Is not changing");

@@ -339,9 +339,9 @@
             this.cbNonChanging.Location = new System.Drawing.Point(569, 119);
             this.cbNonChanging.Margin = new System.Windows.Forms.Padding(4);
             this.cbNonChanging.Name = "cbNonChanging";
-            this.cbNonChanging.Size = new System.Drawing.Size(229, 21);
+            this.cbNonChanging.Size = new System.Drawing.Size(235, 21);
             this.cbNonChanging.TabIndex = 27;
-            this.cbNonChanging.Text = "Include non-changing attributes";
+            this.cbNonChanging.Text = "Filter on non-changing attributes";
             this.cbNonChanging.UseVisualStyleBackColor = true;
             this.cbNonChanging.CheckedChanged += new System.EventHandler(this.cbNonChanging_CheckedChanged);
             // 
@@ -358,7 +358,7 @@
             // cbSystemAttribs
             // 
             this.cbSystemAttribs.AutoSize = true;
-            this.cbSystemAttribs.Location = new System.Drawing.Point(806, 119);
+            this.cbSystemAttribs.Location = new System.Drawing.Point(812, 119);
             this.cbSystemAttribs.Margin = new System.Windows.Forms.Padding(4);
             this.cbSystemAttribs.Name = "cbSystemAttribs";
             this.cbSystemAttribs.Size = new System.Drawing.Size(186, 21);
