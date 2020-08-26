@@ -96,7 +96,7 @@ namespace csReporter
                 InitializeComponent();
 
                 tTipInfo.AutoPopDelay =10000;
-                tTipInfo.SetToolTip(this.cbADMA, "Auto-formats known Active Directory attributes so they are readable");
+                tTipInfo.SetToolTip(this.cbADMA, "Auto-formats known Active Directory attributes so they are readable:\r\naccountExpires\r\nobjectSid\r\npwdLastSet\r\ngroupType\r\nuserAccountControl\r\ncreateTimeStamp");
 
                 inputFileName = fileName;
                 
