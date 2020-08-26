@@ -347,15 +347,15 @@ namespace csReporter
                     else
                     {
                         cbNonChanging.Checked = false;
-                        }
                     }
-                    else
-                    {
-                        Cursor = Cursors.WaitCursor;
-                        SetFilterAttributes();
-                        UpdateAttributeUI();
-                        Cursor = Cursors.Default;
-                    }
+                }
+                else
+                {
+                    Cursor = Cursors.WaitCursor;
+                    SetFilterAttributes();
+                    UpdateAttributeUI();
+                    Cursor = Cursors.Default;
+                }
             }
             private void btnCreateReport_Click(object sender, EventArgs e)
             {
@@ -588,7 +588,7 @@ namespace csReporter
                     cbbComparators.Items.Add("Does not contain");
                     cbbComparators.Items.Add("Is present");
                     cbbComparators.Items.Add("Is not present");
-                    if (filter.FilterState != State.Synchronized || cbNonChanging.Checked == true)
+                    if (filter.FilterState != State.Synchronized && cbNonChanging.Checked == false)
                     {
                         cbbComparators.Items.Add("Is changing");
                         cbbComparators.Items.Add("Is not changing");
@@ -767,15 +767,15 @@ namespace csReporter
                     }
                     else
                     {
-                        Parallel.ForEach(csObjects, obj =>
+                    Parallel.ForEach(csObjects, obj =>
+                        {
+                            if (MatchFilter(obj))
                             {
-                                if (MatchFilter(obj))
-                                {
-                                    matchingCSobjects.Add(obj);
-                                }
+                                matchingCSobjects.Add(obj);
                             }
-                        );
-                    }
+                        }
+                    );
+                }
                 }
                 catch (Exception ex)
                 {
@@ -887,7 +887,7 @@ namespace csReporter
                                     {
                                         return true;
                                     }
-                                    else if (MatchAttribFilter(csObj.Delta(filter.FilterState), csObj.Hologram(filter.FilterState), true))
+                                    else if (!cbNonChanging.Checked && MatchAttribFilter(csObj.Delta(filter.FilterState), csObj.Hologram(filter.FilterState), true))
                                     {
                                         return true;
                                     }
