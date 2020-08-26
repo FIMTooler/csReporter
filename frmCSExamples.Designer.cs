@@ -65,7 +65,7 @@
             this.rtbDocumentation.ReadOnly = true;
             this.rtbDocumentation.Size = new System.Drawing.Size(644, 24);
             this.rtbDocumentation.TabIndex = 4;
-            this.rtbDocumentation.Text = "https://msdn.microsoft.com/en-us/library/windows/desktop/ms695412(v=vs.100).aspx";
+            this.rtbDocumentation.Text = "https://docs.microsoft.com/en-us/previous-versions/mim/jj590346(v=ws.10)";
             this.rtbDocumentation.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.rtbDocumentation_LinkClicked);
             // 
             // frmCSExamples
