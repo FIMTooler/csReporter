@@ -27,7 +27,6 @@ C:\Users\admdcassady\Documents\Visual Studio 2012\Projects\Source\Repos\csReport
 C:\Users\admdcassady\Documents\Visual Studio 2012\Projects\Source\Repos\csReporter\obj\Release\csReporter.csproj.GenerateResource.Cache
 E:\CassadyNAS\OneDrive\csReporter\Source\csReporter\bin\Release\csReporter.exe
 E:\CassadyNAS\OneDrive\csReporter\Source\csReporter\bin\Release\csReporter.pdb
-E:\CassadyNAS\OneDrive\csReporter\Source\csReporter\obj\Release\csReporter.csprojResolveAssemblyReference.cache
 E:\CassadyNAS\OneDrive\csReporter\Source\csReporter\obj\Release\csReporter.frmCSExamples.resources
 E:\CassadyNAS\OneDrive\csReporter\Source\csReporter\obj\Release\csReporter.frmError.resources
 E:\CassadyNAS\OneDrive\csReporter\Source\csReporter\obj\Release\csReporter.frmFilter.resources
@@ -40,3 +39,4 @@ E:\CassadyNAS\OneDrive\csReporter\Source\csReporter\obj\Release\csReporter.cspro
 E:\CassadyNAS\OneDrive\csReporter\Source\csReporter\obj\Release\csReporter.csproj.CoreCompileInputs.cache
 E:\CassadyNAS\OneDrive\csReporter\Source\csReporter\obj\Release\csReporter.exe
 E:\CassadyNAS\OneDrive\csReporter\Source\csReporter\obj\Release\csReporter.pdb
+E:\CassadyNAS\OneDrive\csReporter\Source\csReporter\obj\Release\csReporter.csprojAssemblyReference.cache
