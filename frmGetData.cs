@@ -104,6 +104,11 @@ namespace csReporter
                             csExportFilePath = InstallPath + @"Synchronization Service\Bin\csexport.exe";
                             if (!File.Exists(csExportFilePath))
                             {
+                                //Set secondary path used by Azure AD Connect to check
+                                csExportFilePath = InstallPath + @"Bin\csexport.exe";
+                            }
+                            if (!File.Exists(csExportFilePath))
+                            {
                                 MessageBox.Show("Unable to locate the csexport utility in the default folder\r\n\r\n" + csExportFilePath);
                                 rbFile.Checked = true;
                                 return;
@@ -111,14 +116,14 @@ namespace csReporter
                         }
                         else
                         {
-                            MessageBox.Show("The FIM Sync Service doesn't appear to be installed on this system.");
+                            MessageBox.Show("The MIM Sync or Azure AD Connect service doesn't appear to be installed on this system.");
                             rbFile.Checked = true;
                             return;
                         }
                     }
                     catch (Exception ex)
                     {
-                        ExceptionHandler.handleException(ex, "Error occurred checking if FIM is installed on this system."
+                        ExceptionHandler.handleException(ex, "Error occurred checking if MIM Sync or Azure AD Connect is installed on this system."
                         + "  Automatic creation of csexport data is unavailable.");
                         rbFile.Checked = true;
                         return;
@@ -159,7 +164,7 @@ namespace csReporter
             }
             catch (Exception ex)
             {
-                ExceptionHandler.handleException(ex, "Error checking for FIM install and getting management agent names via WMI."
+                ExceptionHandler.handleException(ex, "Error checking for MIM Sync or Azure AD Connect install and getting management agent names via WMI."
                     + "  Automatic creation of csexport data is unavailable.");
                 Application.Exit();
             }

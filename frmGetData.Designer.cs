@@ -230,7 +230,7 @@
             this.rbGenerate.Size = new System.Drawing.Size(272, 17);
             this.rbGenerate.TabIndex = 1;
             this.rbGenerate.TabStop = true;
-            this.rbGenerate.Text = "Generate file   (must be running on FIM Sync Server)";
+            this.rbGenerate.Text = "Generate file   (must be running on MIM Sync or Azure AD Connect Server)";
             this.rbGenerate.UseVisualStyleBackColor = true;
             this.rbGenerate.CheckedChanged += new System.EventHandler(this.rbGenerate_CheckedChanged);
             // 
