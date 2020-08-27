@@ -327,7 +327,7 @@ namespace csReporter
             {
                 if (cbNonChanging.Checked == true)
                 {
-                    if (MessageBox.Show("Checking this box forces ALL attribute level filters to be applied to the Synchronized hologram.  It should not be used with the Add operation where a Synchronized hologram doesn't exist.\r\n\r\n***Any existing attribute filters will be removed.***\r\n\r\nWould you like to continue?", "Caption", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                    if (MessageBox.Show("Checking this box forces ALL attribute level filters to be applied to the Synchronized hologram.  It should not be used with the Add operation where a Synchronized hologram doesn't exist.\r\n\r\n***Any existing attribute filters will be removed.***\r\n\r\nWould you like to continue?", "**WARNING**", MessageBoxButtons.YesNo) == DialogResult.Yes)
                     {
                         Cursor = Cursors.WaitCursor;
                         if (filter.AttributeFilters.Count > 0)

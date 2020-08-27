@@ -40,3 +40,5 @@ E:\CassadyNAS\OneDrive\csReporter\Source\csReporter\obj\Release\csReporter.cspro
 E:\CassadyNAS\OneDrive\csReporter\Source\csReporter\obj\Release\csReporter.exe
 E:\CassadyNAS\OneDrive\csReporter\Source\csReporter\obj\Release\csReporter.pdb
 E:\CassadyNAS\OneDrive\csReporter\Source\csReporter\obj\Release\csReporter.csprojAssemblyReference.cache
+E:\CassadyNAS\OneDrive\csReporter\Source\csReporter\bin\Release\DocumentFormat.OpenXml.dll
+E:\CassadyNAS\OneDrive\csReporter\Source\csReporter\obj\Release\csReporter.csproj.CopyComplete
