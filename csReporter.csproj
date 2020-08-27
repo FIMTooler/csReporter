@@ -47,7 +47,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>csr.ico</ApplicationIcon>
+    <ApplicationIcon>Icon\csr.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DocumentFormat.OpenXml, Version=1.0.0.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
@@ -69,77 +69,77 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="csReporter2.cs" />
-    <Compile Include="csReporter3.cs" />
-    <Compile Include="csReporter4.cs" />
-    <Compile Include="ExcelWriter.cs" />
-    <Compile Include="frmCSExamples.cs">
+    <Compile Include="CSObject Classes\csReporter2.cs" />
+    <Compile Include="CSObject Classes\csReporter3.cs" />
+    <Compile Include="CSObject Classes\csReporter4.cs" />
+    <Compile Include="Excel\ExcelWriter.cs" />
+    <Compile Include="Forms\frmCSExamples.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmCSExamples.Designer.cs">
+    <Compile Include="Forms\frmCSExamples.Designer.cs">
       <DependentUpon>frmCSExamples.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmError.cs">
+    <Compile Include="Forms\frmError.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmError.Designer.cs">
+    <Compile Include="Forms\frmError.Designer.cs">
       <DependentUpon>frmError.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmFilter.cs">
+    <Compile Include="Forms\frmFilter.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmFilter.Designer.cs">
+    <Compile Include="Forms\frmFilter.Designer.cs">
       <DependentUpon>frmFilter.cs</DependentUpon>
     </Compile>
-    <Compile Include="FrmFilterDate.cs">
+    <Compile Include="Forms\FrmFilterDate.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FrmFilterDate.Designer.cs">
+    <Compile Include="Forms\FrmFilterDate.Designer.cs">
       <DependentUpon>FrmFilterDate.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmProgressBar.cs">
+    <Compile Include="Forms\frmProgressBar.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmProgressBar.Designer.cs">
+    <Compile Include="Forms\frmProgressBar.Designer.cs">
       <DependentUpon>frmProgressBar.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmGetData.cs">
+    <Compile Include="Forms\frmGetData.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmGetData.Designer.cs">
+    <Compile Include="Forms\frmGetData.Designer.cs">
       <DependentUpon>frmGetData.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmReport.cs">
+    <Compile Include="Forms\frmReport.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmReport.Designer.cs">
+    <Compile Include="Forms\frmReport.Designer.cs">
       <DependentUpon>frmReport.cs</DependentUpon>
     </Compile>
-    <Compile Include="HelperClasses2.cs" />
-    <Compile Include="HelperClasses3.cs" />
-    <Compile Include="HelperClasses4.cs" />
+    <Compile Include="Helper Classes\HelperClasses2.cs" />
+    <Compile Include="Helper Classes\HelperClasses3.cs" />
+    <Compile Include="Helper Classes\HelperClasses4.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="frmCSExamples.resx">
+    <EmbeddedResource Include="Forms\frmCSExamples.resx">
       <DependentUpon>frmCSExamples.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmError.resx">
+    <EmbeddedResource Include="Forms\frmError.resx">
       <DependentUpon>frmError.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmFilter.resx">
+    <EmbeddedResource Include="Forms\frmFilter.resx">
       <DependentUpon>frmFilter.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FrmFilterDate.resx">
+    <EmbeddedResource Include="Forms\FrmFilterDate.resx">
       <DependentUpon>FrmFilterDate.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmProgressBar.resx">
+    <EmbeddedResource Include="Forms\frmProgressBar.resx">
       <DependentUpon>frmProgressBar.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmGetData.resx">
+    <EmbeddedResource Include="Forms\frmGetData.resx">
       <DependentUpon>frmGetData.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmReport.resx">
+    <EmbeddedResource Include="Forms\frmReport.resx">
       <DependentUpon>frmReport.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -184,13 +184,13 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="csr.ico" />
+    <EmbeddedResource Include="Icon\csr.ico" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="csrLogo.png" />
+    <EmbeddedResource Include="Icon\csrLogo.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="DocumentFormat.OpenXml.dll" />
+    <EmbeddedResource Include="Excel\DocumentFormat.OpenXml.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
