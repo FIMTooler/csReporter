@@ -2026,7 +2026,7 @@ namespace csReporter
             private void WriteCSVReportHeaders(StreamWriter writer)
             {
                 writer.Write("Criteria\r\n");
-                writer.Write(",Data Type:," + filter.FilterState + "\r\n");
+                writer.Write(",Hologram:," + filter.FilterState + "\r\n");
                 if (filter.ObjectTypes.Count > 0)
                 {
                     writer.Write(",Object Types:,\"" + String.Join("\n", filter.ObjectTypes.ToArray()) + "\"\r\n");
@@ -2587,7 +2587,7 @@ namespace csReporter
                 writer.Write("<img src=\"data:image/png;base64," + strLogo + "\" alt=\"CSRLogo.png\" /><br><br><br><br><br>\r\n");
                 writer.Write("<Table cellpadding=\"10\">\r\n");
                 writer.Write("<TR><TH>Criteria</TH><TR>\r\n");
-                writer.Write("<TR><TD style=\"border-style: none;\" /><TD>Data Type:</TD><TD>" + filter.FilterState + "</TD></TR>\r\n");
+                writer.Write("<TR><TD style=\"border-style: none;\" /><TD>Hologram:</TD><TD>" + filter.FilterState + "</TD></TR>\r\n");
                 if (filter.ObjectTypes.Count > 0)
                 {
                     writer.Write("<TR><TD style=\"border-style: none;\" /><TD valign=\"top\">Object Types:</TD><TD>" + String.Join("<BR>", filter.ObjectTypes.ToArray()) + "</TD></TR>\r\n");
@@ -3123,7 +3123,7 @@ namespace csReporter
             private void WriteExcelReportHeaders(ExcelWriter excelReport)
             {
                 excelReport.WriteNextRow("Criteria");
-                excelReport.WriteNextRow(new List<string> { "", "Data Type:", filter.FilterState.ToString() });
+                excelReport.WriteNextRow(new List<string> { "", "Hologram:", filter.FilterState.ToString() });
                 if (filter.ObjectTypes.Count > 0)
                 {
                     excelReport.WriteNextRow(new List<string> { "", "Object Type:", String.Join("\n", filter.ObjectTypes) });
@@ -4762,7 +4762,7 @@ namespace csReporter
                 sysAttribs = sysAttribs.Distinct().ToList();
                 errorAttribs = errorAttribs.Distinct().ToList();
 
-                //likely thoursands or hundreds of thousands of items in lists removed
+                //likely thousands or hundreds of thousands of items in lists removed
                 //clean up excess address space
                 changingAttribs.TrimExcess();
                 nonChangingAttribs.TrimExcess();
