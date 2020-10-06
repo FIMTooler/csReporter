@@ -64,7 +64,7 @@
             this.gbSource.Controls.Add(this.rbGenerate);
             this.gbSource.Location = new System.Drawing.Point(12, 12);
             this.gbSource.Name = "gbSource";
-            this.gbSource.Size = new System.Drawing.Size(553, 276);
+            this.gbSource.Size = new System.Drawing.Size(661, 276);
             this.gbSource.TabIndex = 0;
             this.gbSource.TabStop = false;
             this.gbSource.Text = "Report Source";
@@ -82,7 +82,7 @@
             // btnGenerate
             // 
             this.btnGenerate.Enabled = false;
-            this.btnGenerate.Location = new System.Drawing.Point(449, 60);
+            this.btnGenerate.Location = new System.Drawing.Point(554, 60);
             this.btnGenerate.Name = "btnGenerate";
             this.btnGenerate.Size = new System.Drawing.Size(91, 23);
             this.btnGenerate.TabIndex = 8;
@@ -99,7 +99,7 @@
             this.gbDataSelection.Controls.Add(this.rbImport);
             this.gbDataSelection.Controls.Add(this.rbAll);
             this.gbDataSelection.Enabled = false;
-            this.gbDataSelection.Location = new System.Drawing.Point(304, 29);
+            this.gbDataSelection.Location = new System.Drawing.Point(409, 29);
             this.gbDataSelection.Name = "gbDataSelection";
             this.gbDataSelection.Size = new System.Drawing.Size(130, 154);
             this.gbDataSelection.TabIndex = 7;
@@ -227,10 +227,10 @@
             this.rbGenerate.AutoSize = true;
             this.rbGenerate.Location = new System.Drawing.Point(24, 29);
             this.rbGenerate.Name = "rbGenerate";
-            this.rbGenerate.Size = new System.Drawing.Size(272, 17);
+            this.rbGenerate.Size = new System.Drawing.Size(375, 17);
             this.rbGenerate.TabIndex = 1;
             this.rbGenerate.TabStop = true;
-            this.rbGenerate.Text = "Generate file   (must be running on MIM Sync or Azure AD Connect Server)";
+            this.rbGenerate.Text = "Generate file  (must be running on MIM Sync or Azure AD Connect Server)";
             this.rbGenerate.UseVisualStyleBackColor = true;
             this.rbGenerate.CheckedChanged += new System.EventHandler(this.rbGenerate_CheckedChanged);
             // 
@@ -248,7 +248,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(574, 300);
+            this.ClientSize = new System.Drawing.Size(685, 300);
             this.Controls.Add(this.gbSource);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));

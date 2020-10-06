@@ -2575,16 +2575,20 @@ namespace csReporter
                 //add logo to report
                 System.Reflection.Assembly myAssembly = System.Reflection.Assembly.GetExecutingAssembly();
                 Stream myStream = myAssembly.GetManifestResourceStream("csReporter.csrLogo.png");
-                Bitmap logo = new Bitmap(myStream);
-                string strLogo = "";
-                using (MemoryStream ms = new MemoryStream())
+                //Check myStream for null before using
+                if (myStream != null)
                 {
-                    logo.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-                    byte[] imageBytes = ms.ToArray();
+                    Bitmap logo = new Bitmap(myStream);
+                    string strLogo = "";
+                    using (MemoryStream ms = new MemoryStream())
+                    {
+                        logo.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                        byte[] imageBytes = ms.ToArray();
 
-                    strLogo = Convert.ToBase64String(imageBytes);
+                        strLogo = Convert.ToBase64String(imageBytes);
+                    }
+                    writer.Write("<img src=\"data:image/png;base64," + strLogo + "\" alt=\"CSRLogo.png\" /><br><br><br><br><br>\r\n");
                 }
-                writer.Write("<img src=\"data:image/png;base64," + strLogo + "\" alt=\"CSRLogo.png\" /><br><br><br><br><br>\r\n");
                 writer.Write("<Table cellpadding=\"10\">\r\n");
                 writer.Write("<TR><TH>Criteria</TH><TR>\r\n");
                 writer.Write("<TR><TD style=\"border-style: none;\" /><TD>Hologram:</TD><TD>" + filter.FilterState + "</TD></TR>\r\n");
