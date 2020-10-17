@@ -81,6 +81,7 @@ namespace csReporter
         private DateTime connectedTime;
         private int connectionOperation;
         private ExportError exportError;
+        private ImportError importError;
         private StringContainer strContainer;
         private List<string> mvAttribNames = new List<string>();
 
@@ -292,6 +293,9 @@ namespace csReporter
                             break;
                         case "export-errordetail":
                             exportError = new ExportError(childNode);
+                            break;
+                        case "import-errordetail":
+                            importError = new ImportError(childNode);
                             break;
                     }
                 }
@@ -514,6 +518,9 @@ namespace csReporter
                                 break;
                             case "export-errordetail":
                                 exportError = new ExportError(csObjectNode);
+                                break;
+                            case "import-errordetail":
+                                importError = new ImportError(csObjectNode);
                                 break;
                         }
                     }
@@ -899,6 +906,13 @@ namespace csReporter
             get
             {
                 return exportError;
+            }
+        }
+        public ImportError ImportError
+        {
+            get
+            {
+                return importError;
             }
         }
         public StringContainer Container
@@ -2036,7 +2050,6 @@ namespace csReporter
                             break;
                     }
                 }
-                //xnr.Read();
             }
             catch (Exception ex)
             {
@@ -2190,6 +2203,301 @@ namespace csReporter
             get
             {
                 return serverErrorDetail;
+            }
+        }
+    }
+
+    class ImportError
+    {
+        private DateTime dateOccurred;
+        private DateTime firstOccurred;
+        private string retryCount;
+        private string errorType;
+        private string algorithmStep;
+        private string destinationAttribute;
+        private string contextID;
+        private string sourceAttribute;
+        private string scriptContext;
+
+        public ImportError(XmlReader xnr)
+        {
+            try
+            {
+                while (xnr.MoveToNextAttribute())
+                {
+                    switch (xnr.Name)
+                    {
+                        case "first-occurred":
+                            firstOccurred = Convert.ToDateTime(xnr.Value);
+                            break;
+                        case "date-occurred":
+                            dateOccurred = Convert.ToDateTime(xnr.Value);
+                            break;
+                        case "retry-count":
+                            retryCount = xnr.Value;
+                            break;
+                        case "error-type":
+                            errorType = xnr.Value;
+                            break;
+                    }
+                }
+                while (xnr.Read() && !(xnr.Name == "import-errordetail" && xnr.NodeType == XmlNodeType.EndElement))
+                {
+                    if (xnr.Name == "import-status")
+                    {
+                        while (xnr.Read() && !(xnr.Name == "import-status" && xnr.NodeType == XmlNodeType.EndElement))
+                        {
+                            switch (xnr.Name)
+                            {
+                                case "algorithm-step":
+                                    if (xnr.NodeType == XmlNodeType.Element)
+                                    {
+                                        xnr.Read();
+                                        algorithmStep = xnr.Value;
+                                    }
+                                    break;
+                                case "rules-error-info":
+                                    while (xnr.Read() && !(xnr.Name == "rules-error-info" && xnr.NodeType == XmlNodeType.EndElement))
+                                    {
+                                        if (xnr.Name == "context")
+                                        {
+                                            while (xnr.Read() && !(xnr.Name == "context" && xnr.NodeType == XmlNodeType.EndElement))
+                                            {
+                                                if (xnr.Name == "attribute-mapping")
+                                                {
+                                                    while (xnr.MoveToNextAttribute())
+                                                    {
+                                                        switch (xnr.Name)
+                                                        {
+                                                            case "dest-attr":
+                                                                destinationAttribute = xnr.Value;
+                                                                break;
+                                                            case "context-id":
+                                                                contextID = xnr.Value;
+                                                                break;
+                                                        }
+                                                    }
+                                                    while (xnr.Read() && !(xnr.Name == "attribute-mapping" && xnr.NodeType == XmlNodeType.EndElement))
+                                                    {
+                                                        switch (xnr.Name)
+                                                        {
+                                                            case "direct-mapping":
+                                                                while (xnr.Read() && !(xnr.Name == "attribute-mapping" && xnr.NodeType == XmlNodeType.EndElement))
+                                                                {
+                                                                    if (xnr.Name == "src-attribute" && xnr.NodeType == XmlNodeType.Element)
+                                                                    {
+                                                                        xnr.Read();
+                                                                        sourceAttribute = xnr.Value;
+                                                                    }
+                                                                }
+                                                                break;
+                                                                //this case not yet tested, but exists in MSFT documentation
+                                                            case "scripted-mapping":
+                                                                while (xnr.Read() && !(xnr.Name == "scripted-mapping" && xnr.NodeType == XmlNodeType.EndElement))
+                                                                {
+                                                                    switch (xnr.Name)
+                                                                    {
+                                                                        case "src-attribute":
+                                                                            if (xnr.NodeType == XmlNodeType.Element)
+                                                                            {
+                                                                                xnr.Read();
+                                                                                sourceAttribute = xnr.Value;
+                                                                            }
+                                                                            break;
+                                                                        case "script-context":
+                                                                            if (xnr.NodeType == XmlNodeType.Element)
+                                                                            {
+                                                                                xnr.Read();
+                                                                                scriptContext = xnr.Value;
+                                                                            }
+                                                                            break;
+                                                                    }
+                                                                }
+                                                                break;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Exception occurred in ImportError constructor", ex);
+            }
+        }
+
+        public ImportError(XmlNode importErrorNode)
+        {
+            try
+            {
+                foreach (XmlAttribute attrib in importErrorNode.Attributes)
+                {
+                    switch (attrib.Name)
+                    {
+                        case "first-occurred":
+                            firstOccurred = Convert.ToDateTime(attrib.InnerText);
+                            break;
+                        case "date-occurred":
+                            dateOccurred = Convert.ToDateTime(attrib.InnerText);
+                            break;
+                        case "retry-count":
+                            retryCount = attrib.InnerText;
+                            break;
+                        case "error-type":
+                            errorType = attrib.InnerText;
+                            break;
+                    }
+                }
+                foreach (XmlNode childNode in importErrorNode)
+                {
+                    switch (childNode.Name)
+                    {
+                        case "import-status":
+                            foreach (XmlNode cNode in childNode)
+                            {
+                                foreach (XmlNode ChildN in cNode)
+                                {
+                                    switch (ChildN.Name)
+                                    {
+                                        case "algorithm-step":
+                                            algorithmStep = ChildN.InnerText;
+                                            break;
+                                        case "rules-error-info":
+                                            foreach (XmlNode contextNode in ChildN)
+                                            {
+                                                if (contextNode.Name == "context")
+                                                {
+                                                    foreach (XmlNode attribMapping in contextNode)
+                                                    {
+                                                        if (attribMapping.Name == "attribute-mapping")
+                                                        {
+                                                            foreach (XmlAttribute attrib in attribMapping.Attributes)
+                                                            {
+                                                                switch (attrib.Name)
+                                                                {
+                                                                    case "dest-attr":
+                                                                        destinationAttribute = attrib.InnerText;
+                                                                        break;
+                                                                    case "context-id":
+                                                                        contextID = attrib.InnerText;
+                                                                        break;
+                                                                }
+                                                            }
+                                                            foreach (XmlNode child in attribMapping)
+                                                            {
+                                                                switch (child.Name)
+                                                                {
+                                                                    case "direct-mapping":
+                                                                        foreach (XmlNode scrAttrib in child)
+                                                                        {
+                                                                            if (scrAttrib.Name == "src-attribute")
+                                                                            {
+                                                                                sourceAttribute = scrAttrib.InnerText;
+                                                                            }
+                                                                        }
+                                                                        break;
+                                                                    //this case not yet tested, but exists in MSFT documentation
+                                                                    case "scripted-mapping":
+                                                                        foreach (XmlNode scriptedMapping in child)
+                                                                        {
+                                                                            switch (scriptedMapping.Name)
+                                                                            {
+                                                                                case "src-attribute":
+                                                                                    sourceAttribute = scriptedMapping.InnerText;
+                                                                                    break;
+                                                                                case "script-context":
+                                                                                    scriptContext = scriptedMapping.InnerText;
+                                                                                    break;
+                                                                            }
+                                                                        }
+                                                                        break;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            break;
+                                    }
+                                }
+                            }
+                            break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Exception occurred in ImportError constructor", ex);
+            }
+        }
+
+        public DateTime DateOccurred
+        {
+            get
+            {
+                return dateOccurred;
+            }
+        }
+        public DateTime FirstOccurred
+        {
+            get
+            {
+                return firstOccurred;
+            }
+        }
+        public string RetryCount
+        {
+            get
+            {
+                return retryCount;
+            }
+        }
+        public string ErrorType
+        {
+            get
+            {
+                return errorType;
+            }
+        }
+        public string AlgorithmStep
+        {
+            get
+            {
+                return algorithmStep;
+            }
+        }
+        public string DestinationAttribute
+        {
+            get
+            {
+                return destinationAttribute;
+            }
+        }
+        public string ContextID
+        {
+            get
+            {
+                return contextID;
+            }
+        }
+        public string SourceAttribute
+        {
+            get
+            {
+                return sourceAttribute;
+            }
+        }
+        public string ScriptContext
+        {
+            get
+            {
+                return scriptContext;
             }
         }
     }

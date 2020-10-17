@@ -2168,8 +2168,58 @@ namespace csReporter
                                         writer.Write(errorInfo.ToString());
                                         break;
                                 }
+                        }
+                        else if (obj.ImportError != null && errorAttribs.Contains(attrib))
+                        {
+                            switch (attrib)
+                            {
+                                case "<ImportErrorDetails>":
+                                    StringBuilder errorInfo = new StringBuilder();
+                                    if (obj.ImportError.DateOccurred != null)
+                                    {
+                                        errorInfo.Append("Date Occurred: " + obj.ImportError.DateOccurred + "\n");
+                                    }
+                                    if (obj.ImportError.FirstOccurred != null)
+                                    {
+                                        errorInfo.Append("First Occurred: " + obj.ImportError.FirstOccurred + "\n");
+                                    }
+                                    if (obj.ImportError.RetryCount != null)
+                                    {
+                                        errorInfo.Append("Retry Count: " + obj.ImportError.RetryCount + "\n");
+                                    }
+                                    if (obj.ImportError.ErrorType != null)
+                                    {
+                                        errorInfo.Append("Error Type: " + obj.ImportError.ErrorType + "\n");
+                                    }
+                                    if (obj.ImportError.AlgorithmStep != null)
+                                    {
+                                        errorInfo.Append("Algorithm Step: " + obj.ImportError.AlgorithmStep + "\n");
+                                    }
+                                    if (obj.ImportError.DestinationAttribute != null)
+                                    {
+                                        errorInfo.Append("Destination Attribute: " + obj.ImportError.DestinationAttribute + "\n");
+                                    }
+                                    if (obj.ImportError.ContextID != null)
+                                    {
+                                        errorInfo.Append("Context ID: " + obj.ImportError.ContextID + "\n");
+                                    }
+                                    if (obj.ImportError.SourceAttribute != null)
+                                    {
+                                        errorInfo.Append("Source Attribute: " + obj.ImportError.SourceAttribute + "\n");
+                                    }
+                                    if (obj.ImportError.ScriptContext != null)
+                                    {
+                                        errorInfo.Append("Script Context: " + obj.ImportError.ScriptContext + "\n");
+                                    }
+                                    errorInfo.Replace("\r\n", "");
+                                    errorInfo.Replace("\"", "'");
+                                    errorInfo.Insert(0, "\"");
+                                    errorInfo.Append("\"");
+                                    writer.Write(errorInfo.ToString());
+                                    break;
                             }
-                            else
+                        }
+                        else
                             {
                                 Attribute shAttrib = GetMatchingAttribute(attrib, obj.SynchronizedHologram.Attributes);
                                 writer.Write(AddAttribToReportCSV(shAttrib));
@@ -2267,8 +2317,58 @@ namespace csReporter
                                         writer.Write(errorInfo.ToString());
                                         break;
                                 }
+                        }
+                        else if (obj.ImportError != null && errorAttribs.Contains(attrib))
+                        {
+                            switch (attrib)
+                            {
+                                case "<ImportErrorDetails>":
+                                    StringBuilder errorInfo = new StringBuilder();
+                                    if (obj.ImportError.DateOccurred != null)
+                                    {
+                                        errorInfo.Append("Date Occurred: " + obj.ImportError.DateOccurred + "\n");
+                                    }
+                                    if (obj.ImportError.FirstOccurred != null)
+                                    {
+                                        errorInfo.Append("First Occurred: " + obj.ImportError.FirstOccurred + "\n");
+                                    }
+                                    if (obj.ImportError.RetryCount != null)
+                                    {
+                                        errorInfo.Append("Retry Count: " + obj.ImportError.RetryCount + "\n");
+                                    }
+                                    if (obj.ImportError.ErrorType != null)
+                                    {
+                                        errorInfo.Append("Error Type: " + obj.ImportError.ErrorType + "\n");
+                                    }
+                                    if (obj.ImportError.AlgorithmStep != null)
+                                    {
+                                        errorInfo.Append("Error Code: " + obj.ImportError.AlgorithmStep + "\n");
+                                    }
+                                    if (obj.ImportError.DestinationAttribute != null)
+                                    {
+                                        errorInfo.Append("Destination Attribute: " + obj.ImportError.DestinationAttribute + "\n");
+                                    }
+                                    if (obj.ImportError.ContextID != null)
+                                    {
+                                        errorInfo.Append("Context ID: " + obj.ImportError.ContextID + "\n");
+                                    }
+                                    if (obj.ImportError.SourceAttribute != null)
+                                    {
+                                        errorInfo.Append("Source Attribute: " + obj.ImportError.SourceAttribute + "\n");
+                                    }
+                                    if (obj.ImportError.ScriptContext != null)
+                                    {
+                                        errorInfo.Append("Scrip Context: " + obj.ImportError.ScriptContext + "\n");
+                                    }
+                                    errorInfo.Replace("\r\n", "");
+                                    errorInfo.Replace("\"", "'");
+                                    errorInfo.Insert(0, "\"");
+                                    errorInfo.Append("\"");
+                                    writer.Write(errorInfo.ToString());
+                                    break;
                             }
-                            else
+                        }
+                        else
                             {
                                 Attribute pihAttrib = null;
                                 Attribute shAttrib = null;
@@ -2726,8 +2826,64 @@ namespace csReporter
                                     writer.Write(errorInfo.ToString() + "</TD></TR>\r\n");
                                     break;
                             }
+                    }
+                    else if (obj.ImportError != null && errorAttribs.Contains(attrib))
+                    {
+                        switch (attrib)
+                        {
+                            case "<ImportErrorDetails>":
+                                StringBuilder errorInfo = new StringBuilder("<TD valign=\"top\" nowrap>");
+                                if (obj.ImportError.DateOccurred != null)
+                                {
+                                    errorInfo.Append("Date Occurred: " + obj.ImportError.DateOccurred.ToString("g") + "<BR>\r\n");
+                                }
+                                if (obj.ImportError.FirstOccurred != null)
+                                {
+                                    errorInfo.Append("First Occurred: " + obj.ImportError.FirstOccurred.ToString("g") + "<BR>\r\n");
+                                }
+                                if (obj.ImportError.RetryCount != null)
+                                {
+                                    errorInfo.Append("Retry Count: " + obj.ImportError.RetryCount + "<BR>\r\n");
+                                }
+                                if (obj.ImportError.ErrorType != null)
+                                {
+                                    errorInfo.Append("Error Type: " + obj.ImportError.ErrorType.Replace(" ", "&nbsp;") + "<BR>\r\n");
+                                }
+                                if (obj.ImportError.AlgorithmStep != null)
+                                {
+                                    string temp = obj.ImportError.AlgorithmStep.Replace(" ", "&nbsp;");
+                                    temp = temp.Replace("\n", "<BR>");
+                                    errorInfo.Append("Algorithm Step: " + temp + "<BR>\r\n");
+                                }
+                                if (obj.ImportError.DestinationAttribute != null)
+                                {
+                                    string temp = obj.ImportError.DestinationAttribute.Replace(" ", "&nbsp;");
+                                    temp = temp.Replace("\n", "<BR>");
+                                    errorInfo.Append("Destination Attribute: " + temp + "<BR>\r\n");
+                                }
+                                if (obj.ImportError.ContextID != null)
+                                {
+                                    string temp = obj.ImportError.ContextID.Replace(" ", "&nbsp;");
+                                    temp = temp.Replace("\n", "<BR>>");
+                                    errorInfo.Append("Context ID: " + temp + "<BR>\r\n");
+                                }
+                                if (obj.ImportError.SourceAttribute != null)
+                                {
+                                    string temp = obj.ImportError.SourceAttribute.Replace(" ", "&nbsp;");
+                                    temp = temp.Replace("\n", "<BR>>");
+                                    errorInfo.Append("Source Attribute: " + temp + "<BR>\r\n");
+                                }
+                                if (obj.ImportError.ScriptContext != null)
+                                {
+                                    string temp = obj.ImportError.ScriptContext.Replace(" ", "&nbsp;");
+                                    temp = temp.Replace("\n", "<BR>>");
+                                    errorInfo.Append("Script Context: " + temp + "<BR>\r\n");
+                                }
+                                writer.Write(errorInfo.ToString() + "</TD></TR>\r\n");
+                                break;
                         }
-                        else
+                    }
+                    else
                         {
                             Attribute shAttrib = GetMatchingAttribute(attrib, obj.SynchronizedHologram.Attributes);
                             writer.Write(AddAttribToReportHTML(shAttrib));
@@ -2827,8 +2983,65 @@ namespace csReporter
                                         writer.Write(errorInfo.ToString() + "</TD><TD /></TR>\r\n");
                                         break;
                                 }
+                        }
+                        else if (obj.ImportError != null && errorAttribs.Contains(attrib))
+                        {
+                            writer.Write("<TR><TD style=\"border-style: none;\" /><TD style=\"border-style: none;\" /><TD style=\"border-style: none;\" /><TD valign=\"top\" nowrap>" + attribName + "</TD>");
+                            switch (attrib)
+                            {
+                                case "<ImportErrorDetails>":
+                                    StringBuilder errorInfo = new StringBuilder("<TD valign=\"top\" nowrap>");
+                                    if (obj.ImportError.DateOccurred != null)
+                                    {
+                                        errorInfo.Append("Date Occurred: " + obj.ImportError.DateOccurred.ToString("g") + "<BR>\r\n");
+                                    }
+                                    if (obj.ImportError.FirstOccurred != null)
+                                    {
+                                        errorInfo.Append("First Occurred: " + obj.ImportError.FirstOccurred.ToString("g") + "<BR>\r\n");
+                                    }
+                                    if (obj.ImportError.RetryCount != null)
+                                    {
+                                        errorInfo.Append("Retry Count: " + obj.ImportError.RetryCount.Replace(" ", "&nbsp;") + "<BR>\r\n");
+                                    }
+                                    if (obj.ImportError.ErrorType != null)
+                                    {
+                                        errorInfo.Append("Error Type: " + obj.ImportError.ErrorType.Replace(" ", "&nbsp;") + "<BR>\r\n");
+                                    }
+                                    if (obj.ImportError.AlgorithmStep != null)
+                                    {
+                                        string temp = obj.ImportError.AlgorithmStep.Replace(" ", "&nbsp;");
+                                        temp = temp.Replace("\n", "<BR>");
+                                        errorInfo.Append("Algorithm Step: " + temp + "<BR>\r\n");
+                                    }
+                                    if (obj.ImportError.DestinationAttribute != null)
+                                    {
+                                        string temp = obj.ImportError.DestinationAttribute.Replace(" ", "&nbsp;");
+                                        temp = temp.Replace("\n", "<BR>");
+                                        errorInfo.Append("Destination Attribute: " + temp + "<BR>\r\n");
+                                    }
+                                    if (obj.ImportError.ContextID != null)
+                                    {
+                                        string temp = obj.ImportError.ContextID.Replace(" ", "&nbsp;");
+                                        temp = temp.Replace("\n", "<BR>");
+                                        errorInfo.Append("Context ID: " + temp + "<BR>\r\n");
+                                    }
+                                    if (obj.ImportError.SourceAttribute != null)
+                                    {
+                                        string temp = obj.ImportError.SourceAttribute.Replace(" ", "&nbsp;");
+                                        temp = temp.Replace("\n", "<BR>");
+                                        errorInfo.Append("Source Attribute: " + temp + "<BR>\r\n");
+                                    }
+                                    if (obj.ImportError.ScriptContext != null)
+                                    {
+                                        string temp = obj.ImportError.ScriptContext.Replace(" ", "&nbsp;");
+                                        temp = temp.Replace("\n", "<BR>");
+                                        errorInfo.Append("Script Context: " + temp + "<BR>\r\n");
+                                    }
+                                    writer.Write(errorInfo.ToString() + "</TD><TD /></TR>\r\n");
+                                    break;
                             }
-                            else
+                        }
+                        else
                             {
                                 Attribute uehAttrib = null;
                                 Attribute shAttrib = null;
@@ -3279,8 +3492,58 @@ namespace csReporter
                                         rowValues.Add(errorInfo.ToString());
                                         break;
                                 }
+                        }
+                        else if (obj.ImportError != null && errorAttribs.Contains(attrib))
+                        {
+                            switch (attrib)
+                            {
+                                case "<ImportErrorDetails>":
+                                    StringBuilder errorInfo = new StringBuilder();
+                                    if (obj.ImportError.DateOccurred != null)
+                                    {
+                                        errorInfo.Append("Date Occurred: " + obj.ImportError.DateOccurred + "\n");
+                                    }
+                                    if (obj.ImportError.FirstOccurred != null)
+                                    {
+                                        errorInfo.Append("First Occurred: " + obj.ImportError.FirstOccurred + "\n");
+                                    }
+                                    if (obj.ImportError.RetryCount != null)
+                                    {
+                                        errorInfo.Append("Retry Count: " + obj.ImportError.RetryCount + "\n");
+                                    }
+                                    if (obj.ImportError.ErrorType != null)
+                                    {
+                                        errorInfo.Append("Error Type: " + obj.ImportError.ErrorType + "\n");
+                                    }
+                                    if (obj.ImportError.AlgorithmStep != null)
+                                    {
+                                        errorInfo.Append("Algorithm Step: " + obj.ImportError.AlgorithmStep + "\n");
+                                    }
+                                    if (obj.ImportError.DestinationAttribute != null)
+                                    {
+                                        errorInfo.Append("Destination Attribute: " + obj.ImportError.DestinationAttribute + "\n");
+                                    }
+                                    if (obj.ImportError.ContextID != null)
+                                    {
+                                        errorInfo.Append("Context ID: " + obj.ImportError.ContextID + "\n");
+                                    }
+                                    if (obj.ImportError.SourceAttribute != null)
+                                    {
+                                        errorInfo.Append("Source Attribute: " + obj.ImportError.SourceAttribute + "\n");
+                                    }
+                                    if (obj.ImportError.ScriptContext != null)
+                                    {
+                                        errorInfo.Append("Script Context: " + obj.ImportError.ScriptContext + "\n");
+                                    }
+                                    errorInfo.Replace("\r\n", "");
+                                    errorInfo.Replace("\"", "'");
+                                    errorInfo.Insert(0, "\"");
+                                    errorInfo.Append("\"");
+                                    rowValues.Add(errorInfo.ToString());
+                                    break;
                             }
-                            else
+                        }
+                        else
                             {
                                 Attribute shAttrib = GetMatchingAttribute(attrib, obj.SynchronizedHologram.Attributes);
                                 rowValues.AddRange(AddAttribToReportExcel(shAttrib));
@@ -3376,8 +3639,58 @@ namespace csReporter
                                         rowValues.Add(errorInfo.ToString());
                                         break;
                                 }
+                        }
+                        else if (obj.ImportError != null && errorAttribs.Contains(attrib))
+                        {
+                            switch (attrib)
+                            {
+                                case "<ImportErrorDetails>":
+                                    StringBuilder errorInfo = new StringBuilder();
+                                    if (obj.ImportError.DateOccurred != null)
+                                    {
+                                        errorInfo.Append("Date Occurred: " + obj.ImportError.DateOccurred + "\n");
+                                    }
+                                    if (obj.ImportError.FirstOccurred != null)
+                                    {
+                                        errorInfo.Append("First Occurred: " + obj.ImportError.FirstOccurred + "\n");
+                                    }
+                                    if (obj.ImportError.RetryCount != null)
+                                    {
+                                        errorInfo.Append("Retry Count: " + obj.ImportError.RetryCount + "\n");
+                                    }
+                                    if (obj.ImportError.ErrorType != null)
+                                    {
+                                        errorInfo.Append("Error Type: " + obj.ImportError.ErrorType + "\n");
+                                    }
+                                    if (obj.ImportError.AlgorithmStep != null)
+                                    {
+                                        errorInfo.Append("Algorithm Step: " + obj.ImportError.AlgorithmStep + "\n");
+                                    }
+                                    if (obj.ImportError.DestinationAttribute != null)
+                                    {
+                                        errorInfo.Append("Destination Attribute: " + obj.ImportError.DestinationAttribute + "\n");
+                                    }
+                                    if (obj.ImportError.ContextID != null)
+                                    {
+                                        errorInfo.Append("Context ID: " + obj.ImportError.ContextID + "\n");
+                                    }
+                                    if (obj.ImportError.SourceAttribute != null)
+                                    {
+                                        errorInfo.Append("Source Attribute: " + obj.ImportError.SourceAttribute + "\n");
+                                    }
+                                    if (obj.ImportError.ScriptContext != null)
+                                    {
+                                        errorInfo.Append("Script Context: " + obj.ImportError.ScriptContext + "\n");
+                                    }
+                                    errorInfo.Replace("\r\n", "");
+                                    errorInfo.Replace("\"", "'");
+                                    errorInfo.Insert(0, "\"");
+                                    errorInfo.Append("\"");
+                                    rowValues.Add(errorInfo.ToString());
+                                    break;
                             }
-                            else
+                        }
+                        else
                             {
                                 Attribute pihAttrib = null;
                                 Attribute shAttrib = null;
@@ -3501,8 +3814,58 @@ namespace csReporter
                                         excelReport.WriteNextRow("", attrib, errorInfo.ToString());
                                         break;
                                 }
+                        }
+                        else if (obj.ImportError != null && errorAttribs.Contains(attrib))
+                        {
+                            switch (attrib)
+                            {
+                                case "<ImportErrorDetails>":
+                                    StringBuilder errorInfo = new StringBuilder();
+                                    if (obj.ImportError.DateOccurred != null)
+                                    {
+                                        errorInfo.Append("Date Occurred: " + obj.ImportError.DateOccurred + "\n");
+                                    }
+                                    if (obj.ImportError.FirstOccurred != null)
+                                    {
+                                        errorInfo.Append("First Occurred: " + obj.ImportError.FirstOccurred + "\n");
+                                    }
+                                    if (obj.ImportError.RetryCount != null)
+                                    {
+                                        errorInfo.Append("Retry Count: " + obj.ImportError.RetryCount + "\n");
+                                    }
+                                    if (obj.ImportError.ErrorType != null)
+                                    {
+                                        errorInfo.Append("Error Type: " + obj.ImportError.ErrorType + "\n");
+                                    }
+                                    if (obj.ImportError.AlgorithmStep != null)
+                                    {
+                                        errorInfo.Append("Algorithm Step: " + obj.ImportError.AlgorithmStep + "\n");
+                                    }
+                                    if (obj.ImportError.DestinationAttribute != null)
+                                    {
+                                        errorInfo.Append("Destination Attribute: " + obj.ImportError.DestinationAttribute + "\n");
+                                    }
+                                    if (obj.ImportError.ContextID != null)
+                                    {
+                                        errorInfo.Append("Context ID: " + obj.ImportError.ContextID + "\n");
+                                    }
+                                    if (obj.ImportError.SourceAttribute != null)
+                                    {
+                                        errorInfo.Append("Source Attribute: " + obj.ImportError.SourceAttribute + "\n");
+                                    }
+                                    if (obj.ImportError.ScriptContext != null)
+                                    {
+                                        errorInfo.Append("Script Context: " + obj.ImportError.ScriptContext + "\n");
+                                    }
+                                    errorInfo.Replace("\r\n", "");
+                                    errorInfo.Replace("\"", "'");
+                                    errorInfo.Insert(0, "\"");
+                                    errorInfo.Append("\"");
+                                    excelReport.WriteNextRow("", attrib, errorInfo.ToString());
+                                    break;
                             }
-                            else
+                        }
+                        else
                             {
                                 Attribute shAttrib = GetMatchingAttribute(attrib, obj.SynchronizedHologram.Attributes);
                                 List<string> row = new List<string>();
@@ -3602,8 +3965,58 @@ namespace csReporter
                                         excelReport.WriteNextRow("", attrib, errorInfo.ToString());
                                         break;
                                 }
+                        }
+                        else if (obj.ImportError != null && errorAttribs.Contains(attrib))
+                        {
+                            switch (attrib)
+                            {
+                                case "<ImportErrorDetails>":
+                                    StringBuilder errorInfo = new StringBuilder();
+                                    if (obj.ImportError.DateOccurred != null)
+                                    {
+                                        errorInfo.Append("Date Occurred: " + obj.ImportError.DateOccurred + "\n");
+                                    }
+                                    if (obj.ImportError.FirstOccurred != null)
+                                    {
+                                        errorInfo.Append("First Occurred: " + obj.ImportError.FirstOccurred + "\n");
+                                    }
+                                    if (obj.ImportError.RetryCount != null)
+                                    {
+                                        errorInfo.Append("Retry Count: " + obj.ImportError.RetryCount + "\n");
+                                    }
+                                    if (obj.ImportError.ErrorType != null)
+                                    {
+                                        errorInfo.Append("Error Type: " + obj.ImportError.ErrorType + "\n");
+                                    }
+                                    if (obj.ImportError.AlgorithmStep != null)
+                                    {
+                                        errorInfo.Append("Algorithm Step: " + obj.ImportError.AlgorithmStep + "\n");
+                                    }
+                                    if (obj.ImportError.DestinationAttribute != null)
+                                    {
+                                        errorInfo.Append("Destination Attribute: " + obj.ImportError.DestinationAttribute + "\n");
+                                    }
+                                    if (obj.ImportError.ContextID != null)
+                                    {
+                                        errorInfo.Append("Context ID " + obj.ImportError.ContextID + "\n");
+                                    }
+                                    if (obj.ImportError.SourceAttribute != null)
+                                    {
+                                        errorInfo.Append("Source Attribute " + obj.ImportError.SourceAttribute + "\n");
+                                    }
+                                    if (obj.ImportError.ScriptContext != null)
+                                    {
+                                        errorInfo.Append("Script Context " + obj.ImportError.ScriptContext + "\n");
+                                    }
+                                    errorInfo.Replace("\r\n", "");
+                                    errorInfo.Replace("\"", "'");
+                                    errorInfo.Insert(0, "\"");
+                                    errorInfo.Append("\"");
+                                    excelReport.WriteNextRow("", attrib, errorInfo.ToString());
+                                    break;
                             }
-                            else
+                        }
+                        else
                             {
                                 Attribute pihAttrib = null;
                                 Attribute shAttrib = null;
@@ -4211,6 +4624,10 @@ namespace csReporter
                                                         {
                                                             newErrorAttribs.Add("<ExportErrorDetails>");
                                                         }
+                                                        if (tmpCSO.ImportError != null)
+                                                        {
+                                                            newErrorAttribs.Add("<ImportErrorDetails>");
+                                                        }
                                                     }
                                                     //if match update match counter
                                                     counterMatchObjects++;
@@ -4247,6 +4664,10 @@ namespace csReporter
                                                 if (tmpCSO.ExportError != null)
                                                 {
                                                     newErrorAttribs.Add("<ExportErrorDetails>");
+                                                }
+                                                if (tmpCSO.ImportError != null)
+                                                {
+                                                    newErrorAttribs.Add("<ImportErrorDetails>");
                                                 }
                                             }
                                             //update total object counter
@@ -4758,6 +5179,10 @@ namespace csReporter
                     if (obj.ExportError != null)
                     {
                         errorAttribs.Add("<ExportErrorDetails>");
+                    }
+                    if (obj.ImportError != null)
+                    {
+                        errorAttribs.Add("<ImportErrorDetails>");
                     }
                 }
                 changingAttribs = changingAttribs.Distinct().ToList();
