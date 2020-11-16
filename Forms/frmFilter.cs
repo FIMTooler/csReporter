@@ -920,7 +920,10 @@ namespace csReporter
                     {
                         if (sysAttribs.Contains(fa.Attribute))
                         {
-                            return SystemAttribFilter(fa, hologram.Parent);
+                            if (SystemAttribFilter(fa, hologram.Parent) == false)
+                            {
+                                return false;
+                            }
                         }
                         else
                         {
@@ -1289,7 +1292,10 @@ namespace csReporter
                     {
                         if (sysAttribs.Contains(fa.Attribute))
                         {
-                            return SystemAttribFilter(fa, hologram.Parent);
+                            if (SystemAttribFilter(fa, hologram.Parent) == false)
+                            {
+                                return false;
+                            }
                         }
                         else
                         {
