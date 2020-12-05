@@ -45,7 +45,7 @@ namespace csReporter
         static Assembly ResolveExcel(object sender, ResolveEventArgs args)
         {
             Assembly executingAssembly = Assembly.GetExecutingAssembly();
-            using (Stream stream = executingAssembly.GetManifestResourceStream("csReporter.DocumentFormat.OpenXml.dll"))
+            using (Stream stream = executingAssembly.GetManifestResourceStream("csReporter.Excel.DocumentFormat.OpenXml.dll"))
             {
                 if (stream == null)
                     throw new ArgumentException("Embedded assembly not found: DocumentFormat.OpenXml.dll");
