@@ -2680,7 +2680,7 @@ namespace csReporter
 
                 //add logo to report
                 System.Reflection.Assembly myAssembly = System.Reflection.Assembly.GetExecutingAssembly();
-                Stream myStream = myAssembly.GetManifestResourceStream("csReporter.csrLogo.png");
+                Stream myStream = myAssembly.GetManifestResourceStream("csReporter.Icon.csrLogo.png");
                 //Check myStream for null before using
                 if (myStream != null)
                 {
