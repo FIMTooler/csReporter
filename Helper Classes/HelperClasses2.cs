@@ -47,7 +47,7 @@ SOFTWARE.
 //            {
 //                if (ex.Message != string.Empty)
 //                {
-//                    erMsg += "Exeception message:\r\n" + ex.Message;
+//                    erMsg += "Exception message:\r\n" + ex.Message;
 //                }
 //                erMsg += "\r\n\r\nException Type: " + ex.GetType().ToString();
 //                if (ex.StackTrace != null)
