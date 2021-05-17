@@ -2090,7 +2090,7 @@ namespace csReporter
             {
                 if (filter.FilterState == State.Synchronized)
                 {
-                    writer.Write("\"" + obj.csDN + "\"," + obj.ObjectType);
+                    writer.Write("\"" + obj.csDN.Replace("\"", "\"\"") + "\"," + obj.ObjectType);
                     writer.Write(",");
 
                     foreach (string attrib in report.ReportAttributes)
@@ -2168,7 +2168,7 @@ namespace csReporter
                                             errorInfo.Append("Server Error Detail: " + obj.ExportError.ServerErrorDetail + "\n");
                                         }
                                         errorInfo.Replace("\r\n", "");
-                                        errorInfo.Replace("\"", "'");
+                                        errorInfo.Replace("\"", "\"\"");
                                         errorInfo.Insert(0, "\"");
                                         errorInfo.Append("\"");
                                         writer.Write(errorInfo.ToString());
@@ -2217,8 +2217,24 @@ namespace csReporter
                                     {
                                         errorInfo.Append("Script Context: " + obj.ImportError.ScriptContext + "\n");
                                     }
+                                    if (obj.ImportError.ExtensionName != null)
+                                    {
+                                        errorInfo.Append("Extension Name: " + obj.ImportError.ExtensionName + "\n");
+                                    }
+                                    if (obj.ImportError.ExtensionCallSite != null)
+                                    {
+                                        errorInfo.Append("Extension Callsite: " + obj.ImportError.ExtensionCallSite + "\n");
+                                    }
+                                    if (obj.ImportError.ExtensionContext != null)
+                                    {
+                                        errorInfo.Append("Extension Context: " + obj.ImportError.ExtensionContext + "\n");
+                                    }
+                                    if (obj.ImportError.CallStack != null)
+                                    {
+                                        errorInfo.Append("Call Stack: " + obj.ImportError.CallStack + "\n");
+                                    }
                                     errorInfo.Replace("\r\n", "");
-                                    errorInfo.Replace("\"", "'");
+                                    errorInfo.Replace("\"", "\"\"");
                                     errorInfo.Insert(0, "\"");
                                     errorInfo.Append("\"");
                                     writer.Write(errorInfo.ToString());
@@ -2240,7 +2256,7 @@ namespace csReporter
                 }
                 else
                 {
-                    writer.Write("\"" + obj.csDN + "\"," + obj.ObjectType + "," + filter.FilterState.ToString() + "-" + obj.Delta(filter.FilterState).Operation);
+                    writer.Write("\"" + obj.csDN.Replace("\"", "\"\"") + "\"," + obj.ObjectType + "," + filter.FilterState.ToString() + "-" + obj.Delta(filter.FilterState).Operation);
                     writer.Write(",");
                     foreach (string attrib in report.ReportAttributes)
                     {
@@ -2316,8 +2332,9 @@ namespace csReporter
                                         {
                                             errorInfo.Append("Server Error Detail: " + obj.ExportError.ServerErrorDetail + "\n");
                                         }
+                                        errorInfo.Remove(errorInfo.Length - 1, 1);
                                         errorInfo.Replace("\r\n", "");
-                                        errorInfo.Replace("\"", "'");
+                                        errorInfo.Replace("\"", "\"\"");
                                         errorInfo.Insert(0, "\"");
                                         errorInfo.Append("\"");
                                         writer.Write(errorInfo.ToString());
@@ -2364,10 +2381,27 @@ namespace csReporter
                                     }
                                     if (obj.ImportError.ScriptContext != null)
                                     {
-                                        errorInfo.Append("Scrip Context: " + obj.ImportError.ScriptContext + "\n");
+                                        errorInfo.Append("Script Context: " + obj.ImportError.ScriptContext + "\n");
                                     }
+                                    if (obj.ImportError.ExtensionName != null)
+                                    {
+                                        errorInfo.Append("Extension Name: " + obj.ImportError.ExtensionName + "\n");
+                                    }
+                                    if (obj.ImportError.ExtensionCallSite != null)
+                                    {
+                                        errorInfo.Append("Extension Callsite: " + obj.ImportError.ExtensionCallSite + "\n");
+                                    }
+                                    if (obj.ImportError.ExtensionContext!= null)
+                                    {
+                                        errorInfo.Append("Extension Context: " + obj.ImportError.ExtensionContext + "\n");
+                                    }
+                                    if (obj.ImportError.CallStack != null)
+                                    {
+                                        errorInfo.Append("Call Stack: " + obj.ImportError.CallStack + "\n");
+                                    }
+                                    errorInfo.Remove(errorInfo.Length - 1, 1);
                                     errorInfo.Replace("\r\n", "");
-                                    errorInfo.Replace("\"", "'");
+                                    errorInfo.Replace("\"", "\"\"");
                                     errorInfo.Insert(0, "\"");
                                     errorInfo.Append("\"");
                                     writer.Write(errorInfo.ToString());
@@ -2432,6 +2466,7 @@ namespace csReporter
                                 {
                                     strTemp = strTemp.Insert(0, "'");
                                 }
+                                strTemp = strTemp.Replace("\"", "\"\"");
                                 strOutput.Append(strTemp + "\n");
                             }
                             strOutput.Remove(strOutput.Length - 1, 1);
@@ -2444,6 +2479,7 @@ namespace csReporter
                                 {
                                     strTemp = strTemp.Insert(0, "'");
                                 }
+                                strTemp = strTemp.Replace("\"", "\"\"");
                                 strOutput.Append(strTemp + "\n");
                             }
                             strOutput.Remove(strOutput.Length - 1, 1);
@@ -2466,6 +2502,7 @@ namespace csReporter
                                 {
                                     strTemp = strTemp.Insert(0, "'");
                                 }
+                                strTemp = strTemp.Replace("\"", "\"\"");
                                 strOutput.Append(strTemp + "\n");
                             }
                             strOutput.Remove(strOutput.Length - 1, 1);
@@ -2488,6 +2525,7 @@ namespace csReporter
                                 {
                                     strTemp = strTemp.Insert(0, "'");
                                 }
+                                strTemp = strTemp.Replace("\"", "\"\"");
                                 strOutput.Append(strTemp + "\n");
                             }
                             strOutput.Remove(strOutput.Length - 1, 1);
@@ -2536,6 +2574,7 @@ namespace csReporter
                             {
                                 strTemp = strTemp.Insert(0, "'");
                             }
+                            strTemp = strTemp.Replace("\"", "\"\"");
                             strOutput.Append(strTemp + "\n");
                         }
                         strOutput.Remove(strOutput.Length - 1, 1);
@@ -2546,8 +2585,8 @@ namespace csReporter
                         {
                             strTemp = strTemp.Insert(0, "'");
                         }
-                        strOutput.Append(strTemp + "\n");
-                        strOutput.Remove(strOutput.Length - 1, 1);
+                        strTemp = strTemp.Replace("\"", "\"\"");
+                        strOutput.Append(strTemp);
                         strOutput.Append("\"");
                     }
                 }
@@ -2589,6 +2628,7 @@ namespace csReporter
                                 {
                                     strTemp = strTemp.Insert(0, "'");
                                 }
+                                strTemp = strTemp.Replace("\"", "\"\"");
                                 strOutput.Append(strTemp + "\n");
                             }
                             strOutput.Remove(strOutput.Length - 1, 1);
@@ -2826,10 +2866,10 @@ namespace csReporter
                                     if (obj.ExportError.ServerErrorDetail != null)
                                     {
                                         string temp = obj.ExportError.ServerErrorDetail.Replace(" ", "&nbsp;");
-                                        temp = temp.Replace("\n", "<BR>>");
+                                        temp = temp.Replace("\n", "<BR>");
                                         errorInfo.Append("Server Error Detail: " + temp + "<BR>\r\n");
                                     }
-                                    writer.Write(errorInfo.ToString() + "</TD></TR>\r\n");
+                                    writer.Write(errorInfo.ToString().Replace("<BR><BR>\r\n", "\r\n") + "</TD></TR>\r\n");
                                     break;
                             }
                     }
@@ -2870,22 +2910,46 @@ namespace csReporter
                                 if (obj.ImportError.ContextID != null)
                                 {
                                     string temp = obj.ImportError.ContextID.Replace(" ", "&nbsp;");
-                                    temp = temp.Replace("\n", "<BR>>");
+                                    temp = temp.Replace("\n", "<BR>");
                                     errorInfo.Append("Context ID: " + temp + "<BR>\r\n");
                                 }
                                 if (obj.ImportError.SourceAttribute != null)
                                 {
                                     string temp = obj.ImportError.SourceAttribute.Replace(" ", "&nbsp;");
-                                    temp = temp.Replace("\n", "<BR>>");
+                                    temp = temp.Replace("\n", "<BR>");
                                     errorInfo.Append("Source Attribute: " + temp + "<BR>\r\n");
                                 }
                                 if (obj.ImportError.ScriptContext != null)
                                 {
                                     string temp = obj.ImportError.ScriptContext.Replace(" ", "&nbsp;");
-                                    temp = temp.Replace("\n", "<BR>>");
+                                    temp = temp.Replace("\n", "<BR>");
                                     errorInfo.Append("Script Context: " + temp + "<BR>\r\n");
                                 }
-                                writer.Write(errorInfo.ToString() + "</TD></TR>\r\n");
+                                if (obj.ImportError.ExtensionName != null)
+                                {
+                                    string temp = obj.ImportError.ExtensionName.Replace(" ", "&nbsp;");
+                                    temp = temp.Replace("\n", "<BR>");
+                                    errorInfo.Append("Extension Name: " + temp + "<BR>\r\n");
+                                }
+                                if (obj.ImportError.ExtensionCallSite != null)
+                                {
+                                    string temp = obj.ImportError.ExtensionCallSite.Replace(" ", "&nbsp;");
+                                    temp = temp.Replace("\n", "<BR>");
+                                    errorInfo.Append("Extension Callsite: " + temp + "<BR>\r\n");
+                                }
+                                if (obj.ImportError.ExtensionContext != null)
+                                {
+                                    string temp = obj.ImportError.ExtensionContext.Replace(" ", "&nbsp;");
+                                    temp = temp.Replace("\n", "<BR>");
+                                    errorInfo.Append("Extension Context: " + temp + "<BR>\r\n");
+                                }
+                                if (obj.ImportError.CallStack != null)
+                                {
+                                    string temp = obj.ImportError.CallStack.Replace(" ", "&nbsp;");
+                                    temp = temp.Replace("\n", "<BR>");
+                                    errorInfo.Append("Call Stack: " + temp + "<BR>\r\n");
+                                }
+                                writer.Write(errorInfo.ToString().Replace("<BR><BR>\r\n", "\r\n") + "</TD></TR>\r\n");
                                 break;
                         }
                     }
@@ -2986,7 +3050,7 @@ namespace csReporter
                                             temp = temp.Replace("\n", "<BR>");
                                             errorInfo.Append("Server Error Detail: " + temp + "<BR>\r\n");
                                         }
-                                        writer.Write(errorInfo.ToString() + "</TD><TD /></TR>\r\n");
+                                        writer.Write(errorInfo.ToString().Replace("<BR><BR>\r\n", "\r\n") + "</TD><TD /></TR>\r\n");
                                         break;
                                 }
                         }
@@ -3043,7 +3107,31 @@ namespace csReporter
                                         temp = temp.Replace("\n", "<BR>");
                                         errorInfo.Append("Script Context: " + temp + "<BR>\r\n");
                                     }
-                                    writer.Write(errorInfo.ToString() + "</TD><TD /></TR>\r\n");
+                                    if (obj.ImportError.ExtensionName != null)
+                                    {
+                                        string temp = obj.ImportError.ExtensionName.Replace(" ", "&nbsp;");
+                                        temp = temp.Replace("\n", "<BR>");
+                                        errorInfo.Append("Extension Name: " + temp + "<BR>\r\n");
+                                    }
+                                    if (obj.ImportError.ExtensionCallSite != null)
+                                    {
+                                        string temp = obj.ImportError.ExtensionCallSite.Replace(" ", "&nbsp;");
+                                        temp = temp.Replace("\n", "<BR>");
+                                        errorInfo.Append("Extension Callsite: " + temp + "<BR>\r\n");
+                                    }
+                                    if (obj.ImportError.ExtensionContext != null)
+                                    {
+                                        string temp = obj.ImportError.ExtensionContext.Replace(" ", "&nbsp;");
+                                        temp = temp.Replace("\n", "<BR>");
+                                        errorInfo.Append("Extension Context: " + temp + "<BR>\r\n");
+                                    }
+                                    if (obj.ImportError.CallStack != null)
+                                    {
+                                        string temp = obj.ImportError.CallStack.Replace(" ", "&nbsp;");
+                                        temp = temp.Replace("\n", "<BR>");
+                                        errorInfo.Append("Call Stack: " + temp + "<BR>\r\n");
+                                    }
+                                    writer.Write(errorInfo.ToString().Replace("<BR><BR>\r\n", "\r\n") + "</TD><TD /></TR>\r\n");
                                     break;
                             }
                         }
@@ -3492,10 +3580,7 @@ namespace csReporter
                                             errorInfo.Append("Server Error Detail: " + obj.ExportError.ServerErrorDetail + "\n");
                                         }
                                         errorInfo.Replace("\r\n", "");
-                                        errorInfo.Replace("\"", "'");
-                                        errorInfo.Insert(0, "\"");
-                                        errorInfo.Append("\"");
-                                        rowValues.Add(errorInfo.ToString());
+                                        rowValues.Add(errorInfo.ToString().Replace("\n\"","\""));
                                         break;
                                 }
                         }
@@ -3541,11 +3626,24 @@ namespace csReporter
                                     {
                                         errorInfo.Append("Script Context: " + obj.ImportError.ScriptContext + "\n");
                                     }
+                                    if (obj.ImportError.ExtensionName != null)
+                                    {
+                                        errorInfo.Append("Extension Name: " + obj.ImportError.ExtensionName + "\n");
+                                    }
+                                    if (obj.ImportError.ExtensionCallSite != null)
+                                    {
+                                        errorInfo.Append("Extension Callsite: " + obj.ImportError.ExtensionCallSite + "\n");
+                                    }
+                                    if (obj.ImportError.ExtensionContext != null)
+                                    {
+                                        errorInfo.Append("Extension Context: " + obj.ImportError.ExtensionContext + "\n");
+                                    }
+                                    if (obj.ImportError.CallStack != null)
+                                    {
+                                        errorInfo.Append("Call Stack: " + obj.ImportError.CallStack + "\n");
+                                    }
                                     errorInfo.Replace("\r\n", "");
-                                    errorInfo.Replace("\"", "'");
-                                    errorInfo.Insert(0, "\"");
-                                    errorInfo.Append("\"");
-                                    rowValues.Add(errorInfo.ToString());
+                                    rowValues.Add(errorInfo.ToString().Replace("\n\"", "\""));
                                     break;
                             }
                         }
@@ -3639,10 +3737,7 @@ namespace csReporter
                                             errorInfo.Append("Server Error Detail: " + obj.ExportError.ServerErrorDetail + "\n");
                                         }
                                         errorInfo.Replace("\r\n", "");
-                                        errorInfo.Replace("\"", "'");
-                                        errorInfo.Insert(0, "\"");
-                                        errorInfo.Append("\"");
-                                        rowValues.Add(errorInfo.ToString());
+                                        rowValues.Add(errorInfo.ToString().Replace("\n\"", "\""));
                                         break;
                                 }
                         }
@@ -3688,11 +3783,24 @@ namespace csReporter
                                     {
                                         errorInfo.Append("Script Context: " + obj.ImportError.ScriptContext + "\n");
                                     }
+                                    if (obj.ImportError.ExtensionName != null)
+                                    {
+                                        errorInfo.Append("Extension Name: " + obj.ImportError.ExtensionName + "\n");
+                                    }
+                                    if (obj.ImportError.ExtensionCallSite != null)
+                                    {
+                                        errorInfo.Append("Extension Callsite: " + obj.ImportError.ExtensionCallSite + "\n");
+                                    }
+                                    if (obj.ImportError.ExtensionContext != null)
+                                    {
+                                        errorInfo.Append("Extension Context: " + obj.ImportError.ExtensionContext + "\n");
+                                    }
+                                    if (obj.ImportError.CallStack != null)
+                                    {
+                                        errorInfo.Append("Call Stack: " + obj.ImportError.CallStack + "\n");
+                                    }
                                     errorInfo.Replace("\r\n", "");
-                                    errorInfo.Replace("\"", "'");
-                                    errorInfo.Insert(0, "\"");
-                                    errorInfo.Append("\"");
-                                    rowValues.Add(errorInfo.ToString());
+                                    rowValues.Add(errorInfo.ToString().Replace("\n\"", "\""));
                                     break;
                             }
                         }
@@ -3863,6 +3971,22 @@ namespace csReporter
                                     {
                                         errorInfo.Append("Script Context: " + obj.ImportError.ScriptContext + "\n");
                                     }
+                                    if (obj.ImportError.ExtensionName != null)
+                                    {
+                                        errorInfo.Append("Extension Name: " + obj.ImportError.ExtensionName + "\n");
+                                    }
+                                    if (obj.ImportError.ExtensionCallSite != null)
+                                    {
+                                        errorInfo.Append("Extension Callsite: " + obj.ImportError.ExtensionCallSite + "\n");
+                                    }
+                                    if (obj.ImportError.ExtensionContext != null)
+                                    {
+                                        errorInfo.Append("Extension Context: " + obj.ImportError.ExtensionContext + "\n");
+                                    }
+                                    if (obj.ImportError.CallStack != null)
+                                    {
+                                        errorInfo.Append("Call Stack: " + obj.ImportError.CallStack + "\n");
+                                    }
                                     errorInfo.Replace("\r\n", "");
                                     errorInfo.Replace("\"", "'");
                                     errorInfo.Insert(0, "\"");
@@ -4004,15 +4128,31 @@ namespace csReporter
                                     }
                                     if (obj.ImportError.ContextID != null)
                                     {
-                                        errorInfo.Append("Context ID " + obj.ImportError.ContextID + "\n");
+                                        errorInfo.Append("Context ID: " + obj.ImportError.ContextID + "\n");
                                     }
                                     if (obj.ImportError.SourceAttribute != null)
                                     {
-                                        errorInfo.Append("Source Attribute " + obj.ImportError.SourceAttribute + "\n");
+                                        errorInfo.Append("Source Attribute: " + obj.ImportError.SourceAttribute + "\n");
                                     }
                                     if (obj.ImportError.ScriptContext != null)
                                     {
-                                        errorInfo.Append("Script Context " + obj.ImportError.ScriptContext + "\n");
+                                        errorInfo.Append("Script Context: " + obj.ImportError.ScriptContext + "\n");
+                                    }
+                                    if (obj.ImportError.ExtensionName != null)
+                                    {
+                                        errorInfo.Append("Extension Name: " + obj.ImportError.ExtensionName + "\n");
+                                    }
+                                    if (obj.ImportError.ExtensionCallSite != null)
+                                    {
+                                        errorInfo.Append("Extension Callsite: " + obj.ImportError.ExtensionCallSite + "\n");
+                                    }
+                                    if (obj.ImportError.ExtensionContext != null)
+                                    {
+                                        errorInfo.Append("Extension Context: " + obj.ImportError.ExtensionContext + "\n");
+                                    }
+                                    if (obj.ImportError.CallStack != null)
+                                    {
+                                        errorInfo.Append("Call Stack: " + obj.ImportError.CallStack + "\n");
                                     }
                                     errorInfo.Replace("\r\n", "");
                                     errorInfo.Replace("\"", "'");

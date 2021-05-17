@@ -1999,7 +1999,7 @@ namespace csReporter
                                                 if (xnr.NodeType == XmlNodeType.Element)
                                                 {
                                                     xnr.Read();
-                                                    serverErrorDetail = xnr.Value;
+                                                    serverErrorDetail = xnr.Value.TrimEnd('\r', '\n');
                                                 }
                                                 break;
                                         }
@@ -2041,7 +2041,7 @@ namespace csReporter
                                                 errorCode = xnr.Value;
                                                 break;
                                             case "server-error-detail":
-                                                serverErrorDetail = xnr.Value;
+                                                serverErrorDetail = xnr.Value.TrimEnd('\r', '\n');
                                                 break;
                                         }
                                     }
@@ -2099,7 +2099,7 @@ namespace csReporter
                                                 errorCode = ChildN.InnerText;
                                                 break;
                                             case "server-error-detail":
-                                                serverErrorDetail = ChildN.InnerText;
+                                                serverErrorDetail = ChildN.InnerText.TrimEnd('\r', '\n');
                                                 break;
                                         }
                                     }
@@ -2140,7 +2140,7 @@ namespace csReporter
                                                 errorCode = ChildN.InnerText;
                                                 break;
                                             case "server-error-detail":
-                                                serverErrorDetail = ChildN.InnerText;
+                                                serverErrorDetail = ChildN.InnerText.TrimEnd('\r', '\n');
                                                 break;
                                         }
                                     }
@@ -2218,6 +2218,10 @@ namespace csReporter
         private string contextID;
         private string sourceAttribute;
         private string scriptContext;
+        private string extensionName;
+        private string extensionCallSite;
+        private string callStack;
+        private string extensionContext;
 
         public ImportError(XmlReader xnr)
         {
@@ -2318,6 +2322,42 @@ namespace csReporter
                                                     }
                                                 }
                                             }
+                                        }
+                                    }
+                                    break;
+                                case "extension-error-info":
+                                    while (xnr.Read() && !(xnr.Name == "extension-error-info" && xnr.NodeType == XmlNodeType.EndElement))
+                                    {
+                                        switch (xnr.Name)
+                                        {
+                                            case "extension-name":
+                                                if (xnr.Name == "extension-name" && xnr.NodeType == XmlNodeType.Element)
+                                                {
+                                                    xnr.Read();
+                                                    extensionName = xnr.Value;
+                                                }
+                                                break;
+                                            case "extension-callsite":
+                                                if (xnr.Name == "extension-callsite" && xnr.NodeType == XmlNodeType.Element)
+                                                {
+                                                    xnr.Read();
+                                                    extensionCallSite = xnr.Value;
+                                                }
+                                                break;
+                                            case "call-stack":
+                                                if (xnr.Name == "call-stack" && xnr.NodeType == XmlNodeType.Element)
+                                                {
+                                                    xnr.Read();
+                                                    callStack = xnr.Value.TrimEnd('\r', '\n');
+                                                }
+                                                break;
+                                            case "extension-context":
+                                                if (xnr.Name == "extension-context" && xnr.NodeType == XmlNodeType.Element)
+                                                {
+                                                    xnr.Read();
+                                                    extensionContext = xnr.Value;
+                                                }
+                                                break;
                                         }
                                     }
                                     break;
@@ -2424,6 +2464,26 @@ namespace csReporter
                                                 }
                                             }
                                             break;
+                                        case "extension-error-info":
+                                            foreach (XmlNode child in ChildN)
+                                            {
+                                                switch (child.Name)
+                                                {
+                                                    case "extension-name":
+                                                        extensionName = child.InnerText;
+                                                        break;
+                                                    case "extension-callsite":
+                                                        extensionCallSite = child.InnerText;
+                                                        break;
+                                                    case "call-stack":
+                                                        callStack = child.InnerText.TrimEnd('\r','\n');
+                                                        break;
+                                                    case "extension-context":
+                                                        extensionContext = child.InnerText;
+                                                        break;
+                                                }
+                                            }
+                                            break;
                                     }
                                 }
                             }
@@ -2498,6 +2558,34 @@ namespace csReporter
             get
             {
                 return scriptContext;
+            }
+        }
+        public string ExtensionName
+        {
+            get
+            {
+                return extensionName;
+            }
+        }
+        public string ExtensionCallSite
+        {
+            get
+            {
+                return extensionCallSite;
+            }
+        }
+        public string CallStack
+        {
+            get
+            {
+                return callStack;
+            }
+        }
+        public string ExtensionContext
+        {
+            get
+            {
+                return extensionContext;
             }
         }
     }
