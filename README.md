@@ -9,8 +9,7 @@ Although not required, it is capable of executing csexport.exe on your behalf if
 
 ## Recent Updates
 
-**\~\~Documentation\~\~**
-**\~\~Vertical Excel Reports\~\~**
+**\~\~Import Error Support\~\~**
 
 # How-Tos
 
