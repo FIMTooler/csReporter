@@ -95,17 +95,18 @@ namespace csReporter
             {
                 if (rbGenerate.Checked)
                 {
+                    string installPath = "";
                     try
                     {
                         //get install path from registry
-                        string InstallPath = (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Forefront Identity Manager\2010\Synchronization Service", "Location", null);
-                        if (InstallPath != null)
+                        installPath = (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Forefront Identity Manager\2010\Synchronization Service", "Location", null);
+                        if (installPath != null)
                         {
-                            csExportFilePath = InstallPath + @"Synchronization Service\Bin\csexport.exe";
+                            csExportFilePath = installPath + @"Synchronization Service\Bin\csexport.exe";
                             if (!File.Exists(csExportFilePath))
                             {
                                 //Set secondary path used by Azure AD Connect to check
-                                csExportFilePath = InstallPath + @"Bin\csexport.exe";
+                                csExportFilePath = installPath + @"Bin\csexport.exe";
                             }
                             if (!File.Exists(csExportFilePath))
                             {
@@ -116,7 +117,7 @@ namespace csReporter
                         }
                         else
                         {
-                            MessageBox.Show("The MIM Sync or Azure AD Connect service doesn't appear to be installed on this system.");
+                            MessageBox.Show("The MIM Sync or Azure AD Connect service doesn't appear to be installed on this system.\r\n\r\nRegistry settings not found\r\n\r\nHKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Forefront Identity Manager\\2010\\Synchronization Service\\Location");
                             rbFile.Checked = true;
                             return;
                         }
@@ -130,7 +131,7 @@ namespace csReporter
                     }
                     ManagementScope scope = new ManagementScope(@"\\.\root\MicrosoftIdentityIntegrationServer");
                     SelectQuery query = new SelectQuery("select * from MIIS_ManagementAgent");
-                    string[] maNames;
+                    string[] maNames = null;
 
                     try
                     {
@@ -142,12 +143,22 @@ namespace csReporter
                     }
                     catch (Exception ex)
                     {
-                        ExceptionHandler.handleException(ex, "Error getting management agent names via WMI."
-                            + "  Automatic creation of csexport data is unavailable.");
-                        rbFile.Checked = true;
-                        return;
+                        //WMI interface removed for AADC, try locating the MaData folder and getting MA names from sub-folders
+                        string maDataPath = installPath + "\\MaData";
+                        if (Directory.Exists(maDataPath))
+                        {
+                            //get list of directories for MA names and trim the full path to only folder\MA names
+                            maNames = Directory.GetDirectories(maDataPath).Select(name => name.Replace(maDataPath + "\\", "")).ToArray();
+                        }
+                        else
+                        {
+                            ExceptionHandler.handleException(ex, "Error getting list of management agent names."
+                                + "  Automatic creation of csexport data is unavailable.");
+                            rbFile.Checked = true;
+                            return;
+                        }
                     }
-                    Array.Sort(maNames);
+                        Array.Sort(maNames);
                     cbbMAs.Items.Clear();
                     cbbMAs.Items.AddRange(maNames);
 

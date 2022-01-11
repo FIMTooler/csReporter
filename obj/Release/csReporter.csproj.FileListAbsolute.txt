@@ -45,7 +45,6 @@ E:\CassadyNAS\OneDrive\csReporter\Source\csReporter\obj\Release\csReporter.cspro
 C:\Users\david\OneDrive\csReporter\Source\csReporter\bin\Release\csReporter.exe
 C:\Users\david\OneDrive\csReporter\Source\csReporter\bin\Release\csReporter.pdb
 C:\Users\david\OneDrive\csReporter\Source\csReporter\bin\Release\DocumentFormat.OpenXml.dll
-C:\Users\david\OneDrive\csReporter\Source\csReporter\obj\Release\csReporter.csprojAssemblyReference.cache
 C:\Users\david\OneDrive\csReporter\Source\csReporter\obj\Release\csReporter.frmCSExamples.resources
 C:\Users\david\OneDrive\csReporter\Source\csReporter\obj\Release\csReporter.frmError.resources
 C:\Users\david\OneDrive\csReporter\Source\csReporter\obj\Release\csReporter.frmFilter.resources
@@ -76,3 +75,5 @@ C:\Users\DavidC\OneDrive\csReporter\Source\csReporter\obj\Release\csReporter.csp
 C:\Users\DavidC\OneDrive\csReporter\Source\csReporter\obj\Release\csReporter.csproj.CopyComplete
 C:\Users\DavidC\OneDrive\csReporter\Source\csReporter\obj\Release\csReporter.exe
 C:\Users\DavidC\OneDrive\csReporter\Source\csReporter\obj\Release\csReporter.pdb
+C:\Users\david\OneDrive\csReporter\Source\csReporter\bin\Release\csReporter.exe.config
+C:\Users\david\OneDrive\csReporter\Source\csReporter\obj\Release\csReporter.csproj.AssemblyReference.cache
