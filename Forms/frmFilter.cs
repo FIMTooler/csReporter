@@ -2074,7 +2074,7 @@ namespace csReporter
                     writer.Write("CS distinguished name,Object Type,Operation");
                     foreach (string Attrib in report.ReportAttributes)
                     {
-                        if (Attrib != "<DN>" && (sysAttribs.Contains(Attrib) || errorAttribs.Contains(Attrib)))
+                        if (sysAttribs.Contains(Attrib) || errorAttribs.Contains(Attrib))
                         {
                             writer.Write("," + Attrib);
                         }
@@ -2101,6 +2101,12 @@ namespace csReporter
                             {
                                 switch (attrib)
                                 {
+                                    case "<DN>":
+                                        if (obj.csDN != null)
+                                        {
+                                            writer.Write("\"" + obj.csDN.Replace("\"", "\"\"") + "\"");
+                                        }
+                                        break;
                                     case "<Connector>":
                                         if (obj.Connector != null)
                                         {
@@ -2266,6 +2272,12 @@ namespace csReporter
                             {
                                 switch (attrib)
                                 {
+                                    case "<DN>":
+                                        if (obj.csDN != null)
+                                        {
+                                            writer.Write("\"" + obj.csDN.Replace("\"", "\"\"") + "\"");
+                                        }
+                                        break;
                                     case "<Connector>":
                                         if (obj.Connector != null)
                                         {
@@ -2796,6 +2808,12 @@ namespace csReporter
                             StringBuilder systemAttrib = new StringBuilder("<TD valign=\"top\" nowrap>");
                             switch (attrib)
                             {
+                                case "<DN>":
+                                    if (obj.csDN != null)
+                                    {
+                                        writer.Write(obj.csDN);
+                                    }
+                                    break;
                                 case "<Connector>":
                                     if (obj.Connector != null)
                                     {
@@ -2976,6 +2994,12 @@ namespace csReporter
                                 StringBuilder systemAttrib = new StringBuilder("<TD valign=\"top\" nowrap>");
                                 switch (attrib)
                                 {
+                                    case "<DN>":
+                                        if (obj.csDN != null)
+                                        {
+                                            writer.Write(obj.csDN);
+                                        }
+                                        break;
                                     case "<Connector>":
                                         if (obj.Connector != null)
                                         {
@@ -3483,7 +3507,7 @@ namespace csReporter
                     dataValues.Add("Operation");
                     foreach (string Attrib in report.ReportAttributes)
                     {
-                        if (Attrib != "<DN>" && (sysAttribs.Contains(Attrib) || errorAttribs.Contains(Attrib)))
+                        if (sysAttribs.Contains(Attrib) || errorAttribs.Contains(Attrib))
                         {
                             dataValues.Add(Attrib);
                         }
@@ -3513,6 +3537,16 @@ namespace csReporter
                             {
                                 switch (attrib)
                                 {
+                                    case "<DN>":
+                                        if (obj.csDN != null)
+                                        {
+                                            rowValues.Add(obj.csDN);
+                                        }
+                                        else
+                                        {
+                                            rowValues.Add("");
+                                        }
+                                    break;
                                     case "<Connector>":
                                         if (obj.Connector != null)
                                         {
@@ -3690,6 +3724,16 @@ namespace csReporter
                             {
                                 switch (attrib)
                                 {
+                                    case "<DN>":
+                                        if (obj.csDN != null)
+                                        {
+                                            rowValues.Add(obj.csDN);
+                                        }
+                                        else
+                                        {
+                                            rowValues.Add("");
+                                        }
+                                        break;
                                     case "<Connector>":
                                         if (obj.Connector != null)
                                         {
@@ -3895,6 +3939,12 @@ namespace csReporter
                             {
                                 switch (attrib)
                                 {
+                                    case "<DN>":
+                                        if (obj.csDN != null)
+                                        {
+                                            excelReport.WriteNextRow(obj.csDN);
+                                        }
+                                        break;
                                     case "<Connector>":
                                         if (obj.Connector != null)
                                         {
@@ -4062,6 +4112,12 @@ namespace csReporter
                             {
                                 switch (attrib)
                                 {
+                                    case "<DN>":
+                                        if (obj.csDN != null)
+                                        {
+                                            excelReport.WriteNextRow(obj.csDN);
+                                        }
+                                        break;
                                     case "<Connector>":
                                         if (obj.Connector != null)
                                         {
