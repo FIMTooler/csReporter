@@ -3518,31 +3518,51 @@ namespace csReporter
                                         {
                                             rowValues.Add(obj.Connector.ToString());
                                         }
-                                        break;
+                                        else
+                                        {
+                                            rowValues.Add("");
+                                        }
+                                    break;
                                     case "<Connect Time>":
                                         if (obj.ConnectionTime != null)
                                         {
                                             rowValues.Add(obj.ConnectionTime.ToString("g"));
                                         }
-                                        break;
+                                        else
+                                        {
+                                            rowValues.Add("");
+                                        }
+                                    break;
                                     case "<Connector Operation>":
                                         if (obj.ConnectionOperation != "")
                                         {
                                             rowValues.Add(obj.ConnectionOperation);
                                         }
-                                        break;
+                                        else
+                                        {
+                                            rowValues.Add("");
+                                        }
+                                    break;
                                     case "<Disconnect Time>":
                                         if (obj.DisconnectionTime != null)
                                         {
                                             rowValues.Add(obj.DisconnectionTime.ToString("g"));
                                         }
-                                        break;
+                                        else
+                                        {
+                                            rowValues.Add("");
+                                        }
+                                    break;
                                     case "<Connector State>":
                                         if (obj.ConnectorState != "")
                                         {
                                             rowValues.Add(obj.ConnectorState);
                                         }
-                                        break;
+                                        else
+                                        {
+                                            rowValues.Add("");
+                                        }
+                                    break;
                                 }
                             }
                             else if (obj.ExportError != null && errorAttribs.Contains(attrib))
@@ -3675,31 +3695,51 @@ namespace csReporter
                                         {
                                             rowValues.Add(obj.Connector.ToString());
                                         }
+                                        else
+                                        {
+                                            rowValues.Add("");
+                                        }
                                         break;
                                     case "<Connect Time>":
                                         if (obj.ConnectionTime != null)
                                         {
                                             rowValues.Add(obj.ConnectionTime.ToString("g"));
                                         }
-                                        break;
+                                        else
+                                        {
+                                            rowValues.Add("");
+                                        }
+                                    break;
                                     case "<Connector Operation>":
                                         if (obj.ConnectionOperation != "")
                                         {
                                             rowValues.Add(obj.ConnectionOperation);
                                         }
-                                        break;
+                                        else
+                                        {
+                                            rowValues.Add("");
+                                        }
+                                    break;
                                     case "<Disconnect Time>":
                                         if (obj.DisconnectionTime != null)
                                         {
                                             rowValues.Add(obj.DisconnectionTime.ToString("g"));
                                         }
-                                        break;
+                                        else
+                                        {
+                                            rowValues.Add("");
+                                        }
+                                    break;
                                     case "<Connector State>":
                                         if (obj.ConnectorState != "")
                                         {
                                             rowValues.Add(obj.ConnectorState);
                                         }
-                                        break;
+                                        else
+                                        {
+                                            rowValues.Add("");
+                                        }
+                                    break;
                                 }
                             }
                             else if (obj.ExportError != null && errorAttribs.Contains(attrib))
