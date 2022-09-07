@@ -73,31 +73,38 @@ namespace csReporter
             //any columns after large multivalue column needs to be back on top row.
             uint startRow = currentRow;
             uint lastRow = currentRow;
+            Dictionary<uint, bool> leadingValsWritten = new Dictionary<uint, bool>();
+            bool previousLargeMV = false;
             foreach (string val in dataValues)
             {
                 if (val != "")
                 {
                     //greater than 600-700 seems to cause issues with string table and opening in Excel
                     //if greater than 250, break into multiple rows
-                    if (val.Count(f => f == '\n') > 250)
+                    if (val.Count(f => f == '\n') > 250 || (previousLargeMV && val.Count(f => f == '\n') > 1))
                     {
+                        previousLargeMV = true;
                         string[] vals = val.Split(new char[] { '\n' }, StringSplitOptions.None);
                         for (int i = 0; i < vals.Length; i++)
                         {
                             //prevents Cells A and B from getting re-written
                             //Re-writing Cells means extra lookups and time
-                            if (i != 0)
+                            if (i != 0 && (!leadingValsWritten.ContainsKey(currentRow) || leadingValsWritten[currentRow] != true))
                             {
                                 //dataValues[0] should always be DN unless >250 attributes in report
                                 WriteCell(dataValues[0], columnNames.A, currentRow);
                                 //dataValues[1] should always be object type unless >250 attributes in report
                                 WriteCell(dataValues[1], columnNames.B, currentRow);
+                                leadingValsWritten.Add(currentRow, true);
                             }
                             WriteCell(vals[i], col, currentRow++);
                         }
                         //save last row for later
                         //don't need advance, added below
-                        lastRow = currentRow - 1;
+                        if (lastRow < currentRow - 1)
+                        {
+                            lastRow = currentRow - 1;
+                        }
                         currentRow = startRow;
                     }
                     else
