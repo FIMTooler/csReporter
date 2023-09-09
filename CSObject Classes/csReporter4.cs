@@ -1422,7 +1422,7 @@ namespace csReporter
                     switch (xnr.Name)
                     {
                         case "value":
-                            vals.Add(new AttributeValue(xnr, strContainer));
+                            vals.Add(new AttributeValue(xnr, strContainer, strType));
                             break;
                         case "dn-value":
                             if (xnr.NodeType != XmlNodeType.EndElement)
@@ -1431,7 +1431,7 @@ namespace csReporter
                                 xnr.Read();
                                 if (xnr.Name == "dn")
                                 {
-                                    vals.Add(new AttributeValue(xnr, strContainer));
+                                    vals.Add(new AttributeValue(xnr, strContainer, strType));
                                     //advance past end dn
                                     //xnr.Read();
                                 }
@@ -1498,7 +1498,7 @@ namespace csReporter
                         {
                             if (childNode.Name == "value")
                             {
-                                vals.Add(new AttributeValue(childNode, strContainer));
+                                vals.Add(new AttributeValue(childNode, strContainer, strType));
                             }
                         }
                         break;
@@ -1512,7 +1512,7 @@ namespace csReporter
                                 {
                                     if (subNode.Name == "dn")
                                     {
-                                        vals.Add(new AttributeValue(subNode, strContainer));
+                                        vals.Add(new AttributeValue(subNode, strContainer, strType));
                                     }
                                 }
                             }
@@ -1537,7 +1537,7 @@ namespace csReporter
             opOperation = operation.update;
             bMultivalued = false;
             bDNattr = true;
-            vals.Add(new AttributeValue(dnValue, strContainer));
+            vals.Add(new AttributeValue(dnValue, strContainer, strType));
         }
 
         public string Name
@@ -1624,12 +1624,19 @@ namespace csReporter
         private int ADval;
         private StringContainer strContainer;
 
-        public AttributeValue(XmlReader xnr, StringContainer container)
+        public AttributeValue(XmlReader xnr, StringContainer container, int strType)
         {
             try
             {
                 strContainer = container;
-                val = strContainer.Add(xnr.ReadString());
+                if (strContainer[strType] == "integer")
+                {
+                    val = strContainer.Add(Convert.ToInt64(xnr.ReadString(), 16).ToString());
+                }
+                else
+                {
+                    val = strContainer.Add(xnr.ReadString());
+                }
 
                 while (xnr.MoveToNextAttribute())
                 {
@@ -1667,14 +1674,21 @@ namespace csReporter
             }
         }
 
-        public AttributeValue(XmlNode valueNode, StringContainer container)
+        public AttributeValue(XmlNode valueNode, StringContainer container, int strType)
         {
             try
             {
                 strContainer = container;
                 if (valueNode.InnerText != null)
                 {
-                    val = strContainer.Add(valueNode.InnerText);
+                    if (strContainer[strType] == "integer")
+                    {
+                        val = strContainer.Add(Convert.ToInt64(valueNode.InnerText, 16).ToString());
+                    }
+                    else
+                    {
+                        val = strContainer.Add(valueNode.InnerText);
+                    }
                 }
                 else
                 {
@@ -1718,10 +1732,17 @@ namespace csReporter
 
         //additional contructor created to support DN changes
         //no XML to parse
-        public AttributeValue(string value, StringContainer container)
+        public AttributeValue(string value, StringContainer container, int strType)
         {
             strContainer = container;
-            val = strContainer.Add(value);
+            if (strContainer[strType] == "integer")
+            {
+                val = strContainer.Add(Convert.ToInt64(value, 16).ToString());
+            }
+            else
+            {
+                val = strContainer.Add(value);
+            }
             opOperation = operation.none;
         }
 

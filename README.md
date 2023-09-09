@@ -79,17 +79,19 @@ This checkbox can be used when the data comes from an Active Directory Managemen
 Examples:
 
 - accountExpires
-  - 0x7fffffffffffffff to Never
+  - 9223372036854775807 to Never
+  - 130772599557135907 to 2015-05-28 4:12:00 (yyyy-MM-dd HH:mm:ss)
 - objectSid
   - AQUAAAAAAAUVAAAApDhY7yZmbpJEbWYeigQAAA== to S-1-5-21-4015536292-2456708646-510029124-1162
 - pwdLastSet
-  - 0x1d098fc86f51e23 to 5/28/2015 4:12 AM
-- groupType
+  - 130772599557135907 to 2015-05-28 4:12:00 (yyyy-MM-dd HH:mm:ss)
+- createTimeStamp
+  - 20010928060000.0Z to 2001-9-28 6:00:00 (yyyy-MM-dd HH:mm:ss)
+**All integer data types are converted by default**
+~~- groupType
   - 0xffffffff80000002 to -2147483646
 - userAccountControl
-  - 0x200 to 512
-- createTimeStamp
-  - 20010928060000.0Z to 9/28/2001 6:00 AM
+  - 0x200 to 512~~
 
 The below pictures show filtering on the userAccountControl attribute and how the 'Contains Active Directory data' checkbox can be used when filtering.
 

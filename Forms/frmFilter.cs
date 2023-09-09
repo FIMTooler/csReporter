@@ -86,7 +86,7 @@ namespace csReporter
         
             private bool ADdata = false;
             public static volatile bool stopProcessing = false;
-            List<string> knownADattribs = new List<string>() { "accountExpires", "objectSid", "groupType", "pwdLastSet", "userAccountControl", "lastLogonTimestamp", "createTimeStamp" };
+            List<string> knownADattribs = new List<string>() { "accountExpires", "objectSid", "pwdLastSet", "lastLogonTimestamp", "createTimeStamp" };
 
         #endregion
 
@@ -96,7 +96,7 @@ namespace csReporter
                 InitializeComponent();
 
                 tTipInfo.AutoPopDelay =10000;
-                tTipInfo.SetToolTip(this.cbADMA, "Auto-formats known Active Directory attributes so they are readable:\r\naccountExpires\r\nobjectSid\r\npwdLastSet\r\ngroupType\r\nuserAccountControl\r\ncreateTimeStamp");
+                tTipInfo.SetToolTip(this.cbADMA, "Auto-formats known Active Directory attributes so they are readable:\r\naccountExpires\r\nobjectSid\r\npwdLastSet\r\ncreateTimeStamp");
 
                 inputFileName = fileName;
                 
@@ -5293,11 +5293,11 @@ namespace csReporter
                         switch (attrib.Name)
                         {
                             case "accountExpires":
-                                Int64 expiration = Convert.ToInt64(attrib.Values[0].Value, 16);
+                                Int64 expiration = Convert.ToInt64(attrib.Values[0].Value);
                                 if (expiration != 0 && expiration != 9223372036854775807)
                                 {
                                     DateTime curAcctExpires = DateTime.FromFileTimeUtc(expiration);
-                                    hologram.Attributes[hologram.AttribIndexByName(attrib.Name)].Values[0].ADvalue = curAcctExpires.ToUniversalTime().ToString("g");
+                                    hologram.Attributes[hologram.AttribIndexByName(attrib.Name)].Values[0].ADvalue = curAcctExpires.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss");
                                 }
                                 else
                                 {
@@ -5305,52 +5305,31 @@ namespace csReporter
                                 }
                                 break;
                             case "objectSid":
-                                SecurityIdentifier sid = new SecurityIdentifier(System.Convert.FromBase64String(attrib.Values[0].Value).ToArray<byte>(), 0);
+                                SecurityIdentifier sid = new SecurityIdentifier(System.Convert.FromBase64String(attrib.Values[0].Value), 0);
                                 hologram.Attributes[hologram.AttribIndexByName(attrib.Name)].Values[0].ADvalue = sid.ToString();
                                 break;
                             case "pwdLastSet":
-                                Int64 lastSet = Convert.ToInt64(attrib.Values[0].Value, 16);
+                                Int64 lastSet = Convert.ToInt64(attrib.Values[0].Value);
                                 if (lastSet != 0)
                                 {
                                     DateTime pwdLastSet = DateTime.FromFileTimeUtc(lastSet);
-                                    hologram.Attributes[hologram.AttribIndexByName(attrib.Name)].Values[0].ADvalue = pwdLastSet.ToUniversalTime().ToString("g");
+                                    hologram.Attributes[hologram.AttribIndexByName(attrib.Name)].Values[0].ADvalue = pwdLastSet.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss");
                                 }
                                 else
                                 {
                                     hologram.Attributes[hologram.AttribIndexByName(attrib.Name)].Values[0].ADvalue = "Never";
                                 }
                                 break;
-                            case "groupType":
-                                long type = Convert.ToInt64(attrib.Values[0].Value, 16);
-                                hologram.Attributes[hologram.AttribIndexByName(attrib.Name)].Values[0].ADvalue = type.ToString();
-                                break;
-                            case "userAccountControl":
-                                int UAC = 0;
-                                if (int.TryParse(attrib.Values[0].Value.Replace("0x", ""), System.Globalization.NumberStyles.HexNumber, CultureInfo.InvariantCulture, out UAC))
-                                {
-                                    hologram.Attributes[hologram.AttribIndexByName(attrib.Name)].Values[0].ADvalue = UAC.ToString();
-                                }
-                                else
-                                {
-                                    hologram.Attributes[hologram.AttribIndexByName(attrib.Name)].Values[0].ADvalue = "Error parsing current value";
-                                }
-                                break;
                             case "lastLogonTimestamp":
-                                long time = 0;
-                                if (long.TryParse(attrib.Values[0].Value.Replace("0x", ""), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out time))
-                                {
-                                    hologram.Attributes[hologram.AttribIndexByName(attrib.Name)].Values[0].ADvalue = DateTime.FromFileTime(time).ToUniversalTime().ToString("g");
-                                }
-                                else
-                                {
-                                    hologram.Attributes[hologram.AttribIndexByName(attrib.Name)].Values[0].ADvalue = "Error parsing current value";
-                                }
+                                long lastLogon = Convert.ToInt64(attrib.Values[0].Value);
+                                DateTime lastLogonTime = DateTime.FromFileTimeUtc(lastLogon);
+                                hologram.Attributes[hologram.AttribIndexByName(attrib.Name)].Values[0].ADvalue = lastLogonTime.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss");
                                 break;
                             case "createTimeStamp":
                                 DateTime create;
                                 if (DateTime.TryParseExact(attrib.Values[0].Value, "yyyyMMddHHmmss.0Z", System.Globalization.CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out create))
                                 {
-                                    hologram.Attributes[hologram.AttribIndexByName(attrib.Name)].Values[0].ADvalue = create.ToLocalTime().ToString("g");
+                                    hologram.Attributes[hologram.AttribIndexByName(attrib.Name)].Values[0].ADvalue = create.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss");
                                 }
                                 else
                                 {
