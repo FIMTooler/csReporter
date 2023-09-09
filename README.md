@@ -87,7 +87,7 @@ Examples:
   - 130772599557135907 to 2015-05-28 4:12:00 (yyyy-MM-dd HH:mm:ss)
 - createTimeStamp
   - 20010928060000.0Z to 2001-9-28 6:00:00 (yyyy-MM-dd HH:mm:ss)
-**All integer data types are converted by default**
+- **All integer data types are converted by default**
 ~~- groupType
   - 0xffffffff80000002 to -2147483646
 - userAccountControl
