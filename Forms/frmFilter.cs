@@ -4515,9 +4515,9 @@ namespace csReporter
                 {
                     FileInfo file = new FileInfo(inputFileName);
                     long fileLength = file.Length;
-                    int fileLengthMB = (int)(fileLength / 1048572);
-                    //if file larger than 150MB use low memory option with progress bar
-                    if (fileLengthMB > 150)
+                    int fileLengthMB = (int)(fileLength / 1048576);
+                    //if file larger than 300MB use low memory option with progress bar
+                    if (fileLengthMB > 300)
                     {
                         lowMemProcessing = true;
                         frmProgressBar frmProgress = new frmProgressBar();
