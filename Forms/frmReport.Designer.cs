@@ -47,10 +47,12 @@
             // lbAttribute
             // 
             this.lbAttribute.FormattingEnabled = true;
-            this.lbAttribute.Location = new System.Drawing.Point(12, 25);
+            this.lbAttribute.ItemHeight = 18;
+            this.lbAttribute.Location = new System.Drawing.Point(18, 35);
+            this.lbAttribute.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.lbAttribute.Name = "lbAttribute";
             this.lbAttribute.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.lbAttribute.Size = new System.Drawing.Size(354, 303);
+            this.lbAttribute.Size = new System.Drawing.Size(529, 418);
             this.lbAttribute.Sorted = true;
             this.lbAttribute.TabIndex = 5;
             // 
@@ -59,9 +61,11 @@
             this.gbFormat.Controls.Add(this.rbExcel);
             this.gbFormat.Controls.Add(this.rbCSV);
             this.gbFormat.Controls.Add(this.rbHTML);
-            this.gbFormat.Location = new System.Drawing.Point(370, 11);
+            this.gbFormat.Location = new System.Drawing.Point(555, 15);
+            this.gbFormat.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.gbFormat.Name = "gbFormat";
-            this.gbFormat.Size = new System.Drawing.Size(88, 93);
+            this.gbFormat.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.gbFormat.Size = new System.Drawing.Size(132, 129);
             this.gbFormat.TabIndex = 6;
             this.gbFormat.TabStop = false;
             this.gbFormat.Text = "Format";
@@ -69,9 +73,10 @@
             // rbExcel
             // 
             this.rbExcel.AutoSize = true;
-            this.rbExcel.Location = new System.Drawing.Point(6, 69);
+            this.rbExcel.Location = new System.Drawing.Point(9, 96);
+            this.rbExcel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.rbExcel.Name = "rbExcel";
-            this.rbExcel.Size = new System.Drawing.Size(51, 17);
+            this.rbExcel.Size = new System.Drawing.Size(62, 22);
             this.rbExcel.TabIndex = 2;
             this.rbExcel.TabStop = true;
             this.rbExcel.Text = "Excel";
@@ -81,9 +86,10 @@
             // rbCSV
             // 
             this.rbCSV.AutoSize = true;
-            this.rbCSV.Location = new System.Drawing.Point(6, 46);
+            this.rbCSV.Location = new System.Drawing.Point(9, 64);
+            this.rbCSV.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.rbCSV.Name = "rbCSV";
-            this.rbCSV.Size = new System.Drawing.Size(46, 17);
+            this.rbCSV.Size = new System.Drawing.Size(56, 22);
             this.rbCSV.TabIndex = 1;
             this.rbCSV.TabStop = true;
             this.rbCSV.Text = "CSV";
@@ -92,9 +98,10 @@
             // rbHTML
             // 
             this.rbHTML.AutoSize = true;
-            this.rbHTML.Location = new System.Drawing.Point(6, 22);
+            this.rbHTML.Location = new System.Drawing.Point(9, 30);
+            this.rbHTML.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.rbHTML.Name = "rbHTML";
-            this.rbHTML.Size = new System.Drawing.Size(55, 17);
+            this.rbHTML.Size = new System.Drawing.Size(67, 22);
             this.rbHTML.TabIndex = 0;
             this.rbHTML.TabStop = true;
             this.rbHTML.Text = "HTML";
@@ -102,9 +109,10 @@
             // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point(55, 348);
+            this.btnOK.Location = new System.Drawing.Point(82, 482);
+            this.btnOK.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size(90, 25);
+            this.btnOK.Size = new System.Drawing.Size(135, 35);
             this.btnOK.TabIndex = 26;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
@@ -112,9 +120,10 @@
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(165, 348);
+            this.btnCancel.Location = new System.Drawing.Point(248, 482);
+            this.btnCancel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(90, 25);
+            this.btnCancel.Size = new System.Drawing.Size(135, 35);
             this.btnCancel.TabIndex = 27;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
@@ -124,9 +133,11 @@
             // 
             this.gbLayout.Controls.Add(this.rbVertical);
             this.gbLayout.Controls.Add(this.rbHorizontal);
-            this.gbLayout.Location = new System.Drawing.Point(370, 117);
+            this.gbLayout.Location = new System.Drawing.Point(555, 162);
+            this.gbLayout.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.gbLayout.Name = "gbLayout";
-            this.gbLayout.Size = new System.Drawing.Size(88, 73);
+            this.gbLayout.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.gbLayout.Size = new System.Drawing.Size(132, 101);
             this.gbLayout.TabIndex = 7;
             this.gbLayout.TabStop = false;
             this.gbLayout.Text = "Layout";
@@ -135,9 +146,10 @@
             // rbVertical
             // 
             this.rbVertical.AutoSize = true;
-            this.rbVertical.Location = new System.Drawing.Point(6, 46);
+            this.rbVertical.Location = new System.Drawing.Point(9, 64);
+            this.rbVertical.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.rbVertical.Name = "rbVertical";
-            this.rbVertical.Size = new System.Drawing.Size(60, 17);
+            this.rbVertical.Size = new System.Drawing.Size(74, 22);
             this.rbVertical.TabIndex = 1;
             this.rbVertical.TabStop = true;
             this.rbVertical.Text = "Vertical";
@@ -146,9 +158,10 @@
             // rbHorizontal
             // 
             this.rbHorizontal.AutoSize = true;
-            this.rbHorizontal.Location = new System.Drawing.Point(6, 23);
+            this.rbHorizontal.Location = new System.Drawing.Point(9, 32);
+            this.rbHorizontal.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.rbHorizontal.Name = "rbHorizontal";
-            this.rbHorizontal.Size = new System.Drawing.Size(72, 17);
+            this.rbHorizontal.Size = new System.Drawing.Size(94, 22);
             this.rbHorizontal.TabIndex = 0;
             this.rbHorizontal.TabStop = true;
             this.rbHorizontal.Text = "Horizontal";
@@ -157,25 +170,28 @@
             // lblSelectAttributes
             // 
             this.lblSelectAttributes.AutoSize = true;
-            this.lblSelectAttributes.Location = new System.Drawing.Point(12, 11);
+            this.lblSelectAttributes.Location = new System.Drawing.Point(18, 15);
+            this.lblSelectAttributes.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblSelectAttributes.Name = "lblSelectAttributes";
-            this.lblSelectAttributes.Size = new System.Drawing.Size(174, 13);
+            this.lblSelectAttributes.Size = new System.Drawing.Size(239, 18);
             this.lblSelectAttributes.TabIndex = 28;
             this.lblSelectAttributes.Text = "Select Attributes to include in report";
             // 
             // frmReport
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(468, 389);
+            this.ClientSize = new System.Drawing.Size(702, 539);
             this.Controls.Add(this.lblSelectAttributes);
             this.Controls.Add(this.gbLayout);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.gbFormat);
             this.Controls.Add(this.lbAttribute);
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmReport";

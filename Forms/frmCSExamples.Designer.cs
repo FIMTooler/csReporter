@@ -37,20 +37,22 @@
             // lblExportInfo
             // 
             this.lblExportInfo.AutoSize = true;
-            this.lblExportInfo.Font = new System.Drawing.Font("Lucida Console", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblExportInfo.Location = new System.Drawing.Point(12, 60);
+            this.lblExportInfo.Font = new System.Drawing.Font("Lucida Console", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblExportInfo.Location = new System.Drawing.Point(18, 83);
+            this.lblExportInfo.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblExportInfo.Name = "lblExportInfo";
-            this.lblExportInfo.Size = new System.Drawing.Size(615, 247);
+            this.lblExportInfo.Size = new System.Drawing.Size(768, 323);
             this.lblExportInfo.TabIndex = 2;
             this.lblExportInfo.Text = resources.GetString("lblExportInfo.Text");
             // 
             // lblExampleHeader
             // 
             this.lblExampleHeader.AutoSize = true;
-            this.lblExampleHeader.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblExampleHeader.Location = new System.Drawing.Point(12, 25);
+            this.lblExampleHeader.Font = new System.Drawing.Font("Microsoft Sans Serif", 12.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblExampleHeader.Location = new System.Drawing.Point(18, 35);
+            this.lblExampleHeader.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblExampleHeader.Name = "lblExampleHeader";
-            this.lblExampleHeader.Size = new System.Drawing.Size(138, 16);
+            this.lblExampleHeader.Size = new System.Drawing.Size(166, 20);
             this.lblExampleHeader.TabIndex = 3;
             this.lblExampleHeader.Text = "csexport examples";
             // 
@@ -58,26 +60,29 @@
             // 
             this.rtbDocumentation.BackColor = System.Drawing.SystemColors.Control;
             this.rtbDocumentation.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.rtbDocumentation.Font = new System.Drawing.Font("Lucida Console", 9.75F);
-            this.rtbDocumentation.Location = new System.Drawing.Point(15, 325);
+            this.rtbDocumentation.Font = new System.Drawing.Font("Lucida Console", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rtbDocumentation.Location = new System.Drawing.Point(22, 450);
+            this.rtbDocumentation.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.rtbDocumentation.Multiline = false;
             this.rtbDocumentation.Name = "rtbDocumentation";
             this.rtbDocumentation.ReadOnly = true;
-            this.rtbDocumentation.Size = new System.Drawing.Size(644, 24);
+            this.rtbDocumentation.Size = new System.Drawing.Size(966, 33);
             this.rtbDocumentation.TabIndex = 4;
             this.rtbDocumentation.Text = "https://docs.microsoft.com/en-us/previous-versions/mim/jj590346(v=ws.10)";
             this.rtbDocumentation.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.rtbDocumentation_LinkClicked);
             // 
             // frmCSExamples
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(671, 361);
+            this.ClientSize = new System.Drawing.Size(1006, 500);
             this.Controls.Add(this.rtbDocumentation);
             this.Controls.Add(this.lblExampleHeader);
             this.Controls.Add(this.lblExportInfo);
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmCSExamples";

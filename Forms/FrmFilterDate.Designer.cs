@@ -36,17 +36,19 @@
             // 
             // dtpFilterDate
             // 
-            this.dtpFilterDate.Location = new System.Drawing.Point(12, 12);
+            this.dtpFilterDate.Location = new System.Drawing.Point(18, 17);
+            this.dtpFilterDate.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.dtpFilterDate.Name = "dtpFilterDate";
-            this.dtpFilterDate.Size = new System.Drawing.Size(200, 20);
+            this.dtpFilterDate.Size = new System.Drawing.Size(298, 24);
             this.dtpFilterDate.TabIndex = 0;
             this.dtpFilterDate.Value = new System.DateTime(2017, 8, 2, 0, 0, 0, 0);
             // 
             // btnOk
             // 
-            this.btnOk.Location = new System.Drawing.Point(12, 50);
+            this.btnOk.Location = new System.Drawing.Point(18, 69);
+            this.btnOk.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnOk.Name = "btnOk";
-            this.btnOk.Size = new System.Drawing.Size(75, 23);
+            this.btnOk.Size = new System.Drawing.Size(112, 32);
             this.btnOk.TabIndex = 1;
             this.btnOk.Text = "OK";
             this.btnOk.UseVisualStyleBackColor = true;
@@ -55,9 +57,10 @@
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(136, 50);
+            this.btnCancel.Location = new System.Drawing.Point(204, 69);
+            this.btnCancel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 23);
+            this.btnCancel.Size = new System.Drawing.Size(112, 32);
             this.btnCancel.TabIndex = 2;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
@@ -66,15 +69,17 @@
             // FrmFilterDate
             // 
             this.AcceptButton = this.btnOk;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(223, 81);
+            this.ClientSize = new System.Drawing.Size(334, 112);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOk);
             this.Controls.Add(this.dtpFilterDate);
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FrmFilterDate";

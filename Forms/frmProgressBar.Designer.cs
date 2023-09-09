@@ -37,16 +37,18 @@
             // pbProcessing
             // 
             this.pbProcessing.ForeColor = System.Drawing.SystemColors.HighlightText;
-            this.pbProcessing.Location = new System.Drawing.Point(12, 55);
+            this.pbProcessing.Location = new System.Drawing.Point(18, 76);
+            this.pbProcessing.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pbProcessing.Name = "pbProcessing";
-            this.pbProcessing.Size = new System.Drawing.Size(365, 23);
+            this.pbProcessing.Size = new System.Drawing.Size(548, 32);
             this.pbProcessing.TabIndex = 0;
             // 
             // lblAction
             // 
             this.lblAction.AutoSize = true;
             this.lblAction.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblAction.Location = new System.Drawing.Point(126, 18);
+            this.lblAction.Location = new System.Drawing.Point(189, 25);
+            this.lblAction.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblAction.Name = "lblAction";
             this.lblAction.Size = new System.Drawing.Size(0, 25);
             this.lblAction.TabIndex = 1;
@@ -55,7 +57,8 @@
             // 
             this.lblProgress.AutoSize = true;
             this.lblProgress.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblProgress.Location = new System.Drawing.Point(383, 59);
+            this.lblProgress.Location = new System.Drawing.Point(574, 82);
+            this.lblProgress.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblProgress.Name = "lblProgress";
             this.lblProgress.Size = new System.Drawing.Size(39, 16);
             this.lblProgress.TabIndex = 2;
@@ -63,16 +66,18 @@
             // 
             // frmProgressBar
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(423, 96);
+            this.ClientSize = new System.Drawing.Size(634, 133);
             this.Controls.Add(this.lblProgress);
             this.Controls.Add(this.lblAction);
             this.Controls.Add(this.pbProcessing);
             this.Cursor = System.Windows.Forms.Cursors.WaitCursor;
             this.DoubleBuffered = true;
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmProgressBar";
