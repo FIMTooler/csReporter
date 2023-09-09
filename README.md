@@ -88,10 +88,10 @@ Examples:
 - createTimeStamp
   - 20010928060000.0Z to 2001-9-28 6:00:00 (yyyy-MM-dd HH:mm:ss)
 - **All integer data types are converted by default**
-~~- groupType
-  - 0xffffffff80000002 to -2147483646
-- userAccountControl
-  - 0x200 to 512~~
+- ~~groupType~~
+  - ~~0xffffffff80000002 to -2147483646~~
+- ~~userAccountControl~~
+  - ~~0x200 to 512~~
 
 The below pictures show filtering on the userAccountControl attribute and how the 'Contains Active Directory data' checkbox can be used when filtering.
 
