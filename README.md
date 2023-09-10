@@ -126,8 +126,14 @@ Current supported system attributes
 ![](images/GetData_3.png)
 
 ## Large Files
-Connector space files generated with csexport will vary in size greating depending on the environment.  I have generated files over 5GB in size (and generated reports using CSReporter).  In the countless hours of development and usage of CSReporter, generally the amount of memory (RAM) required is 2.5-4x the size of the connector space file on disk.  This means that a 300MB file could require upwards of 1.2GB of available memory. Not all systems have this much unused for CSReporter to run.  Thus for files larger than **150MB**, CSReporter does not keep an in-memory representation of the connector space file.
+Connector space files generated with csexport will vary in size greating depending on the environment.  I have generated files over 5GB in size (and generated reports using CSReporter).  In the countless hours of development and usage of CSReporter, generally the amount of memory (RAM) required is around 3x the size of the connector space file on disk.  This means that a 300MB file could require upwards of 900MB of available memory. Not all systems have this much unused for CSReporter to run.  Thus for files larger than **300MB**, CSReporter does not keep an in-memory representation of the connector space file.
 
-**For files larger than 150MB, each time the filter is adjusted, the file is parsed line by line from disk.**
+**For files larger than 300MB, each time the filter is adjusted, the file is parsed line by line from disk.**
 
 This allows for CSReporter to support large files, without the need for large amounts of memory.  It allows for CSReporter to be used in more environments, such as Production, without creating memory issues.
+
+**Checkbox has been added to force data to be stored in memory**
+
+When checked, the below warning will appearing to inform and confirm checkbox selection.
+
+![](images/MemWarning.png)

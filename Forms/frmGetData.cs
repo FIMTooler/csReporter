@@ -61,7 +61,7 @@ namespace csReporter
                     else
                     {
                         tbFile.Text = ofdCSfile.SafeFileName;
-                        reporter = new frmFilter(ofdCSfile.FileName);
+                        reporter = new frmFilter(ofdCSfile.FileName, cbForceMemory.Checked);
                         this.Hide();
                         reporter.Owner = this;
                         reporter.Show();
@@ -228,7 +228,7 @@ namespace csReporter
                 }
                 proc.Start();
                 proc.WaitForExit();
-                reporter = new frmFilter(generatedFile);
+                reporter = new frmFilter(generatedFile, cbForceMemory.Checked);
                 this.Hide();
                 reporter.Owner = this;
                 reporter.Show();
@@ -256,6 +256,17 @@ namespace csReporter
             if (cbSystem.Checked)
             {
                 MessageBox.Show("Including system attributes in the export will greatly increase the length of time required for the export to complete.");
+            }
+        }
+
+        private void cbForceMemory_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cbForceMemory.Checked == true)
+            {
+                if (MessageBox.Show("Checking this box forces all data to remain in memory.\r\n\r\nThis will cause memory usage to be 3x the XML file size on disk.\r\n\r\nAre you certain you wish to continue?", "**WARNING**", MessageBoxButtons.YesNo) == DialogResult.No)
+                {
+                    cbForceMemory.Checked = false;
+                }
             }
         }
     }

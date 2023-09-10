@@ -67,6 +67,7 @@ namespace csReporter
             bool unconfirmedExportHologramExist;
             bool lowMemProcessing;
             bool makeReport;
+            bool forceMemProcessing;
             ReportObject report;
             List<string> sysAttribs = new List<string>();
             List<string> changingAttribs = new List<string>();
@@ -91,7 +92,7 @@ namespace csReporter
         #endregion
 
         #region Form Contructor/Events
-            public frmFilter(string fileName)
+            public frmFilter(string fileName, bool forceMem)
             {
                 InitializeComponent();
 
@@ -99,6 +100,7 @@ namespace csReporter
                 tTipInfo.SetToolTip(this.cbADMA, "Auto-formats known Active Directory attributes so they are readable:\r\naccountExpires\r\nobjectSid\r\npwdLastSet\r\ncreateTimeStamp");
 
                 inputFileName = fileName;
+                forceMemProcessing = forceMem;
                 
                 csObjects.FinishedLoading += new LoadCompletedEventHandler(this.fileLoadComplete);
 
@@ -2056,7 +2058,14 @@ namespace csReporter
                     strFilters.Remove(strFilters.Length - 1, 1);
                     writer.Write(strFilters + "\"\r\n");
                 }
-                writer.Write(",Object Count:," + matchingCSobjects.Count.ToString() + "\r\n\r\n\r\n");
+                if (lowMemProcessing == true)
+                {
+                    writer.Write(",Object Count:," + lblCount.Text.Split(':')[1].Trim() + "\r\n\r\n\r\n");
+                }
+                else
+                {
+                    writer.Write(",Object Count:," + matchingCSobjects.Count.ToString() + "\r\n\r\n\r\n");
+                }
 
                 if (filter.FilterState == State.Synchronized)
                 {
@@ -2771,8 +2780,16 @@ namespace csReporter
                     }
                     writer.Write("</TD></TR>\r\n");
                 }
-
-                writer.Write("<TR><TD><B>Object Count:</B> " + matchingCSobjects.Count.ToString() + "</TD></TR>\r\n");
+                if (lowMemProcessing == true)
+                {
+                    //Get object count from lblCount text
+                    writer.Write("<TR><TD><B>Object Count:</B> " + lblCount.Text.Split(':')[1].Trim() + "</TD></TR>\r\n");
+                }
+                else
+                {
+                    writer.Write("<TR><TD><B>Object Count:</B> " + matchingCSobjects.Count.ToString() + "</TD></TR>\r\n");
+                }
+                
 
                 writer.Write("</Table><BR><BR><Table cellpadding=\"10\">\r\n");
 
@@ -3481,7 +3498,15 @@ namespace csReporter
                 {
                     excelReport.WriteNextRow(new List<string> { "", "Report Attributes:", String.Join("\n", report.ReportAttributes) });
                 }
-                excelReport.WriteNextRow(new List<string> { "", "Object Count:", matchingCSobjects.Count.ToString() });
+                if (lowMemProcessing == true)
+                {
+                    //Get object count from lblCount text
+                    excelReport.WriteNextRow(new List<string> { "", "Object Count:", lblCount.Text.Split(':')[1].Trim() });
+                }
+                else
+                {
+                    excelReport.WriteNextRow(new List<string> { "", "Object Count:", matchingCSobjects.Count.ToString() });
+                }
 
                 //empty rows before report headers
                 excelReport.WriteNextRow("");
@@ -4517,7 +4542,7 @@ namespace csReporter
                     long fileLength = file.Length;
                     int fileLengthMB = (int)(fileLength / 1048576);
                     //if file larger than 300MB use low memory option with progress bar
-                    if (fileLengthMB > 300)
+                    if (fileLengthMB > 300 && forceMemProcessing == false)
                     {
                         lowMemProcessing = true;
                         frmProgressBar frmProgress = new frmProgressBar();
