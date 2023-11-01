@@ -101,7 +101,7 @@ namespace csReporter
 
                 inputFileName = fileName;
                 forceMemProcessing = forceMem;
-                
+                this.Text += " - " + fileName;
                 csObjects.FinishedLoading += new LoadCompletedEventHandler(this.fileLoadComplete);
 
                 this.Enabled = false;
