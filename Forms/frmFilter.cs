@@ -2111,10 +2111,7 @@ namespace csReporter
                                 switch (attrib)
                                 {
                                     case "<DN>":
-                                        if (obj.csDN != null)
-                                        {
-                                            writer.Write("\"" + obj.csDN.Replace("\"", "\"\"") + "\"");
-                                        }
+                                        //DN already written by default a CS Distinguished Name column.  Don't write again
                                         break;
                                     case "<Connector>":
                                         if (obj.Connector != null)
@@ -2282,10 +2279,7 @@ namespace csReporter
                                 switch (attrib)
                                 {
                                     case "<DN>":
-                                        if (obj.csDN != null)
-                                        {
-                                            writer.Write("\"" + obj.csDN.Replace("\"", "\"\"") + "\"");
-                                        }
+                                        //DN already written by default a CS Distinguished Name column.  Don't write again
                                         break;
                                     case "<Connector>":
                                         if (obj.Connector != null)
@@ -2826,10 +2820,7 @@ namespace csReporter
                             switch (attrib)
                             {
                                 case "<DN>":
-                                    if (obj.csDN != null)
-                                    {
-                                        writer.Write(obj.csDN);
-                                    }
+                                    //DN already written by default a CS Distinguished Name column.  Don't write again
                                     break;
                                 case "<Connector>":
                                     if (obj.Connector != null)
@@ -3012,10 +3003,7 @@ namespace csReporter
                                 switch (attrib)
                                 {
                                     case "<DN>":
-                                        if (obj.csDN != null)
-                                        {
-                                            writer.Write(obj.csDN);
-                                        }
+                                        //DN already written by default a CS Distinguished Name column.  Don't write again
                                         break;
                                     case "<Connector>":
                                         if (obj.Connector != null)
@@ -3563,15 +3551,8 @@ namespace csReporter
                                 switch (attrib)
                                 {
                                     case "<DN>":
-                                        if (obj.csDN != null)
-                                        {
-                                            rowValues.Add(obj.csDN);
-                                        }
-                                        else
-                                        {
-                                            rowValues.Add("");
-                                        }
-                                    break;
+                                        //DN already written by default a CS Distinguished Name column.  Don't write again
+                                        break;
                                     case "<Connector>":
                                         if (obj.Connector != null)
                                         {
@@ -3750,14 +3731,7 @@ namespace csReporter
                                 switch (attrib)
                                 {
                                     case "<DN>":
-                                        if (obj.csDN != null)
-                                        {
-                                            rowValues.Add(obj.csDN);
-                                        }
-                                        else
-                                        {
-                                            rowValues.Add("");
-                                        }
+                                        //DN already written by default a CS Distinguished Name column.  Don't write again
                                         break;
                                     case "<Connector>":
                                         if (obj.Connector != null)
@@ -3965,10 +3939,7 @@ namespace csReporter
                                 switch (attrib)
                                 {
                                     case "<DN>":
-                                        if (obj.csDN != null)
-                                        {
-                                            excelReport.WriteNextRow(obj.csDN);
-                                        }
+                                        //DN already written by default a CS Distinguished Name column.  Don't write again
                                         break;
                                     case "<Connector>":
                                         if (obj.Connector != null)
@@ -4138,10 +4109,7 @@ namespace csReporter
                                 switch (attrib)
                                 {
                                     case "<DN>":
-                                        if (obj.csDN != null)
-                                        {
-                                            excelReport.WriteNextRow(obj.csDN);
-                                        }
+                                        //DN already written by default a CS Distinguished Name column.  Don't write again
                                         break;
                                     case "<Connector>":
                                         if (obj.Connector != null)
