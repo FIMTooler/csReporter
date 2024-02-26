@@ -28,7 +28,7 @@ namespace csReporter
         Dictionary<uint, Row> myRows;
         Stylesheet ss;
 
-        public ExcelWriter(string filePath)
+        public ExcelWriter(string filePath, int fontSize)
         {
             doc = SpreadsheetDocument.Create(filePath, SpreadsheetDocumentType.Workbook);
             wbp = doc.AddWorkbookPart();
@@ -45,7 +45,7 @@ namespace csReporter
             sharedString = new Dictionary<string, int>();
             myRows = new Dictionary<uint, Row>();
             
-            ss = GenerateStylesheet();
+            ss = GenerateStylesheet(fontSize);
             wbp.AddNewPart<WorkbookStylesPart>();
             wbp.WorkbookStylesPart.Stylesheet = ss;
             wbp.WorkbookStylesPart.Stylesheet.Save();
@@ -231,10 +231,10 @@ namespace csReporter
             cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
         }
         
-        private Stylesheet GenerateStylesheet()
+        private Stylesheet GenerateStylesheet(int fontSize)
         {
             Stylesheet styleSheet = null;
-            Fonts fonts = new Fonts(new Font(new FontSize() { Val = 10 }));
+            Fonts fonts = new Fonts(new Font(new FontSize() { Val = fontSize }));
             Fills fills = new Fills(new Fill(new PatternFill() { PatternType = PatternValues.None }));
             Borders borders = new Borders(new Border());
             CellFormat cf = new CellFormat() { FontId = 0, FillId = 0, BorderId = 0 };

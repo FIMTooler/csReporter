@@ -52,6 +52,7 @@ namespace csReporter
                     return;
                 }
                 frmFilter parent = (frmFilter)this.Owner;
+                parent.SetReportIncludeFilter(cbFilterCriteria.Checked);
                 if (lbAttribute.SelectedItems.Count == 0)
                 {
                     parent.SetReportAttributes(lbAttribute.Items.Cast<string>().ToList());
@@ -84,6 +85,12 @@ namespace csReporter
                     {
                         parent.SetReportLayout(false);
                     }
+                    if (cbbFontSize.SelectedItem == null)
+                    {
+                        MessageBox.Show("You must choose a font size.", "Font Size", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        return;
+                    }
+                    parent.SetReportFontSize(int.Parse(cbbFontSize.SelectedItem.ToString()));
                 }
                 this.DialogResult = System.Windows.Forms.DialogResult.OK;
             }
@@ -104,10 +111,12 @@ namespace csReporter
             if (rbExcel.Checked)
             {
                 gbLayout.Visible = true;
+                gbFontSize.Visible = true;
             }
             else
             {
                 gbLayout.Visible = false;
+                gbFontSize.Visible = false;
             }
         }
     }

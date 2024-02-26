@@ -177,6 +177,8 @@ namespace csReporter
         reportType type;
         List<string> reportAttribs = new List<string>();
         bool horizontal = true;
+        int fSize = 10;
+        bool includeFilter = true;
 
         public ReportObject()
         { }
@@ -227,6 +229,30 @@ namespace csReporter
             set
             {
                 horizontal = value;
+            }
+        }
+
+        public int FontSize
+        {
+            get
+            {
+                return fSize;
+            }
+            set
+            {
+                fSize = value;
+            }
+        }
+
+        public bool IncludeFilter
+        {
+            get
+            {
+                return includeFilter;
+            }
+            set
+            {
+                includeFilter = value;
             }
         }
     }

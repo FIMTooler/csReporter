@@ -40,8 +40,14 @@
             this.rbVertical = new System.Windows.Forms.RadioButton();
             this.rbHorizontal = new System.Windows.Forms.RadioButton();
             this.lblSelectAttributes = new System.Windows.Forms.Label();
+            this.gbFilterCriteria = new System.Windows.Forms.GroupBox();
+            this.cbFilterCriteria = new System.Windows.Forms.CheckBox();
+            this.gbFontSize = new System.Windows.Forms.GroupBox();
+            this.cbbFontSize = new System.Windows.Forms.ComboBox();
             this.gbFormat.SuspendLayout();
             this.gbLayout.SuspendLayout();
+            this.gbFilterCriteria.SuspendLayout();
+            this.gbFontSize.SuspendLayout();
             this.SuspendLayout();
             // 
             // lbAttribute
@@ -49,7 +55,7 @@
             this.lbAttribute.FormattingEnabled = true;
             this.lbAttribute.ItemHeight = 18;
             this.lbAttribute.Location = new System.Drawing.Point(18, 35);
-            this.lbAttribute.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.lbAttribute.Margin = new System.Windows.Forms.Padding(4);
             this.lbAttribute.Name = "lbAttribute";
             this.lbAttribute.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.lbAttribute.Size = new System.Drawing.Size(529, 418);
@@ -62,9 +68,9 @@
             this.gbFormat.Controls.Add(this.rbCSV);
             this.gbFormat.Controls.Add(this.rbHTML);
             this.gbFormat.Location = new System.Drawing.Point(555, 15);
-            this.gbFormat.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.gbFormat.Margin = new System.Windows.Forms.Padding(4);
             this.gbFormat.Name = "gbFormat";
-            this.gbFormat.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.gbFormat.Padding = new System.Windows.Forms.Padding(4);
             this.gbFormat.Size = new System.Drawing.Size(132, 129);
             this.gbFormat.TabIndex = 6;
             this.gbFormat.TabStop = false;
@@ -74,7 +80,7 @@
             // 
             this.rbExcel.AutoSize = true;
             this.rbExcel.Location = new System.Drawing.Point(9, 96);
-            this.rbExcel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rbExcel.Margin = new System.Windows.Forms.Padding(4);
             this.rbExcel.Name = "rbExcel";
             this.rbExcel.Size = new System.Drawing.Size(62, 22);
             this.rbExcel.TabIndex = 2;
@@ -87,7 +93,7 @@
             // 
             this.rbCSV.AutoSize = true;
             this.rbCSV.Location = new System.Drawing.Point(9, 64);
-            this.rbCSV.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rbCSV.Margin = new System.Windows.Forms.Padding(4);
             this.rbCSV.Name = "rbCSV";
             this.rbCSV.Size = new System.Drawing.Size(56, 22);
             this.rbCSV.TabIndex = 1;
@@ -99,7 +105,7 @@
             // 
             this.rbHTML.AutoSize = true;
             this.rbHTML.Location = new System.Drawing.Point(9, 30);
-            this.rbHTML.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rbHTML.Margin = new System.Windows.Forms.Padding(4);
             this.rbHTML.Name = "rbHTML";
             this.rbHTML.Size = new System.Drawing.Size(67, 22);
             this.rbHTML.TabIndex = 0;
@@ -110,7 +116,7 @@
             // btnOK
             // 
             this.btnOK.Location = new System.Drawing.Point(82, 482);
-            this.btnOK.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnOK.Margin = new System.Windows.Forms.Padding(4);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(135, 35);
             this.btnOK.TabIndex = 26;
@@ -121,7 +127,7 @@
             // btnCancel
             // 
             this.btnCancel.Location = new System.Drawing.Point(248, 482);
-            this.btnCancel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnCancel.Margin = new System.Windows.Forms.Padding(4);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(135, 35);
             this.btnCancel.TabIndex = 27;
@@ -133,10 +139,10 @@
             // 
             this.gbLayout.Controls.Add(this.rbVertical);
             this.gbLayout.Controls.Add(this.rbHorizontal);
-            this.gbLayout.Location = new System.Drawing.Point(555, 162);
-            this.gbLayout.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.gbLayout.Location = new System.Drawing.Point(555, 215);
+            this.gbLayout.Margin = new System.Windows.Forms.Padding(4);
             this.gbLayout.Name = "gbLayout";
-            this.gbLayout.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.gbLayout.Padding = new System.Windows.Forms.Padding(4);
             this.gbLayout.Size = new System.Drawing.Size(132, 101);
             this.gbLayout.TabIndex = 7;
             this.gbLayout.TabStop = false;
@@ -147,7 +153,7 @@
             // 
             this.rbVertical.AutoSize = true;
             this.rbVertical.Location = new System.Drawing.Point(9, 64);
-            this.rbVertical.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rbVertical.Margin = new System.Windows.Forms.Padding(4);
             this.rbVertical.Name = "rbVertical";
             this.rbVertical.Size = new System.Drawing.Size(74, 22);
             this.rbVertical.TabIndex = 1;
@@ -159,7 +165,7 @@
             // 
             this.rbHorizontal.AutoSize = true;
             this.rbHorizontal.Location = new System.Drawing.Point(9, 32);
-            this.rbHorizontal.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rbHorizontal.Margin = new System.Windows.Forms.Padding(4);
             this.rbHorizontal.Name = "rbHorizontal";
             this.rbHorizontal.Size = new System.Drawing.Size(94, 22);
             this.rbHorizontal.TabIndex = 0;
@@ -177,11 +183,68 @@
             this.lblSelectAttributes.TabIndex = 28;
             this.lblSelectAttributes.Text = "Select Attributes to include in report";
             // 
+            // gbFilterCriteria
+            // 
+            this.gbFilterCriteria.Controls.Add(this.cbFilterCriteria);
+            this.gbFilterCriteria.Location = new System.Drawing.Point(555, 152);
+            this.gbFilterCriteria.Margin = new System.Windows.Forms.Padding(4);
+            this.gbFilterCriteria.Name = "gbFilterCriteria";
+            this.gbFilterCriteria.Padding = new System.Windows.Forms.Padding(4);
+            this.gbFilterCriteria.Size = new System.Drawing.Size(132, 55);
+            this.gbFilterCriteria.TabIndex = 8;
+            this.gbFilterCriteria.TabStop = false;
+            this.gbFilterCriteria.Text = "Filter Criteria";
+            // 
+            // cbFilterCriteria
+            // 
+            this.cbFilterCriteria.AutoSize = true;
+            this.cbFilterCriteria.Location = new System.Drawing.Point(10, 24);
+            this.cbFilterCriteria.Name = "cbFilterCriteria";
+            this.cbFilterCriteria.Size = new System.Drawing.Size(73, 22);
+            this.cbFilterCriteria.TabIndex = 29;
+            this.cbFilterCriteria.Text = "Include";
+            this.cbFilterCriteria.UseVisualStyleBackColor = true;
+            // 
+            // gbFontSize
+            // 
+            this.gbFontSize.Controls.Add(this.cbbFontSize);
+            this.gbFontSize.Location = new System.Drawing.Point(555, 324);
+            this.gbFontSize.Margin = new System.Windows.Forms.Padding(4);
+            this.gbFontSize.Name = "gbFontSize";
+            this.gbFontSize.Padding = new System.Windows.Forms.Padding(4);
+            this.gbFontSize.Size = new System.Drawing.Size(132, 59);
+            this.gbFontSize.TabIndex = 8;
+            this.gbFontSize.TabStop = false;
+            this.gbFontSize.Text = "Font Size";
+            this.gbFontSize.Visible = false;
+            // 
+            // cbbFontSize
+            // 
+            this.cbbFontSize.FormattingEnabled = true;
+            this.cbbFontSize.Items.AddRange(new object[] {
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13",
+            "14",
+            "15",
+            "16",
+            "17",
+            "18"});
+            this.cbbFontSize.Location = new System.Drawing.Point(9, 24);
+            this.cbbFontSize.Name = "cbbFontSize";
+            this.cbbFontSize.Size = new System.Drawing.Size(67, 26);
+            this.cbbFontSize.TabIndex = 29;
+            // 
             // frmReport
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(702, 539);
+            this.Controls.Add(this.gbFontSize);
+            this.Controls.Add(this.gbFilterCriteria);
             this.Controls.Add(this.lblSelectAttributes);
             this.Controls.Add(this.gbLayout);
             this.Controls.Add(this.btnCancel);
@@ -191,7 +254,7 @@
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmReport";
@@ -200,6 +263,9 @@
             this.gbFormat.PerformLayout();
             this.gbLayout.ResumeLayout(false);
             this.gbLayout.PerformLayout();
+            this.gbFilterCriteria.ResumeLayout(false);
+            this.gbFilterCriteria.PerformLayout();
+            this.gbFontSize.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -218,5 +284,9 @@
         private System.Windows.Forms.RadioButton rbVertical;
         private System.Windows.Forms.RadioButton rbHorizontal;
         private System.Windows.Forms.Label lblSelectAttributes;
+        private System.Windows.Forms.GroupBox gbFilterCriteria;
+        private System.Windows.Forms.CheckBox cbFilterCriteria;
+        private System.Windows.Forms.GroupBox gbFontSize;
+        private System.Windows.Forms.ComboBox cbbFontSize;
     }
 }

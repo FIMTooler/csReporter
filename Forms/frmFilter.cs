@@ -2033,38 +2033,41 @@ namespace csReporter
             }
             private void WriteCSVReportHeaders(StreamWriter writer)
             {
-                writer.Write("Criteria\r\n");
-                writer.Write(",Hologram:," + filter.FilterState + "\r\n");
-                if (filter.ObjectTypes.Count > 0)
+                if (report.IncludeFilter)
                 {
-                    writer.Write(",Object Types:,\"" + String.Join("\n", filter.ObjectTypes.ToArray()) + "\"\r\n");
-                }
-                if (filter.Operations.Count > 0)
-                {
-                    writer.Write(",Operations:,\"" + String.Join("\n", filter.Operations.ToArray()) + "\"\r\n");
-                }
-                if (report.ReportAttributes.Count > 0)
-                {
-                    writer.Write(",Attributes:,\"" + String.Join("\n", report.ReportAttributes.ToArray()) + "\"\r\n");
-                }
-                if (filter.AttributeFilters.Count > 0)
-                {
-                    writer.Write(",Attribute Filters:,\"");
-                    string strFilters = "";
-                    foreach (FilterAttribute FA in filter.AttributeFilters)
+                    writer.Write("Criteria\r\n");
+                    writer.Write(",Hologram:," + filter.FilterState + "\r\n");
+                    if (filter.ObjectTypes.Count > 0)
                     {
-                        strFilters += FA.Attribute + " " + FA.Operation + " " + FA.Value + "\n";
+                        writer.Write(",Object Types:,\"" + String.Join("\n", filter.ObjectTypes.ToArray()) + "\"\r\n");
                     }
-                    strFilters.Remove(strFilters.Length - 1, 1);
-                    writer.Write(strFilters + "\"\r\n");
-                }
-                if (lowMemProcessing == true)
-                {
-                    writer.Write(",Object Count:," + lblCount.Text.Split(':')[1].Trim() + "\r\n\r\n\r\n");
-                }
-                else
-                {
-                    writer.Write(",Object Count:," + matchingCSobjects.Count.ToString() + "\r\n\r\n\r\n");
+                    if (filter.Operations.Count > 0)
+                    {
+                        writer.Write(",Operations:,\"" + String.Join("\n", filter.Operations.ToArray()) + "\"\r\n");
+                    }
+                    if (report.ReportAttributes.Count > 0)
+                    {
+                        writer.Write(",Attributes:,\"" + String.Join("\n", report.ReportAttributes.ToArray()) + "\"\r\n");
+                    }
+                    if (filter.AttributeFilters.Count > 0)
+                    {
+                        writer.Write(",Attribute Filters:,\"");
+                        string strFilters = "";
+                        foreach (FilterAttribute FA in filter.AttributeFilters)
+                        {
+                            strFilters += FA.Attribute + " " + FA.Operation + " " + FA.Value + "\n";
+                        }
+                        strFilters.Remove(strFilters.Length - 1, 1);
+                        writer.Write(strFilters + "\"\r\n");
+                    }
+                    if (lowMemProcessing == true)
+                    {
+                        writer.Write(",Object Count:," + lblCount.Text.Split(':')[1].Trim() + "\r\n\r\n\r\n");
+                    }
+                    else
+                    {
+                        writer.Write(",Object Count:," + matchingCSobjects.Count.ToString() + "\r\n\r\n\r\n");
+                    }
                 }
 
                 if (filter.FilterState == State.Synchronized)
@@ -2751,41 +2754,43 @@ namespace csReporter
                     writer.Write("<img src=\"data:image/png;base64," + strLogo + "\" alt=\"CSRLogo.png\" /><br><br><br><br><br>\r\n");
                 }
                 writer.Write("<Table cellpadding=\"10\">\r\n");
-                writer.Write("<TR><TH>Criteria</TH><TR>\r\n");
-                writer.Write("<TR><TD style=\"border-style: none;\" /><TD>Hologram:</TD><TD>" + filter.FilterState + "</TD></TR>\r\n");
-                if (filter.ObjectTypes.Count > 0)
+                if (report.IncludeFilter)
                 {
-                    writer.Write("<TR><TD style=\"border-style: none;\" /><TD valign=\"top\">Object Types:</TD><TD>" + String.Join("<BR>", filter.ObjectTypes.ToArray()) + "</TD></TR>\r\n");
-                }
-                if (filter.Operations.Count > 0)
-                {
-                    writer.Write("<TR><TD style=\"border-style: none;\" /><TD valign=\"top\">Operations:</TD><TD>" + String.Join("<BR>", filter.Operations.ToArray()) + "</TD></TR>\r\n");
-                }
-                if (report.ReportAttributes.Count > 0)
-                {
-                    writer.Write("<TR><TD style=\"border-style: none;\" /><TD valign=\"top\">Attributes:</TD><TD>" + String.Join("<BR>", report.ReportAttributes.ToArray()) + "</TD></TR>\r\n");
-                }
-                if (filter.AttributeFilters.Count > 0)
-                {
-                    writer.Write("<TR><TD style=\"border-style: none;\" /><TD valign=\"top\">Attribute Filters:</TD><TD>");
-                    foreach (FilterAttribute FA in filter.AttributeFilters)
+                    writer.Write("<TR><TH>Criteria</TH><TR>\r\n");
+                    writer.Write("<TR><TD style=\"border-style: none;\" /><TD>Hologram:</TD><TD>" + filter.FilterState + "</TD></TR>\r\n");
+                    if (filter.ObjectTypes.Count > 0)
                     {
-                        writer.Write(FA.Attribute + " " + FA.Operation + " " + FA.Value + "<BR>");
+                        writer.Write("<TR><TD style=\"border-style: none;\" /><TD valign=\"top\">Object Types:</TD><TD>" + String.Join("<BR>", filter.ObjectTypes.ToArray()) + "</TD></TR>\r\n");
                     }
-                    writer.Write("</TD></TR>\r\n");
-                }
-                if (lowMemProcessing == true)
-                {
-                    //Get object count from lblCount text
-                    writer.Write("<TR><TD><B>Object Count:</B> " + lblCount.Text.Split(':')[1].Trim() + "</TD></TR>\r\n");
-                }
-                else
-                {
-                    writer.Write("<TR><TD><B>Object Count:</B> " + matchingCSobjects.Count.ToString() + "</TD></TR>\r\n");
-                }
-                
+                    if (filter.Operations.Count > 0)
+                    {
+                        writer.Write("<TR><TD style=\"border-style: none;\" /><TD valign=\"top\">Operations:</TD><TD>" + String.Join("<BR>", filter.Operations.ToArray()) + "</TD></TR>\r\n");
+                    }
+                    if (report.ReportAttributes.Count > 0)
+                    {
+                        writer.Write("<TR><TD style=\"border-style: none;\" /><TD valign=\"top\">Attributes:</TD><TD>" + String.Join("<BR>", report.ReportAttributes.ToArray()) + "</TD></TR>\r\n");
+                    }
+                    if (filter.AttributeFilters.Count > 0)
+                    {
+                        writer.Write("<TR><TD style=\"border-style: none;\" /><TD valign=\"top\">Attribute Filters:</TD><TD>");
+                        foreach (FilterAttribute FA in filter.AttributeFilters)
+                        {
+                            writer.Write(FA.Attribute + " " + FA.Operation + " " + FA.Value + "<BR>");
+                        }
+                        writer.Write("</TD></TR>\r\n");
+                    }
+                    if (lowMemProcessing == true)
+                    {
+                        //Get object count from lblCount text
+                        writer.Write("<TR><TD><B>Object Count:</B> " + lblCount.Text.Split(':')[1].Trim() + "</TD></TR>\r\n");
+                    }
+                    else
+                    {
+                        writer.Write("<TR><TD><B>Object Count:</B> " + matchingCSobjects.Count.ToString() + "</TD></TR>\r\n");
+                    }
 
-                writer.Write("</Table><BR><BR><Table cellpadding=\"10\">\r\n");
+                    writer.Write("</Table><BR><BR><Table cellpadding=\"10\">\r\n");
+                }
 
                 writer.Write("<TR><TH>CS distinguished name</TH><TH>Object Type</TH>");
                 if (filter.FilterState == State.Synchronized)
@@ -3373,10 +3378,13 @@ namespace csReporter
                 {
                     this.methSetText(frmProgress, "Generating Excel report");
                     this.methUpdateBar(frmProgress, 0);
-                    excelReport = new ExcelWriter(outputFileName);
-                    WriteExcelReportHeaders(excelReport);
+                    excelReport = new ExcelWriter(outputFileName, report.FontSize);
+                    if (report.IncludeFilter)
+                    {
+                        WriteExcelReportHeaders(excelReport);
+                    }
                     WriteExcelDataHeader(excelReport);
-                int counter = 0;
+                    int counter = 0;
                     foreach (csObject obj in matchingCSobjects)
                     {
                         if (frmFilter.stopProcessing)
@@ -3423,8 +3431,11 @@ namespace csReporter
                 {
                     this.methSetText(frmProgress, "Generating Excel report");
                     this.methUpdateBar(frmProgress, 0);
-                    excelReport = new ExcelWriter(outputFileName);
-                    WriteExcelReportHeaders(excelReport);
+                    excelReport = new ExcelWriter(outputFileName, report.FontSize);
+                    if (report.IncludeFilter)
+                    {
+                        WriteExcelReportHeaders(excelReport);
+                    }
                     int counter = 0;
                     foreach (csObject obj in matchingCSobjects)
                     {
@@ -4718,7 +4729,7 @@ namespace csReporter
                         switch (report.ReportType)
                         {
                             case reportType.Excel:
-                                excelFile = new ExcelWriter(outputFileName);
+                                excelFile = new ExcelWriter(outputFileName, report.FontSize);
                                 break;
                             default:
                                 outFile = new StreamWriter(outputFileName);
@@ -4786,7 +4797,10 @@ namespace csReporter
                                                                 //making a report, only write headers if counterMatchObjects == 0
                                                                 if (counterMatchObjects == 0)
                                                                 {
-                                                                    WriteExcelReportHeaders(excelFile);
+                                                                    if (report.IncludeFilter)
+                                                                    {
+                                                                        WriteExcelReportHeaders(excelFile);
+                                                                    }
                                                                     if (report.Horizontal)
                                                                     {
                                                                         WriteExcelDataHeader(excelFile);
@@ -5477,6 +5491,14 @@ namespace csReporter
             public void SetReportLayout(bool val)
             {
                 report.Horizontal = val;
+            }
+            public void SetReportFontSize(int fontSize)
+            {
+                report.FontSize = fontSize;
+            }
+            public void SetReportIncludeFilter(bool includeFilter)
+            {
+                report.IncludeFilter = includeFilter;
             }
         #endregion
 

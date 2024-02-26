@@ -62,7 +62,7 @@
             this.rtbDocumentation.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.rtbDocumentation.Font = new System.Drawing.Font("Lucida Console", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rtbDocumentation.Location = new System.Drawing.Point(22, 450);
-            this.rtbDocumentation.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rtbDocumentation.Margin = new System.Windows.Forms.Padding(4);
             this.rtbDocumentation.Multiline = false;
             this.rtbDocumentation.Name = "rtbDocumentation";
             this.rtbDocumentation.ReadOnly = true;
@@ -82,7 +82,7 @@
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmCSExamples";
