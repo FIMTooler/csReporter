@@ -436,7 +436,10 @@ namespace csReporter
                         }
                         if (File.Exists(outputFileName))
                         {
-                            System.Diagnostics.Process.Start(outputFileName);
+                            if (MessageBox.Show("Would you like to open the report?", "Open Report", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                            {
+                                System.Diagnostics.Process.Start(outputFileName);
+                            }
                         }
                     }
                     catch (Exception ex)

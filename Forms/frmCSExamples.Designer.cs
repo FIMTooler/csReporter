@@ -41,7 +41,7 @@
             this.lblExportInfo.Location = new System.Drawing.Point(18, 83);
             this.lblExportInfo.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblExportInfo.Name = "lblExportInfo";
-            this.lblExportInfo.Size = new System.Drawing.Size(768, 323);
+            this.lblExportInfo.Size = new System.Drawing.Size(998, 418);
             this.lblExportInfo.TabIndex = 2;
             this.lblExportInfo.Text = resources.GetString("lblExportInfo.Text");
             // 
@@ -52,7 +52,7 @@
             this.lblExampleHeader.Location = new System.Drawing.Point(18, 35);
             this.lblExampleHeader.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblExampleHeader.Name = "lblExampleHeader";
-            this.lblExampleHeader.Size = new System.Drawing.Size(166, 20);
+            this.lblExampleHeader.Size = new System.Drawing.Size(211, 26);
             this.lblExampleHeader.TabIndex = 3;
             this.lblExampleHeader.Text = "csexport examples";
             // 
@@ -73,7 +73,7 @@
             // 
             // frmCSExamples
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1006, 500);
             this.Controls.Add(this.rtbDocumentation);
