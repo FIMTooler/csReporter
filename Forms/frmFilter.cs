@@ -68,6 +68,8 @@ namespace csReporter
             bool lowMemProcessing;
             bool makeReport;
             bool forceMemProcessing;
+            bool cellValuesTooLong;
+            const string cellValTooLong = "Value exceeds 32767 characters";
             ReportObject report;
             List<string> sysAttribs = new List<string>();
             List<string> changingAttribs = new List<string>();
@@ -362,6 +364,7 @@ namespace csReporter
             private void btnCreateReport_Click(object sender, EventArgs e)
             {
                 report = new ReportObject();
+                cellValuesTooLong = false;
                 if (lowMemProcessing || matchingCSobjects.Count > 0)
                 {
                     try
@@ -433,6 +436,10 @@ namespace csReporter
                                 stopProcessing = false;
                             }
                             frmProgress.Dispose();
+                        }
+                        if (cellValuesTooLong)
+                        {
+                            MessageBox.Show("Some data values exceed Excel limitations of 32767 characters in a single cell. The below value was used instead.\r\n\r\n" + cellValTooLong);
                         }
                         if (File.Exists(outputFileName))
                         {
@@ -4301,114 +4308,122 @@ namespace csReporter
             }
             private List<string> AddAttribToReportExcel(Attribute attribute, Attribute syncdAttrib)
             {
-                    List<string> dataValues = new List<string>();
-                    StringBuilder strOutput = new StringBuilder("");
+                List<string> dataValues = new List<string>();
+                StringBuilder strOutput = new StringBuilder("");
 
-                    try
+                try
+                {
+                    if (syncdAttrib != null && attribute != null)
                     {
-                        if (syncdAttrib != null && attribute != null)
+                        if (ADdata && knownADattribs.Contains(attribute.Name))
                         {
-                            if (ADdata && knownADattribs.Contains(attribute.Name))
+                            dataValues.Add(syncdAttrib.ADStringValues[0]);
+                            dataValues.Add(attribute.ADStringValues[0]);
+                        }
+                        else
+                        {
+                            foreach (string val in syncdAttrib.StringValues)
                             {
-                                dataValues.Add(syncdAttrib.ADStringValues[0]);
-                                dataValues.Add(attribute.ADStringValues[0]);
-                            }
-                            else
-                            {
-                                foreach (string val in syncdAttrib.StringValues)
+                                string strTemp = val;
+                                if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))
                                 {
-                                    string strTemp = val;
-                                    if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))
-                                    {
-                                        strTemp = strTemp.Insert(0, "'");
-                                    }
-                                    strOutput.Append(strTemp + "\n");
+                                    strTemp = strTemp.Insert(0, "'");
                                 }
-                                strOutput.Remove(strOutput.Length - 1, 1);
-                                dataValues.Add(strOutput.ToString());
-                                strOutput = new StringBuilder();
+                                strOutput.Append(strTemp + "\n");
+                            }
+                            strOutput.Remove(strOutput.Length - 1, 1);
+                            dataValues.Add(strOutput.ToString());
+                            strOutput = new StringBuilder();
 
-                                foreach (string val in attribute.StringValues)
+                            foreach (string val in attribute.StringValues)
+                            {
+                                string strTemp = val;
+                                if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))
                                 {
-                                    string strTemp = val;
-                                    if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))
-                                    {
-                                        strTemp = strTemp.Insert(0, "'");
-                                    }
-                                    strOutput.Append(strTemp + "\n");
+                                    strTemp = strTemp.Insert(0, "'");
                                 }
-                                strOutput.Remove(strOutput.Length - 1, 1);
-                                dataValues.Add(strOutput.ToString());
+                                strOutput.Append(strTemp + "\n");
                             }
-                        }
-                        else if (syncdAttrib == null && attribute != null)
-                        {
-                            dataValues.Add("");
-                            if (ADdata && knownADattribs.Contains(attribute.Name))
-                            {
-                                dataValues.Add(attribute.ADStringValues[0]);
-                            }
-                            else
-                            {
-                                foreach (string val in attribute.StringValues)
-                                {
-                                    string strTemp = val;
-                                    if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))
-                                    {
-                                        strTemp = strTemp.Insert(0, "'");
-                                    }
-                                    strOutput.Append(strTemp + "\n");
-                                }
-                                strOutput.Remove(strOutput.Length - 1, 1);
-                                dataValues.Add(strOutput.ToString());
-                                strOutput = new StringBuilder();
-                            }
-                        }
-                        else if (syncdAttrib != null && attribute == null)
-                        {
-                            if (ADdata && knownADattribs.Contains(syncdAttrib.Name))
-                            {
-                                dataValues.Add(syncdAttrib.ADStringValues[0]);
-                                dataValues.Add("(Deleted)");
-                            }
-                            else
-                            {
-                                foreach (string val in syncdAttrib.StringValues)
-                                {
-                                    string strTemp = val;
-                                    if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))
-                                    {
-                                        strTemp = strTemp.Insert(0, "'");
-                                    }
-                                    strOutput.Append(strTemp + "\n");
-                                }
-                                strOutput.Remove(strOutput.Length - 1, 1);
-                                dataValues.Add(strOutput.ToString());
-                                strOutput = new StringBuilder();
-                                dataValues.Add("(Deleted)");
-                            }
-                        }
-                        else if (syncdAttrib == null && attribute == null)
-                        {
-                            dataValues.Add("");
-                            dataValues.Add("");
+                            strOutput.Remove(strOutput.Length - 1, 1);
+                            dataValues.Add(strOutput.ToString());
                         }
                     }
-                    catch (Exception ex)
+                    else if (syncdAttrib == null && attribute != null)
                     {
-                        string errorMessage = "";
-                        if (attribute != null)
+                        dataValues.Add("");
+                        if (ADdata && knownADattribs.Contains(attribute.Name))
                         {
-                            errorMessage = "Error getting attribute values\r\nAttributeName=" + attribute.Name;
+                            dataValues.Add(attribute.ADStringValues[0]);
                         }
-                        else if (syncdAttrib != null)
+                        else
                         {
-                            errorMessage = "Error getting attribute values\r\nAttributeName=" + syncdAttrib.Name;
+                            foreach (string val in attribute.StringValues)
+                            {
+                                string strTemp = val;
+                                if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))
+                                {
+                                    strTemp = strTemp.Insert(0, "'");
+                                }
+                                strOutput.Append(strTemp + "\n");
+                            }
+                            strOutput.Remove(strOutput.Length - 1, 1);
+                            dataValues.Add(strOutput.ToString());
+                            strOutput = new StringBuilder();
                         }
-                        ExceptionHandler.handleException(ex, errorMessage);
-                        Application.Exit();
+                    }
+                    else if (syncdAttrib != null && attribute == null)
+                    {
+                        if (ADdata && knownADattribs.Contains(syncdAttrib.Name))
+                        {
+                            dataValues.Add(syncdAttrib.ADStringValues[0]);
+                            dataValues.Add("(Deleted)");
+                        }
+                        else
+                        {
+                            foreach (string val in syncdAttrib.StringValues)
+                            {
+                                string strTemp = val;
+                                if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))
+                                {
+                                    strTemp = strTemp.Insert(0, "'");
+                                }
+                                strOutput.Append(strTemp + "\n");
+                            }
+                            strOutput.Remove(strOutput.Length - 1, 1);
+                            dataValues.Add(strOutput.ToString());
+                            strOutput = new StringBuilder();
+                            dataValues.Add("(Deleted)");
+                        }
+                    }
+                    else if (syncdAttrib == null && attribute == null)
+                    {
+                        dataValues.Add("");
+                        dataValues.Add("");
+                    }
                 }
-                    return dataValues;
+                catch (Exception ex)
+                {
+                    string errorMessage = "";
+                    if (attribute != null)
+                    {
+                        errorMessage = "Error getting attribute values\r\nAttributeName=" + attribute.Name;
+                    }
+                    else if (syncdAttrib != null)
+                    {
+                        errorMessage = "Error getting attribute values\r\nAttributeName=" + syncdAttrib.Name;
+                    }
+                    ExceptionHandler.handleException(ex, errorMessage);
+                    Application.Exit();
+                }
+                for (int i = 0; i < dataValues.Count; i++)
+                {
+                    if (dataValues[i].Length > 32767)
+                    {
+                        dataValues[i] = cellValTooLong;
+                        cellValuesTooLong = true;
+                    }
+                }
+                return dataValues;
             }
             private List<string> AddAttribToReportExcel(string attribValue, Attribute syncdAttrib)
             {
