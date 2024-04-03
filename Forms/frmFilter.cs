@@ -4475,6 +4475,14 @@ namespace csReporter
                     ExceptionHandler.handleException(ex, errorMessage);
                     Application.Exit();
                 }
+                for (int i = 0; i < dataValues.Count; i++)
+                {
+                    if (dataValues[i].Length > 32767)
+                    {
+                        dataValues[i] = cellValTooLong;
+                        cellValuesTooLong = true;
+                    }
+                }
                 return dataValues;
             }
             private List<string> AddAttribToReportExcel(Attribute syncdAttrib)
@@ -4519,6 +4527,14 @@ namespace csReporter
                     }
                     ExceptionHandler.handleException(ex, errorMessage);
                     Application.Exit();
+                }
+                for (int i = 0; i < dataValues.Count; i++)
+                {
+                    if (dataValues[i].Length > 32767)
+                    {
+                        dataValues[i] = cellValTooLong;
+                        cellValuesTooLong = true;
+                    }
                 }
                 return dataValues;
             }
