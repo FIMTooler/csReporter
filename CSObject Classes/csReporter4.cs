@@ -1966,6 +1966,8 @@ namespace csReporter
         private string errorCode;
         private string errorLiteral;
         private string serverErrorDetail;
+        private string errorName;
+        private string extraErrorDetails;
 
         public ExportError(XmlReader xnr)
         {
@@ -2021,6 +2023,20 @@ namespace csReporter
                                                 {
                                                     xnr.Read();
                                                     serverErrorDetail = xnr.Value.TrimEnd('\r', '\n');
+                                                }
+                                                break;
+                                            case "error-name":
+                                                if (xnr.NodeType == XmlNodeType.Element)
+                                                {
+                                                    xnr.Read();
+                                                    errorName = xnr.Value.TrimEnd('\r', '\n');
+                                                }
+                                                break;
+                                            case "extra-error-details":
+                                                if (xnr.NodeType == XmlNodeType.Element)
+                                                {
+                                                    xnr.Read();
+                                                    extraErrorDetails = xnr.Value.TrimEnd('\r', '\n');
                                                 }
                                                 break;
                                         }
@@ -2121,6 +2137,12 @@ namespace csReporter
                                                 break;
                                             case "server-error-detail":
                                                 serverErrorDetail = ChildN.InnerText.TrimEnd('\r', '\n');
+                                                break;
+                                            case "error-name":
+                                                errorName = ChildN.InnerText.TrimEnd('\r', '\n');
+                                                break;
+                                            case "extra-error-details":
+                                                extraErrorDetails = ChildN.InnerText.TrimEnd('\r', '\n');
                                                 break;
                                         }
                                     }
@@ -2224,6 +2246,20 @@ namespace csReporter
             get
             {
                 return serverErrorDetail;
+            }
+        }
+        public string ErrorName
+        {
+            get
+            {
+                return errorName;
+            }
+        }
+        public string ExtraErrorDetails
+        {
+            get
+            {
+                return extraErrorDetails;
             }
         }
     }

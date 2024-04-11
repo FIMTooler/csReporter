@@ -2192,6 +2192,14 @@ namespace csReporter
                                         {
                                             errorInfo.Append("Server Error Detail: " + obj.ExportError.ServerErrorDetail + "\n");
                                         }
+                                        if (obj.ExportError.ErrorName != null)
+                                        {
+                                            errorInfo.Append("Error Name: " + obj.ExportError.ErrorName + "\n");
+                                        }
+                                        if (obj.ExportError.ExtraErrorDetails != null)
+                                        {
+                                            errorInfo.Append("Extra Error Detail: " + obj.ExportError.ExtraErrorDetails + "\n");
+                                        }
                                         errorInfo.Replace("\r\n", "");
                                         errorInfo.Replace("\"", "\"\"");
                                         errorInfo.Insert(0, "\"");
@@ -2359,6 +2367,14 @@ namespace csReporter
                                         if (obj.ExportError.ServerErrorDetail != null)
                                         {
                                             errorInfo.Append("Server Error Detail: " + obj.ExportError.ServerErrorDetail + "\n");
+                                        }
+                                        if (obj.ExportError.ErrorName != null)
+                                        {
+                                            errorInfo.Append("Error Name: " + obj.ExportError.ErrorName + "\n");
+                                        }
+                                        if (obj.ExportError.ExtraErrorDetails != null)
+                                        {
+                                            errorInfo.Append("Extra Error Detail: " + obj.ExportError.ExtraErrorDetails + "\n");
                                         }
                                         errorInfo.Remove(errorInfo.Length - 1, 1);
                                         errorInfo.Replace("\r\n", "");
@@ -2910,6 +2926,18 @@ namespace csReporter
                                         temp = temp.Replace("\n", "<BR>");
                                         errorInfo.Append("Server Error Detail: " + temp + "<BR>\r\n");
                                     }
+                                    if (obj.ExportError.ErrorName != null)
+                                    {
+                                        string temp = obj.ExportError.ErrorName.Replace(" ", "&nbsp;");
+                                        temp = temp.Replace("\n", "<BR>");
+                                        errorInfo.Append("Error Name: " + temp + "<BR>\r\n");
+                                    }
+                                    if (obj.ExportError.ExtraErrorDetails != null)
+                                    {
+                                        string temp = obj.ExportError.ExtraErrorDetails.Replace(" ", "&nbsp;");
+                                        temp = temp.Replace("\n", "<BR>");
+                                        errorInfo.Append("Extra Error Detail: " + temp + "<BR>\r\n");
+                                    }
                                     writer.Write(errorInfo.ToString().Replace("<BR><BR>\r\n", "\r\n") + "</TD></TR>\r\n");
                                     break;
                             }
@@ -3093,6 +3121,18 @@ namespace csReporter
                                             string temp = obj.ExportError.ServerErrorDetail.Replace(" ", "&nbsp;");
                                             temp = temp.Replace("\n", "<BR>");
                                             errorInfo.Append("Server Error Detail: " + temp + "<BR>\r\n");
+                                        }
+                                        if (obj.ExportError.ErrorName != null)
+                                        {
+                                            string temp = obj.ExportError.ErrorName.Replace(" ", "&nbsp;");
+                                            temp = temp.Replace("\n", "<BR>");
+                                            errorInfo.Append("Error Name: " + temp + "<BR>\r\n");
+                                        }
+                                        if (obj.ExportError.ExtraErrorDetails != null)
+                                        {
+                                            string temp = obj.ExportError.ExtraErrorDetails.Replace(" ", "&nbsp;");
+                                            temp = temp.Replace("\n", "<BR>");
+                                            errorInfo.Append("Extra Error Detail: " + temp + "<BR>\r\n");
                                         }
                                         writer.Write(errorInfo.ToString().Replace("<BR><BR>\r\n", "\r\n") + "</TD><TD /></TR>\r\n");
                                         break;
@@ -3660,6 +3700,14 @@ namespace csReporter
                                         {
                                             errorInfo.Append("Server Error Detail: " + obj.ExportError.ServerErrorDetail + "\n");
                                         }
+                                        if (obj.ExportError.ErrorName != null)
+                                        {
+                                            errorInfo.Append("Error Name: " + obj.ExportError.ErrorName + "\n");
+                                        }
+                                        if (obj.ExportError.ExtraErrorDetails != null)
+                                        {
+                                            errorInfo.Append("Extra Error Detail: " + obj.ExportError.ExtraErrorDetails + "\n");
+                                        }
                                         errorInfo.Replace("\r\n", "");
                                         rowValues.Add(errorInfo.ToString().Replace("\n\"","\""));
                                         break;
@@ -3839,6 +3887,14 @@ namespace csReporter
                                         if (obj.ExportError.ServerErrorDetail != null)
                                         {
                                             errorInfo.Append("Server Error Detail: " + obj.ExportError.ServerErrorDetail + "\n");
+                                        }
+                                        if (obj.ExportError.ErrorName != null)
+                                        {
+                                            errorInfo.Append("Error Name: " + obj.ExportError.ErrorName + "\n");
+                                        }
+                                        if (obj.ExportError.ExtraErrorDetails != null)
+                                        {
+                                            errorInfo.Append("Extra Error Detail: " + obj.ExportError.ExtraErrorDetails + "\n");
                                         }
                                         errorInfo.Replace("\r\n", "");
                                         rowValues.Add(errorInfo.ToString().Replace("\n\"", "\""));
@@ -4028,6 +4084,14 @@ namespace csReporter
                                         {
                                             errorInfo.Append("Server Error Detail: " + obj.ExportError.ServerErrorDetail + "\n");
                                         }
+                                        if (obj.ExportError.ErrorName != null)
+                                        {
+                                            errorInfo.Append("Error Name: " + obj.ExportError.ErrorName + "\n");
+                                        }
+                                        if (obj.ExportError.ExtraErrorDetails != null)
+                                        {
+                                            errorInfo.Append("Extra Error Detail: " + obj.ExportError.ExtraErrorDetails + "\n");
+                                        }
                                         errorInfo.Replace("\r\n", "");
                                         errorInfo.Replace("\"", "'");
                                         errorInfo.Insert(0, "\"");
@@ -4197,6 +4261,14 @@ namespace csReporter
                                         if (obj.ExportError.ServerErrorDetail != null)
                                         {
                                             errorInfo.Append("Server Error Detail: " + obj.ExportError.ServerErrorDetail + "\n");
+                                        }
+                                        if (obj.ExportError.ErrorName != null)
+                                        {
+                                            errorInfo.Append("Error Name: " + obj.ExportError.ErrorName + "\n");
+                                        }
+                                        if (obj.ExportError.ExtraErrorDetails != null)
+                                        {
+                                            errorInfo.Append("Extra Error Detail: " + obj.ExportError.ExtraErrorDetails + "\n");
                                         }
                                         errorInfo.Replace("\r\n", "");
                                         errorInfo.Replace("\"", "'");
