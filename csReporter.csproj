@@ -117,6 +117,12 @@
     <Compile Include="Forms\frmReport.Designer.cs">
       <DependentUpon>frmReport.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmOpenReport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmOpenReport.Designer.cs">
+      <DependentUpon>frmOpenReport.cs</DependentUpon>
+    </Compile>
     <Compile Include="Helper Classes\HelperClasses2.cs" />
     <Compile Include="Helper Classes\HelperClasses3.cs" />
     <Compile Include="Helper Classes\HelperClasses4.cs" />
@@ -143,6 +149,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmReport.resx">
       <DependentUpon>frmReport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmOpenReport.resx">
+      <DependentUpon>frmOpenReport.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

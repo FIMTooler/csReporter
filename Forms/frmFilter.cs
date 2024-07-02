@@ -443,11 +443,23 @@ namespace csReporter
                         }
                         if (File.Exists(outputFileName))
                         {
-                            if (MessageBox.Show("Would you like to open the report?", "Open Report", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                            //if (MessageBox.Show("Would you like to open the report?", "Open Report", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                            //{
+                            //    System.Diagnostics.Process.Start(outputFileName);
+                            //}
+                            frmOpenReport frmOpenRep = new frmOpenReport();
+                            frmOpenRep.Owner = this;
+                            switch(frmOpenRep.ShowDialog())
                             {
-                                System.Diagnostics.Process.Start(outputFileName);
+                                case System.Windows.Forms.DialogResult.Yes:
+                                    System.Diagnostics.Process.Start(outputFileName);
+                                    break;
+                                case System.Windows.Forms.DialogResult.OK:
+                                    System.Diagnostics.Process.Start(Directory.GetParent(outputFileName).FullName);
+                                    break;
                             }
-                        }
+                            frmOpenRep.Dispose();
+                    }
                     }
                     catch (Exception ex)
                     {

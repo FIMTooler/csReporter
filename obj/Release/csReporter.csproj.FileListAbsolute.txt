@@ -94,3 +94,4 @@ C:\OCGCode\csReporter\obj\Release\csReporter.csproj.CoreCompileInputs.cache
 C:\OCGCode\csReporter\obj\Release\csReporter.csproj.CopyComplete
 C:\OCGCode\csReporter\obj\Release\csReporter.exe
 C:\OCGCode\csReporter\obj\Release\csReporter.pdb
+C:\OCGCode\csReporter\obj\Release\csReporter.frmOpenReport.resources
