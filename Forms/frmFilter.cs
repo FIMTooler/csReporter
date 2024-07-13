@@ -4501,7 +4501,19 @@ namespace csReporter
                 }
                 for (int i = 0; i < dataValues.Count; i++)
                 {
-                    if (dataValues[i].Length > 32767)
+                    if (dataValues[i].Contains("\n"))
+                    {
+                        string[] vals = dataValues[i].Split('\n');
+                        for (int x = 0; x < vals.Length; x++)
+                        {
+                            if (vals[x].Length > 32767)
+                            {
+                                dataValues[i].Replace(vals[x], cellValTooLong);
+                                cellValuesTooLong = true;
+                            }
+                        }
+                    }
+                    else if (dataValues[i].Length > 32767)
                     {
                         dataValues[i] = cellValTooLong;
                         cellValuesTooLong = true;
@@ -4561,7 +4573,19 @@ namespace csReporter
                 }
                 for (int i = 0; i < dataValues.Count; i++)
                 {
-                    if (dataValues[i].Length > 32767)
+                    if (dataValues[i].Contains("\n"))
+                    {
+                        string[] vals = dataValues[i].Split('\n');
+                        for (int x = 0; x < vals.Length; x++)
+                        {
+                            if (vals[x].Length > 32767)
+                            {
+                                dataValues[i].Replace(vals[x], cellValTooLong);
+                                cellValuesTooLong = true;
+                            }
+                        }
+                    }
+                    else if (dataValues[i].Length > 32767)
                     {
                         dataValues[i] = cellValTooLong;
                         cellValuesTooLong = true;
@@ -4614,7 +4638,19 @@ namespace csReporter
                 }
                 for (int i = 0; i < dataValues.Count; i++)
                 {
-                    if (dataValues[i].Length > 32767)
+                    if (dataValues[i].Contains("\n"))
+                    {
+                        string[] vals = dataValues[i].Split('\n');
+                        for (int x = 0; x < vals.Length; x++)
+                        {
+                            if (vals[x].Length > 32767)
+                            {
+                                dataValues[i].Replace(vals[x], cellValTooLong);
+                                cellValuesTooLong = true;
+                            }
+                        }
+                    }
+                    else if (dataValues[i].Length > 32767)
                     {
                         dataValues[i] = cellValTooLong;
                         cellValuesTooLong = true;
