@@ -92,6 +92,19 @@ namespace csReporter
                     }
                     parent.SetReportFontSize(int.Parse(cbbFontSize.SelectedItem.ToString()));
                 }
+                if (!rbNetChange.Checked && !rbFullList.Checked)
+                {
+                    MessageBox.Show("You must choose how to display mutli-value attributes in the report.", "Multi-Value", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return;
+                }
+                if (rbNetChange.Checked)
+                {
+                    parent.SetMultivalueBehavior(false);
+                }
+                else
+                {
+                    parent.SetMultivalueBehavior(true);
+                }
                 this.DialogResult = System.Windows.Forms.DialogResult.OK;
             }
             catch (Exception ex)

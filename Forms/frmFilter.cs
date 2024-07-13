@@ -2514,32 +2514,46 @@ namespace csReporter
                         }
                         else
                         {
-                            strOutput.Append("\"");
-                            foreach (string val in syncdAttrib.StringValues)
+                            if (!syncdAttrib.Multivalued || (syncdAttrib.Multivalued && report.MvFullList))
                             {
-                                string strTemp = val;
-                                if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))
+                                strOutput.Append("\"");
+                                foreach (string val in syncdAttrib.StringValues)
                                 {
-                                    strTemp = strTemp.Insert(0, "'");
+                                    string strTemp = val;
+                                    if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))
+                                    {
+                                        strTemp = strTemp.Insert(0, "'");
+                                    }
+                                    strTemp = strTemp.Replace("\"", "\"\"");
+                                    strOutput.Append(strTemp + "\n");
                                 }
-                                strTemp = strTemp.Replace("\"", "\"\"");
-                                strOutput.Append(strTemp + "\n");
-                            }
-                            strOutput.Remove(strOutput.Length - 1, 1);
-                            strOutput.Append("\",\"");
+                                strOutput.Remove(strOutput.Length - 1, 1);
+                                strOutput.Append("\",\"");
 
-                            foreach (string val in attribute.StringValues)
-                            {
-                                string strTemp = val;
-                                if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))
+                                foreach (string val in attribute.StringValues)
                                 {
-                                    strTemp = strTemp.Insert(0, "'");
+                                    string strTemp = val;
+                                    if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))
+                                    {
+                                        strTemp = strTemp.Insert(0, "'");
+                                    }
+                                    strTemp = strTemp.Replace("\"", "\"\"");
+                                    strOutput.Append(strTemp + "\n");
                                 }
-                                strTemp = strTemp.Replace("\"", "\"\"");
-                                strOutput.Append(strTemp + "\n");
+                                strOutput.Remove(strOutput.Length - 1, 1);
+                                strOutput.Append("\"");
                             }
-                            strOutput.Remove(strOutput.Length - 1, 1);
-                            strOutput.Append("\"");
+                            else
+                            {
+                                List<string> adds = attribute.StringValues.Except(syncdAttrib.StringValues).ToList();
+                                List<string> removes = syncdAttrib.StringValues.Except(attribute.StringValues).ToList();
+                                List<string> changes = adds.Select(a => "add: " + a).ToList();
+                                changes.AddRange(removes.Select(r => "remove: " + r).ToList());
+
+                                strOutput.Append(",\"");
+                                strOutput.Append(string.Join("\n", changes));
+                                strOutput.Append("\"");
+                            }
                         }
                     }
                     else if (syncdAttrib == null && attribute != null)
@@ -2550,19 +2564,30 @@ namespace csReporter
                         }
                         else
                         {
-                            strOutput.Append(",\"");
-                            foreach (string val in attribute.StringValues)
+                            if (!syncdAttrib.Multivalued || (syncdAttrib.Multivalued && report.MvFullList))
                             {
-                                string strTemp = val;
-                                if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))
+                                strOutput.Append(",\"");
+                                foreach (string val in attribute.StringValues)
                                 {
-                                    strTemp = strTemp.Insert(0, "'");
+                                    string strTemp = val;
+                                    if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))
+                                    {
+                                        strTemp = strTemp.Insert(0, "'");
+                                    }
+                                    strTemp = strTemp.Replace("\"", "\"\"");
+                                    strOutput.Append(strTemp + "\n");
                                 }
-                                strTemp = strTemp.Replace("\"", "\"\"");
-                                strOutput.Append(strTemp + "\n");
+                                strOutput.Remove(strOutput.Length - 1, 1);
+                                strOutput.Append("\"");
                             }
-                            strOutput.Remove(strOutput.Length - 1, 1);
-                            strOutput.Append("\"");
+                            else
+                            {
+                                List<string> changes = attribute.StringValues.Select(a => "add: " + a).ToList();
+
+                                strOutput.Append(",\"");
+                                strOutput.Append(string.Join("\n", changes));
+                                strOutput.Append("\"");
+                            }
                         }
                     }
                     else if (syncdAttrib != null && attribute == null)
@@ -2573,19 +2598,26 @@ namespace csReporter
                         }
                         else
                         {
-                            strOutput.Append("\"");
-                            foreach (string val in syncdAttrib.StringValues)
+                            if (!syncdAttrib.Multivalued || (syncdAttrib.Multivalued && report.MvFullList))
                             {
-                                string strTemp = val;
-                                if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))
+                                strOutput.Append("\"");
+                                foreach (string val in syncdAttrib.StringValues)
                                 {
-                                    strTemp = strTemp.Insert(0, "'");
+                                    string strTemp = val;
+                                    if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))
+                                    {
+                                        strTemp = strTemp.Insert(0, "'");
+                                    }
+                                    strTemp = strTemp.Replace("\"", "\"\"");
+                                    strOutput.Append(strTemp + "\n");
                                 }
-                                strTemp = strTemp.Replace("\"", "\"\"");
-                                strOutput.Append(strTemp + "\n");
+                                strOutput.Remove(strOutput.Length - 1, 1);
+                                strOutput.Append("\",(Deleted)");
                             }
-                            strOutput.Remove(strOutput.Length - 1, 1);
-                            strOutput.Append("\",(Deleted)");
+                            else
+                            {
+                                strOutput.Append(",(Deleted)");
+                            }
                         }
                     }
                     else if (syncdAttrib == null && attribute == null)
@@ -3282,19 +3314,37 @@ namespace csReporter
                         }
                         else
                         {
-                            strOutput.Append("<TD valign=\"top\" nowrap>");
-                            foreach (string val in syncdAttrib.StringValues)
+                            if (!syncdAttrib.Multivalued || (syncdAttrib.Multivalued && report.MvFullList))
                             {
-                                string strTemp = val.Replace(" ", "&nbsp;");
-                                strOutput.Append(strTemp + "<BR>\r\n");
+                                strOutput.Append("<TD valign=\"top\" nowrap>");
+                                foreach (string val in syncdAttrib.StringValues)
+                                {
+                                    string strTemp = val.Replace(" ", "&nbsp;");
+                                    strOutput.Append(strTemp + "<BR>\r\n");
+                                }
+                                strOutput.Append("</TD><TD valign=\"top\" nowrap>");
+                                foreach (string val in attribute.StringValues)
+                                {
+                                    string strTemp = val.Replace(" ", "&nbsp;");
+                                    strOutput.Append(strTemp + "<BR>\r\n");
+                                }
+                                strOutput.Append("</TD></TR>\r\n");
                             }
-                            strOutput.Append("</TD><TD valign=\"top\" nowrap>");
-                            foreach (string val in attribute.StringValues)
+                            else
                             {
-                                string strTemp = val.Replace(" ", "&nbsp;");
-                                strOutput.Append(strTemp + "<BR>\r\n");
+                                List<string> adds = attribute.StringValues.Except(syncdAttrib.StringValues).ToList();
+                                List<string> removes = syncdAttrib.StringValues.Except(attribute.StringValues).ToList();
+                                List<string> changes = adds.Select(a => "<b>add: </b>" + a).ToList();
+                                changes.AddRange(removes.Select(r => "<b>remove: </b>" + r).ToList());
+
+                                strOutput.Append("<TD /><TD valign=\"top\" nowrap>");
+                                foreach (string val in changes)
+                                {
+                                    string strTemp = val.Replace(" ", "&nbsp;");
+                                    strOutput.Append(strTemp + "<BR>\r\n");
+                                }
+                                strOutput.Append("</TD></TR>\r\n");
                             }
-                            strOutput.Append("</TD></TR>\r\n");
                         }
                     }
                     else if (syncdAttrib == null && attribute != null)
@@ -3305,13 +3355,27 @@ namespace csReporter
                         }
                         else
                         {
-                            strOutput.Append("<TD /><TD valign=\"top\" nowrap>");
-                            foreach (string val in attribute.StringValues)
+                            if (!syncdAttrib.Multivalued || (syncdAttrib.Multivalued && report.MvFullList))
                             {
-                                string strTemp = val.Replace(" ", "&nbsp;");
-                                strOutput.Append(strTemp + "<BR>\r\n");
+                                strOutput.Append("<TD /><TD valign=\"top\" nowrap>");
+                                foreach (string val in attribute.StringValues)
+                                {
+                                    string strTemp = val.Replace(" ", "&nbsp;");
+                                    strOutput.Append(strTemp + "<BR>\r\n");
+                                }
+                                strOutput.Append("</TD></TR>\r\n");
                             }
-                            strOutput.Append("</TD></TR>\r\n");
+                            else
+                            {
+                                List<string> changes = attribute.StringValues.Select(a => "<b>add: </b>" + a).ToList();
+                                strOutput.Append("<TD /><TD valign=\"top\" nowrap>");
+                                foreach (string val in attribute.StringValues)
+                                {
+                                    string strTemp = val.Replace(" ", "&nbsp;");
+                                    strOutput.Append(strTemp + "<BR>\r\n");
+                                }
+                                strOutput.Append("</TD></TR>\r\n");
+                            }
                         }
                     }
                     else if (syncdAttrib != null && attribute == null)
@@ -3322,13 +3386,20 @@ namespace csReporter
                         }
                         else
                         {
-                            strOutput.Append("<TD valign=\"top\" nowrap>");
-                            foreach (string val in syncdAttrib.StringValues)
+                            if (!syncdAttrib.Multivalued || (syncdAttrib.Multivalued && report.MvFullList))
                             {
-                                string strTemp = val.Replace(" ", "&nbsp;");
-                                strOutput.Append(strTemp + "<BR>\r\n");
+                                strOutput.Append("<TD valign=\"top\" nowrap>");
+                                foreach (string val in syncdAttrib.StringValues)
+                                {
+                                    string strTemp = val.Replace(" ", "&nbsp;");
+                                    strOutput.Append(strTemp + "<BR>\r\n");
+                                }
+                                strOutput.Append("</TD><TD><b><i>(Deleted)</i></b></TD></TR>\r\n");
                             }
-                            strOutput.Append("</TD><TD><b><i>(Deleted)</i></b></TD></TR>\r\n");
+                            else
+                            {
+                                strOutput.Append("<TD /><TD><b><i>(Deleted)</i></b></TD></TR>\r\n");
+                            }
                         }
                     }
                 }
@@ -3724,71 +3795,71 @@ namespace csReporter
                                         rowValues.Add(errorInfo.ToString().Replace("\n\"","\""));
                                         break;
                                 }
-                        }
-                        else if (obj.ImportError != null && errorAttribs.Contains(attrib))
-                        {
-                            switch (attrib)
-                            {
-                                case "<ImportErrorDetails>":
-                                    StringBuilder errorInfo = new StringBuilder();
-                                    if (obj.ImportError.DateOccurred != null)
-                                    {
-                                        errorInfo.Append("Date Occurred: " + obj.ImportError.DateOccurred + "\n");
-                                    }
-                                    if (obj.ImportError.FirstOccurred != null)
-                                    {
-                                        errorInfo.Append("First Occurred: " + obj.ImportError.FirstOccurred + "\n");
-                                    }
-                                    if (obj.ImportError.RetryCount != null)
-                                    {
-                                        errorInfo.Append("Retry Count: " + obj.ImportError.RetryCount + "\n");
-                                    }
-                                    if (obj.ImportError.ErrorType != null)
-                                    {
-                                        errorInfo.Append("Error Type: " + obj.ImportError.ErrorType + "\n");
-                                    }
-                                    if (obj.ImportError.AlgorithmStep != null)
-                                    {
-                                        errorInfo.Append("Algorithm Step: " + obj.ImportError.AlgorithmStep + "\n");
-                                    }
-                                    if (obj.ImportError.DestinationAttribute != null)
-                                    {
-                                        errorInfo.Append("Destination Attribute: " + obj.ImportError.DestinationAttribute + "\n");
-                                    }
-                                    if (obj.ImportError.ContextID != null)
-                                    {
-                                        errorInfo.Append("Context ID: " + obj.ImportError.ContextID + "\n");
-                                    }
-                                    if (obj.ImportError.SourceAttribute != null)
-                                    {
-                                        errorInfo.Append("Source Attribute: " + obj.ImportError.SourceAttribute + "\n");
-                                    }
-                                    if (obj.ImportError.ScriptContext != null)
-                                    {
-                                        errorInfo.Append("Script Context: " + obj.ImportError.ScriptContext + "\n");
-                                    }
-                                    if (obj.ImportError.ExtensionName != null)
-                                    {
-                                        errorInfo.Append("Extension Name: " + obj.ImportError.ExtensionName + "\n");
-                                    }
-                                    if (obj.ImportError.ExtensionCallSite != null)
-                                    {
-                                        errorInfo.Append("Extension Callsite: " + obj.ImportError.ExtensionCallSite + "\n");
-                                    }
-                                    if (obj.ImportError.ExtensionContext != null)
-                                    {
-                                        errorInfo.Append("Extension Context: " + obj.ImportError.ExtensionContext + "\n");
-                                    }
-                                    if (obj.ImportError.CallStack != null)
-                                    {
-                                        errorInfo.Append("Call Stack: " + obj.ImportError.CallStack + "\n");
-                                    }
-                                    errorInfo.Replace("\r\n", "");
-                                    rowValues.Add(errorInfo.ToString().Replace("\n\"", "\""));
-                                    break;
                             }
-                        }
-                        else
+                            else if (obj.ImportError != null && errorAttribs.Contains(attrib))
+                            {
+                                switch (attrib)
+                                {
+                                    case "<ImportErrorDetails>":
+                                        StringBuilder errorInfo = new StringBuilder();
+                                        if (obj.ImportError.DateOccurred != null)
+                                        {
+                                            errorInfo.Append("Date Occurred: " + obj.ImportError.DateOccurred + "\n");
+                                        }
+                                        if (obj.ImportError.FirstOccurred != null)
+                                        {
+                                            errorInfo.Append("First Occurred: " + obj.ImportError.FirstOccurred + "\n");
+                                        }
+                                        if (obj.ImportError.RetryCount != null)
+                                        {
+                                            errorInfo.Append("Retry Count: " + obj.ImportError.RetryCount + "\n");
+                                        }
+                                        if (obj.ImportError.ErrorType != null)
+                                        {
+                                            errorInfo.Append("Error Type: " + obj.ImportError.ErrorType + "\n");
+                                        }
+                                        if (obj.ImportError.AlgorithmStep != null)
+                                        {
+                                            errorInfo.Append("Algorithm Step: " + obj.ImportError.AlgorithmStep + "\n");
+                                        }
+                                        if (obj.ImportError.DestinationAttribute != null)
+                                        {
+                                            errorInfo.Append("Destination Attribute: " + obj.ImportError.DestinationAttribute + "\n");
+                                        }
+                                        if (obj.ImportError.ContextID != null)
+                                        {
+                                            errorInfo.Append("Context ID: " + obj.ImportError.ContextID + "\n");
+                                        }
+                                        if (obj.ImportError.SourceAttribute != null)
+                                        {
+                                            errorInfo.Append("Source Attribute: " + obj.ImportError.SourceAttribute + "\n");
+                                        }
+                                        if (obj.ImportError.ScriptContext != null)
+                                        {
+                                            errorInfo.Append("Script Context: " + obj.ImportError.ScriptContext + "\n");
+                                        }
+                                        if (obj.ImportError.ExtensionName != null)
+                                        {
+                                            errorInfo.Append("Extension Name: " + obj.ImportError.ExtensionName + "\n");
+                                        }
+                                        if (obj.ImportError.ExtensionCallSite != null)
+                                        {
+                                            errorInfo.Append("Extension Callsite: " + obj.ImportError.ExtensionCallSite + "\n");
+                                        }
+                                        if (obj.ImportError.ExtensionContext != null)
+                                        {
+                                            errorInfo.Append("Extension Context: " + obj.ImportError.ExtensionContext + "\n");
+                                        }
+                                        if (obj.ImportError.CallStack != null)
+                                        {
+                                            errorInfo.Append("Call Stack: " + obj.ImportError.CallStack + "\n");
+                                        }
+                                        errorInfo.Replace("\r\n", "");
+                                        rowValues.Add(errorInfo.ToString().Replace("\n\"", "\""));
+                                        break;
+                                }
+                            }
+                            else
                             {
                                 Attribute shAttrib = GetMatchingAttribute(attrib, obj.SynchronizedHologram.Attributes);
                                 rowValues.AddRange(AddAttribToReportExcel(shAttrib));
@@ -4406,30 +4477,42 @@ namespace csReporter
                         }
                         else
                         {
-                            foreach (string val in syncdAttrib.StringValues)
+                            if (!syncdAttrib.Multivalued || (syncdAttrib.Multivalued && report.MvFullList))
                             {
-                                string strTemp = val;
-                                if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))
+                                foreach (string val in syncdAttrib.StringValues)
                                 {
-                                    strTemp = strTemp.Insert(0, "'");
+                                    string strTemp = val;
+                                    if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))
+                                    {
+                                        strTemp = strTemp.Insert(0, "'");
+                                    }
+                                    strOutput.Append(strTemp + "\n");
                                 }
-                                strOutput.Append(strTemp + "\n");
-                            }
-                            strOutput.Remove(strOutput.Length - 1, 1);
-                            dataValues.Add(strOutput.ToString());
-                            strOutput = new StringBuilder();
+                                strOutput.Remove(strOutput.Length - 1, 1);
+                                dataValues.Add(strOutput.ToString());
+                                strOutput = new StringBuilder();
 
-                            foreach (string val in attribute.StringValues)
-                            {
-                                string strTemp = val;
-                                if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))
+                                foreach (string val in attribute.StringValues)
                                 {
-                                    strTemp = strTemp.Insert(0, "'");
+                                    string strTemp = val;
+                                    if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))
+                                    {
+                                        strTemp = strTemp.Insert(0, "'");
+                                    }
+                                    strOutput.Append(strTemp + "\n");
                                 }
-                                strOutput.Append(strTemp + "\n");
+                                strOutput.Remove(strOutput.Length - 1, 1);
+                                dataValues.Add(strOutput.ToString());
                             }
-                            strOutput.Remove(strOutput.Length - 1, 1);
-                            dataValues.Add(strOutput.ToString());
+                            else
+                            {
+                                dataValues.Add("");
+                                List<string> adds = attribute.StringValues.Except(syncdAttrib.StringValues).ToList();
+                                List<string> removes = syncdAttrib.StringValues.Except(attribute.StringValues).ToList();
+                                List<string>changes = adds.Select(a => "add: " + a).ToList();
+                                changes.AddRange(removes.Select(r => "remove: " + r).ToList());
+                                dataValues.Add(string.Join("\n", changes));
+                            }
                         }
                     }
                     else if (syncdAttrib == null && attribute != null)
@@ -4441,18 +4524,26 @@ namespace csReporter
                         }
                         else
                         {
-                            foreach (string val in attribute.StringValues)
+                            if (!attribute.Multivalued || (attribute.Multivalued && report.MvFullList))
                             {
-                                string strTemp = val;
-                                if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))
+                                foreach (string val in attribute.StringValues)
                                 {
-                                    strTemp = strTemp.Insert(0, "'");
+                                    string strTemp = val;
+                                    if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))
+                                    {
+                                        strTemp = strTemp.Insert(0, "'");
+                                    }
+                                    strOutput.Append(strTemp + "\n");
                                 }
-                                strOutput.Append(strTemp + "\n");
+                                strOutput.Remove(strOutput.Length - 1, 1);
+                                dataValues.Add(strOutput.ToString());
+                                strOutput = new StringBuilder();
                             }
-                            strOutput.Remove(strOutput.Length - 1, 1);
-                            dataValues.Add(strOutput.ToString());
-                            strOutput = new StringBuilder();
+                            else
+                            {
+                                List<string> changes = attribute.StringValues.Select(a => "add: " + a).ToList();
+                                dataValues.Add(string.Join("\n", changes));
+                            }
                         }
                     }
                     else if (syncdAttrib != null && attribute == null)
@@ -4464,19 +4555,27 @@ namespace csReporter
                         }
                         else
                         {
-                            foreach (string val in syncdAttrib.StringValues)
+                            if (!syncdAttrib.Multivalued || (syncdAttrib.Multivalued && report.MvFullList))
                             {
-                                string strTemp = val;
-                                if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))
+                                foreach (string val in syncdAttrib.StringValues)
                                 {
-                                    strTemp = strTemp.Insert(0, "'");
+                                    string strTemp = val;
+                                    if (Regex.IsMatch(strTemp, @"^[^A-Za-z]"))
+                                    {
+                                        strTemp = strTemp.Insert(0, "'");
+                                    }
+                                    strOutput.Append(strTemp + "\n");
                                 }
-                                strOutput.Append(strTemp + "\n");
+                                strOutput.Remove(strOutput.Length - 1, 1);
+                                dataValues.Add(strOutput.ToString());
+                                strOutput = new StringBuilder();
+                                dataValues.Add("(Deleted)");
                             }
-                            strOutput.Remove(strOutput.Length - 1, 1);
-                            dataValues.Add(strOutput.ToString());
-                            strOutput = new StringBuilder();
-                            dataValues.Add("(Deleted)");
+                            else
+                            {
+                                dataValues.Add("");
+                                dataValues.Add("(Deleted)");
+                            }
                         }
                     }
                     else if (syncdAttrib == null && attribute == null)
@@ -5653,6 +5752,10 @@ namespace csReporter
             public void SetReportIncludeFilter(bool includeFilter)
             {
                 report.IncludeFilter = includeFilter;
+            }
+            public void SetMultivalueBehavior(bool mvFullList)
+            {
+                report.MvFullList = mvFullList;
             }
         #endregion
 

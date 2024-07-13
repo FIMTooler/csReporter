@@ -44,10 +44,14 @@
             this.cbFilterCriteria = new System.Windows.Forms.CheckBox();
             this.gbFontSize = new System.Windows.Forms.GroupBox();
             this.cbbFontSize = new System.Windows.Forms.ComboBox();
+            this.rbFullList = new System.Windows.Forms.RadioButton();
+            this.rbNetChange = new System.Windows.Forms.RadioButton();
+            this.gbMultiValue = new System.Windows.Forms.GroupBox();
             this.gbFormat.SuspendLayout();
             this.gbLayout.SuspendLayout();
             this.gbFilterCriteria.SuspendLayout();
             this.gbFontSize.SuspendLayout();
+            this.gbMultiValue.SuspendLayout();
             this.SuspendLayout();
             // 
             // lbAttribute
@@ -67,7 +71,7 @@
             this.gbFormat.Controls.Add(this.rbExcel);
             this.gbFormat.Controls.Add(this.rbCSV);
             this.gbFormat.Controls.Add(this.rbHTML);
-            this.gbFormat.Location = new System.Drawing.Point(555, 15);
+            this.gbFormat.Location = new System.Drawing.Point(555, 135);
             this.gbFormat.Margin = new System.Windows.Forms.Padding(4);
             this.gbFormat.Name = "gbFormat";
             this.gbFormat.Padding = new System.Windows.Forms.Padding(4);
@@ -139,7 +143,7 @@
             // 
             this.gbLayout.Controls.Add(this.rbVertical);
             this.gbLayout.Controls.Add(this.rbHorizontal);
-            this.gbLayout.Location = new System.Drawing.Point(555, 215);
+            this.gbLayout.Location = new System.Drawing.Point(555, 335);
             this.gbLayout.Margin = new System.Windows.Forms.Padding(4);
             this.gbLayout.Name = "gbLayout";
             this.gbLayout.Padding = new System.Windows.Forms.Padding(4);
@@ -186,7 +190,7 @@
             // gbFilterCriteria
             // 
             this.gbFilterCriteria.Controls.Add(this.cbFilterCriteria);
-            this.gbFilterCriteria.Location = new System.Drawing.Point(555, 152);
+            this.gbFilterCriteria.Location = new System.Drawing.Point(555, 272);
             this.gbFilterCriteria.Margin = new System.Windows.Forms.Padding(4);
             this.gbFilterCriteria.Name = "gbFilterCriteria";
             this.gbFilterCriteria.Padding = new System.Windows.Forms.Padding(4);
@@ -208,7 +212,7 @@
             // gbFontSize
             // 
             this.gbFontSize.Controls.Add(this.cbbFontSize);
-            this.gbFontSize.Location = new System.Drawing.Point(555, 324);
+            this.gbFontSize.Location = new System.Drawing.Point(555, 444);
             this.gbFontSize.Margin = new System.Windows.Forms.Padding(4);
             this.gbFontSize.Name = "gbFontSize";
             this.gbFontSize.Padding = new System.Windows.Forms.Padding(4);
@@ -238,11 +242,49 @@
             this.cbbFontSize.Size = new System.Drawing.Size(67, 26);
             this.cbbFontSize.TabIndex = 29;
             // 
+            // rbFullList
+            // 
+            this.rbFullList.AutoSize = true;
+            this.rbFullList.Location = new System.Drawing.Point(9, 64);
+            this.rbFullList.Margin = new System.Windows.Forms.Padding(4);
+            this.rbFullList.Name = "rbFullList";
+            this.rbFullList.Size = new System.Drawing.Size(76, 22);
+            this.rbFullList.TabIndex = 1;
+            this.rbFullList.TabStop = true;
+            this.rbFullList.Text = "Full List";
+            this.rbFullList.UseVisualStyleBackColor = true;
+            // 
+            // rbNetChange
+            // 
+            this.rbNetChange.AutoSize = true;
+            this.rbNetChange.Location = new System.Drawing.Point(9, 32);
+            this.rbNetChange.Margin = new System.Windows.Forms.Padding(4);
+            this.rbNetChange.Name = "rbNetChange";
+            this.rbNetChange.Size = new System.Drawing.Size(104, 22);
+            this.rbNetChange.TabIndex = 0;
+            this.rbNetChange.TabStop = true;
+            this.rbNetChange.Text = "Net Change";
+            this.rbNetChange.UseVisualStyleBackColor = true;
+            // 
+            // gbMultiValue
+            // 
+            this.gbMultiValue.Controls.Add(this.rbFullList);
+            this.gbMultiValue.Controls.Add(this.rbNetChange);
+            this.gbMultiValue.Location = new System.Drawing.Point(555, 26);
+            this.gbMultiValue.Margin = new System.Windows.Forms.Padding(4);
+            this.gbMultiValue.Name = "gbMultiValue";
+            this.gbMultiValue.Padding = new System.Windows.Forms.Padding(4);
+            this.gbMultiValue.Size = new System.Drawing.Size(132, 101);
+            this.gbMultiValue.TabIndex = 29;
+            this.gbMultiValue.TabStop = false;
+            this.gbMultiValue.Text = "Multi-Value";
+            // 
             // frmReport
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(702, 539);
+            this.Controls.Add(this.gbMultiValue);
             this.Controls.Add(this.gbFontSize);
             this.Controls.Add(this.gbFilterCriteria);
             this.Controls.Add(this.lblSelectAttributes);
@@ -266,6 +308,8 @@
             this.gbFilterCriteria.ResumeLayout(false);
             this.gbFilterCriteria.PerformLayout();
             this.gbFontSize.ResumeLayout(false);
+            this.gbMultiValue.ResumeLayout(false);
+            this.gbMultiValue.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -288,5 +332,8 @@
         private System.Windows.Forms.CheckBox cbFilterCriteria;
         private System.Windows.Forms.GroupBox gbFontSize;
         private System.Windows.Forms.ComboBox cbbFontSize;
+        private System.Windows.Forms.RadioButton rbFullList;
+        private System.Windows.Forms.RadioButton rbNetChange;
+        private System.Windows.Forms.GroupBox gbMultiValue;
     }
 }

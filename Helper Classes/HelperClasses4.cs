@@ -179,6 +179,7 @@ namespace csReporter
         bool horizontal = true;
         int fSize = 10;
         bool includeFilter = true;
+        bool mvFullList = true;
 
         public ReportObject()
         { }
@@ -253,6 +254,18 @@ namespace csReporter
             set
             {
                 includeFilter = value;
+            }
+        }
+        
+        public bool MvFullList
+        {
+            get
+            {
+                return mvFullList;
+            }
+            set
+            {
+                mvFullList = value;
             }
         }
     }
