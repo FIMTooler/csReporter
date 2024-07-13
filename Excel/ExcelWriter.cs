@@ -80,8 +80,8 @@ namespace csReporter
                 if (val != "")
                 {
                     //greater than 600-700 seems to cause issues with string table and opening in Excel
-                    //if greater than 250, break into multiple rows
-                    if (val.Count(f => f == '\n') > 250 || (previousLargeMV && val.Count(f => f == '\n') > 1))
+                    //if greater than 100, break into multiple rows
+                    if (val.Count(f => f == '\n') > 100 || (previousLargeMV && val.Count(f => f == '\n') > 1))
                     {
                         previousLargeMV = true;
                         string[] vals = val.Split(new char[] { '\n' }, StringSplitOptions.None);

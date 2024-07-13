@@ -80,7 +80,6 @@ C:\OCGCode\csReporter\bin\Release\csReporter.exe.config
 C:\OCGCode\csReporter\bin\Release\csReporter.exe
 C:\OCGCode\csReporter\bin\Release\csReporter.pdb
 C:\OCGCode\csReporter\bin\Release\DocumentFormat.OpenXml.dll
-C:\OCGCode\csReporter\obj\Release\csReporter.csprojAssemblyReference.cache
 C:\OCGCode\csReporter\obj\Release\csReporter.frmCSExamples.resources
 C:\OCGCode\csReporter\obj\Release\csReporter.frmError.resources
 C:\OCGCode\csReporter\obj\Release\csReporter.frmFilter.resources
