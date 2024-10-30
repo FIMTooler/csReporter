@@ -2564,7 +2564,7 @@ namespace csReporter
                         }
                         else
                         {
-                            if (!syncdAttrib.Multivalued || (syncdAttrib.Multivalued && report.MvFullList))
+                            if (!attribute.Multivalued || (attribute.Multivalued && report.MvFullList))
                             {
                                 strOutput.Append(",\"");
                                 foreach (string val in attribute.StringValues)
