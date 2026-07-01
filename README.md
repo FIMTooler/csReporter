@@ -100,7 +100,7 @@ The below pictures show filtering on the userAccountControl attribute and how th
 
 **Filter on non-changing attributes**
 
-The purpose of this is to allow reporting of changes by using an Attribute filter based on Synchronized values.  For example, finding all users with pending import\export changes where a specific Department value is not chaning (i.e. exists only in Sync hologram).
+The purpose of this is to allow reporting of changes by using an Attribute filter based on Synchronized values.  For example, finding all users with pending import\export changes where a specific Department value is not changing (i.e. exists only in Sync hologram).
 **NOTE: As the warning states, any filters applied at the Attribute level will be applied ONLY to Attributes in the Sync hologram.**
 
 ![](images/Warning.png)
