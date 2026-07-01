@@ -2246,9 +2246,7 @@ namespace csReporter
                                             break;
                                     }
                                 }
-                            }
-                            else if (errorAttribs.Contains(attrib))
-                            {
+
                                 if (obj.ImportError == null)
                                 {
                                     writer.Write(",");
@@ -2457,9 +2455,6 @@ namespace csReporter
                                             break;
                                     }
                                 }
-                            }
-                            else if (errorAttribs.Contains(attrib))
-                            {
                                 if (obj.ImportError == null)
                                 {
                                     writer.Write(",");
