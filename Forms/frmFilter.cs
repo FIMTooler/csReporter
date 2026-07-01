@@ -2190,13 +2190,9 @@ namespace csReporter
                                     break;
                                 }
                             }
-                            else if (errorAttribs.Contains(attrib))
+                            else if (attrib == "<ExportErrorDetails>" && errorAttribs.Contains(attrib))
                             {
-                                if (obj.ExportError == null)
-                                {
-                                    writer.Write(",");
-                                }
-                                else
+                                if (obj.ExportError != null)
                                 {
                                     switch (attrib)
                                     {
@@ -2246,12 +2242,10 @@ namespace csReporter
                                             break;
                                     }
                                 }
-
-                                if (obj.ImportError == null)
-                                {
-                                    writer.Write(",");
-                                }
-                                else
+                            }
+                            else if (attrib == "<ImportErrorDetails>" && errorAttribs.Contains(attrib))
+                            {
+                                if (obj.ImportError != null)
                                 {
                                     switch (attrib)
                                     {
@@ -2398,13 +2392,9 @@ namespace csReporter
                                     break;
                                 }
                             }
-                            else if (errorAttribs.Contains(attrib))
+                            else if (attrib == "<ExportErrorDetails>" && errorAttribs.Contains(attrib))
                             {
-                                if (obj.ExportError == null)
-                                {
-                                    writer.Write(",");
-                                }
-                                else
+                                if (obj.ExportError != null)
                                 {
                                     switch (attrib)
                                     {
@@ -2455,11 +2445,10 @@ namespace csReporter
                                             break;
                                     }
                                 }
-                                if (obj.ImportError == null)
-                                {
-                                    writer.Write(",");
-                                }
-                                else
+                            }
+                            else if (attrib == "<ImportErrorDetails>" && errorAttribs.Contains(attrib))
+                            {
+                                if (obj.ImportError != null)
                                 {
                                     switch (attrib)
                                     {
