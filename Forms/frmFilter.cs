@@ -2353,149 +2353,183 @@ namespace csReporter
                                         {
                                             writer.Write(obj.Connector);
                                         }
-                                        break;
+                                        else
+                                        {
+                                            writer.Write(",");
+                                        }
+                                    break;
                                     case "<Connect Time>":
                                         if (obj.ConnectionTime != null)
                                         {
                                             writer.Write(obj.ConnectionTime.ToString("g"));
                                         }
-                                        break;
+                                        else
+                                        {
+                                            writer.Write(",");
+                                        }
+                                    break;
                                     case "<Connector Operation>":
                                         if (obj.ConnectionOperation != "")
                                         {
                                             writer.Write(obj.ConnectionOperation);
                                         }
-                                        break;
+                                        else
+                                        {
+                                            writer.Write(",");
+                                        }
+                                    break;
                                     case "<Disconnect Time>":
                                         if (obj.DisconnectionTime != null)
                                         {
                                             writer.Write(obj.DisconnectionTime.ToString("g"));
                                         }
-                                        break;
+                                        else
+                                        {
+                                            writer.Write(",");
+                                        }
+                                    break;
                                     case "<Connector State>":
                                         if (obj.ConnectorState != "")
                                         {
                                             writer.Write(obj.ConnectorState);
                                         }
-                                        break;
+                                        else
+                                        {
+                                            writer.Write(",");
+                                        }
+                                    break;
                                 }
                             }
-                            else if (obj.ExportError != null && errorAttribs.Contains(attrib))
+                            else if (errorAttribs.Contains(attrib))
                             {
-                                switch (attrib)
+                                if (obj.ExportError == null)
                                 {
-                                    case "<ExportErrorDetails>":
-                                        StringBuilder errorInfo = new StringBuilder();
-                                        if (obj.ExportError.DateOccurred != null)
-                                        {
-                                            errorInfo.Append("Date Occurred: " + obj.ExportError.DateOccurred + "\n");
-                                        }
-                                        if (obj.ExportError.FirstOccurred != null)
-                                        {
-                                            errorInfo.Append("First Occurred: " + obj.ExportError.FirstOccurred + "\n");
-                                        }
-                                        if (obj.ExportError.RetryCount != null)
-                                        {
-                                            errorInfo.Append("Retry Count: " + obj.ExportError.RetryCount + "\n");
-                                        }
-                                        if (obj.ExportError.ErrorType != null)
-                                        {
-                                            errorInfo.Append("Error Type: " + obj.ExportError.ErrorType + "\n");
-                                        }
-                                        if (obj.ExportError.ErrorCode != null)
-                                        {
-                                            errorInfo.Append("Error Code: " + obj.ExportError.ErrorCode + "\n");
-                                        }
-                                        if (obj.ExportError.ErrorLiteral != null)
-                                        {
-                                            errorInfo.Append("Error Literal: " + obj.ExportError.ErrorLiteral + "\n");
-                                        }
-                                        if (obj.ExportError.ServerErrorDetail != null)
-                                        {
-                                            errorInfo.Append("Server Error Detail: " + obj.ExportError.ServerErrorDetail + "\n");
-                                        }
-                                        if (obj.ExportError.ErrorName != null)
-                                        {
-                                            errorInfo.Append("Error Name: " + obj.ExportError.ErrorName + "\n");
-                                        }
-                                        if (obj.ExportError.ExtraErrorDetails != null)
-                                        {
-                                            errorInfo.Append("Extra Error Detail: " + obj.ExportError.ExtraErrorDetails + "\n");
-                                        }
-                                        errorInfo.Remove(errorInfo.Length - 1, 1);
-                                        errorInfo.Replace("\r\n", "");
-                                        errorInfo.Replace("\"", "\"\"");
-                                        errorInfo.Insert(0, "\"");
-                                        errorInfo.Append("\"");
-                                        writer.Write(errorInfo.ToString());
-                                        break;
+                                    writer.Write(",");
+                                }
+                                else
+                                {
+                                    switch (attrib)
+                                    {
+                                        case "<ExportErrorDetails>":
+                                            StringBuilder errorInfo = new StringBuilder();
+                                            if (obj.ExportError.DateOccurred != null)
+                                            {
+                                                errorInfo.Append("Date Occurred: " + obj.ExportError.DateOccurred + "\n");
+                                            }
+                                            if (obj.ExportError.FirstOccurred != null)
+                                            {
+                                                errorInfo.Append("First Occurred: " + obj.ExportError.FirstOccurred + "\n");
+                                            }
+                                            if (obj.ExportError.RetryCount != null)
+                                            {
+                                                errorInfo.Append("Retry Count: " + obj.ExportError.RetryCount + "\n");
+                                            }
+                                            if (obj.ExportError.ErrorType != null)
+                                            {
+                                                errorInfo.Append("Error Type: " + obj.ExportError.ErrorType + "\n");
+                                            }
+                                            if (obj.ExportError.ErrorCode != null)
+                                            {
+                                                errorInfo.Append("Error Code: " + obj.ExportError.ErrorCode + "\n");
+                                            }
+                                            if (obj.ExportError.ErrorLiteral != null)
+                                            {
+                                                errorInfo.Append("Error Literal: " + obj.ExportError.ErrorLiteral + "\n");
+                                            }
+                                            if (obj.ExportError.ServerErrorDetail != null)
+                                            {
+                                                errorInfo.Append("Server Error Detail: " + obj.ExportError.ServerErrorDetail + "\n");
+                                            }
+                                            if (obj.ExportError.ErrorName != null)
+                                            {
+                                                errorInfo.Append("Error Name: " + obj.ExportError.ErrorName + "\n");
+                                            }
+                                            if (obj.ExportError.ExtraErrorDetails != null)
+                                            {
+                                                errorInfo.Append("Extra Error Detail: " + obj.ExportError.ExtraErrorDetails + "\n");
+                                            }
+                                            errorInfo.Remove(errorInfo.Length - 1, 1);
+                                            errorInfo.Replace("\r\n", "");
+                                            errorInfo.Replace("\"", "\"\"");
+                                            errorInfo.Insert(0, "\"");
+                                            errorInfo.Append("\"");
+                                            writer.Write(errorInfo.ToString());
+                                            break;
+                                    }
                                 }
                             }
                             else if (obj.ImportError != null && errorAttribs.Contains(attrib))
                             {
-                                switch (attrib)
+                                if (obj.ImportError == null)
                                 {
-                                    case "<ImportErrorDetails>":
-                                        StringBuilder errorInfo = new StringBuilder();
-                                        if (obj.ImportError.DateOccurred != null)
-                                        {
-                                            errorInfo.Append("Date Occurred: " + obj.ImportError.DateOccurred + "\n");
-                                        }
-                                        if (obj.ImportError.FirstOccurred != null)
-                                        {
-                                            errorInfo.Append("First Occurred: " + obj.ImportError.FirstOccurred + "\n");
-                                        }
-                                        if (obj.ImportError.RetryCount != null)
-                                        {
-                                            errorInfo.Append("Retry Count: " + obj.ImportError.RetryCount + "\n");
-                                        }
-                                        if (obj.ImportError.ErrorType != null)
-                                        {
-                                            errorInfo.Append("Error Type: " + obj.ImportError.ErrorType + "\n");
-                                        }
-                                        if (obj.ImportError.AlgorithmStep != null)
-                                        {
-                                            errorInfo.Append("Error Code: " + obj.ImportError.AlgorithmStep + "\n");
-                                        }
-                                        if (obj.ImportError.DestinationAttribute != null)
-                                        {
-                                            errorInfo.Append("Destination Attribute: " + obj.ImportError.DestinationAttribute + "\n");
-                                        }
-                                        if (obj.ImportError.ContextID != null)
-                                        {
-                                            errorInfo.Append("Context ID: " + obj.ImportError.ContextID + "\n");
-                                        }
-                                        if (obj.ImportError.SourceAttribute != null)
-                                        {
-                                            errorInfo.Append("Source Attribute: " + obj.ImportError.SourceAttribute + "\n");
-                                        }
-                                        if (obj.ImportError.ScriptContext != null)
-                                        {
-                                            errorInfo.Append("Script Context: " + obj.ImportError.ScriptContext + "\n");
-                                        }
-                                        if (obj.ImportError.ExtensionName != null)
-                                        {
-                                            errorInfo.Append("Extension Name: " + obj.ImportError.ExtensionName + "\n");
-                                        }
-                                        if (obj.ImportError.ExtensionCallSite != null)
-                                        {
-                                            errorInfo.Append("Extension Callsite: " + obj.ImportError.ExtensionCallSite + "\n");
-                                        }
-                                        if (obj.ImportError.ExtensionContext!= null)
-                                        {
-                                            errorInfo.Append("Extension Context: " + obj.ImportError.ExtensionContext + "\n");
-                                        }
-                                        if (obj.ImportError.CallStack != null)
-                                        {
-                                            errorInfo.Append("Call Stack: " + obj.ImportError.CallStack + "\n");
-                                        }
-                                        errorInfo.Remove(errorInfo.Length - 1, 1);
-                                        errorInfo.Replace("\r\n", "");
-                                        errorInfo.Replace("\"", "\"\"");
-                                        errorInfo.Insert(0, "\"");
-                                        errorInfo.Append("\"");
-                                        writer.Write(errorInfo.ToString());
-                                        break;
+                                    writer.Write(",");
+                                }
+                                else
+                                {
+                                    switch (attrib)
+                                    {
+                                        case "<ImportErrorDetails>":
+                                            StringBuilder errorInfo = new StringBuilder();
+                                            if (obj.ImportError.DateOccurred != null)
+                                            {
+                                                errorInfo.Append("Date Occurred: " + obj.ImportError.DateOccurred + "\n");
+                                            }
+                                            if (obj.ImportError.FirstOccurred != null)
+                                            {
+                                                errorInfo.Append("First Occurred: " + obj.ImportError.FirstOccurred + "\n");
+                                            }
+                                            if (obj.ImportError.RetryCount != null)
+                                            {
+                                                errorInfo.Append("Retry Count: " + obj.ImportError.RetryCount + "\n");
+                                            }
+                                            if (obj.ImportError.ErrorType != null)
+                                            {
+                                                errorInfo.Append("Error Type: " + obj.ImportError.ErrorType + "\n");
+                                            }
+                                            if (obj.ImportError.AlgorithmStep != null)
+                                            {
+                                                errorInfo.Append("Error Code: " + obj.ImportError.AlgorithmStep + "\n");
+                                            }
+                                            if (obj.ImportError.DestinationAttribute != null)
+                                            {
+                                                errorInfo.Append("Destination Attribute: " + obj.ImportError.DestinationAttribute + "\n");
+                                            }
+                                            if (obj.ImportError.ContextID != null)
+                                            {
+                                                errorInfo.Append("Context ID: " + obj.ImportError.ContextID + "\n");
+                                            }
+                                            if (obj.ImportError.SourceAttribute != null)
+                                            {
+                                                errorInfo.Append("Source Attribute: " + obj.ImportError.SourceAttribute + "\n");
+                                            }
+                                            if (obj.ImportError.ScriptContext != null)
+                                            {
+                                                errorInfo.Append("Script Context: " + obj.ImportError.ScriptContext + "\n");
+                                            }
+                                            if (obj.ImportError.ExtensionName != null)
+                                            {
+                                                errorInfo.Append("Extension Name: " + obj.ImportError.ExtensionName + "\n");
+                                            }
+                                            if (obj.ImportError.ExtensionCallSite != null)
+                                            {
+                                                errorInfo.Append("Extension Callsite: " + obj.ImportError.ExtensionCallSite + "\n");
+                                            }
+                                            if (obj.ImportError.ExtensionContext != null)
+                                            {
+                                                errorInfo.Append("Extension Context: " + obj.ImportError.ExtensionContext + "\n");
+                                            }
+                                            if (obj.ImportError.CallStack != null)
+                                            {
+                                                errorInfo.Append("Call Stack: " + obj.ImportError.CallStack + "\n");
+                                            }
+                                            errorInfo.Remove(errorInfo.Length - 1, 1);
+                                            errorInfo.Replace("\r\n", "");
+                                            errorInfo.Replace("\"", "\"\"");
+                                            errorInfo.Insert(0, "\"");
+                                            errorInfo.Append("\"");
+                                            writer.Write(errorInfo.ToString());
+                                            break;
+                                    }
                                 }
                             }
                             else
