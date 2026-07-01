@@ -2458,7 +2458,7 @@ namespace csReporter
                                     }
                                 }
                             }
-                            else if (obj.ImportError != null && errorAttribs.Contains(attrib))
+                            else if (errorAttribs.Contains(attrib))
                             {
                                 if (obj.ImportError == null)
                                 {
